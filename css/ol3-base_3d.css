@@ -1,0 +1,268 @@
+.map {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+	background-color: rgba(255,250,250,1);
+}
+
+/* 回到定位点 */
+button.control-locate {
+    position: absolute;
+    bottom: 8%;
+    left: 2%;
+	border: 0.5px solid rgba(200, 200, 200, .8);
+	-webkit-filter: drop-shadow(0 1px 3px rgba(100,100,100,0.12));
+	filter: drop-shadow(0 1px 3px rgba(100,100,100,0.12));
+    font-size: 20px;
+	padding: 3px 6px 1px 5px;
+	/* color: rgb(65,110,168); */
+	color: rgb(45,120,200);
+	text-shadow: black 1px 1px 1px;
+}
+button.control-locate:hover {
+    color: deepskyblue;
+}
+
+/* 搜索条 */
+.feature-select {
+    position: absolute;
+    top: 17%;
+    left: 2%;
+	background-color: white; 
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+
+ul.feature-list {
+    top: 0;
+    left: 3.2em;
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	border: 0px ;
+}
+
+.divider{
+	border: 0.4px solid rgba(200, 200, 200, .8);
+	margin: -2px 0px -2px 0px ;
+}
+
+li.dropdown>a:hover {
+    color: deepskyblue;
+}
+
+li.dropdown .dropdown-backdrop {
+    display: none;
+}
+li.dropdown {
+    margin-bottom: -2px; 
+}
+
+/* 楼层条 */
+div.floor-select {
+    position: absolute;
+    height: 11.88em;
+	width: 3em;
+    top: 30%;
+    right: 2%;
+	background-color: white; 
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+.wheel ul li a{
+	padding: 2px 14px;
+}
+.up{
+	background-color: rgb(240,240,240);
+}
+.down{
+	background-color: rgb(240,240,240);
+}
+
+.up>a {
+	width: 3em;
+	height: 1.5em;
+	margin: 0px 0px -2px 0px;
+}
+
+.down>a {
+	width: 3em;
+	height: 1.5em;
+	margin: -2px 0px 0px 0px;
+}
+
+.floor-wheel {
+    height: 8.6em;
+    overflow: scroll;
+	width: 6em;
+	overflow-x: hidden;
+}
+.floor-wheel ul {
+    position: absolute;
+    top: 0em;
+    transition: .3s top;
+}
+
+.floor-wheel ul li {
+	margin: 0px 0px -4px 0px;
+	width: 3em;
+	height: 3em;
+	
+}
+.floor-wheel ul li a{
+	padding: 12px 12px;
+	font-size: 12px;
+}
+
+/* li.active{
+	color: red;
+} */
+
+/* 修改默认控件 */
+/* 缩放 */
+.ol-zoom {
+    position: absolute;
+    bottom: 10%;
+    right: 3%;
+	background-color: rgba(255,255,255,1);
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+.ol-control button {
+	background-color: rgba(255,255,255,0);
+	color: rgb(45,100,168);
+}
+.ol-control button:hover{
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 2px 2px 2px 2px;
+}
+/* 比例尺 */
+.ol-scale-line {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    background-color: rgba(255, 255, 255, 0);
+}
+div.ol-scale-line-inner {
+    color: black;
+    border: 1px solid #444;
+    border-top: none;
+    /*background-color: rgba(0, 0, 0, 0);*/
+}
+/* 指北针 */
+div.ol-rotate {
+    top: 2%;
+    right: 5%;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+div.ol-rotate button.ol-rotate-reset {
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+img.ol-compass {
+	width: 40px;
+	height: 40px;
+}
+
+
+/* 测距 */
+.tooltiptip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 0.25em;
+    color: white;
+    padding: 0.2em 0.4em;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.tooltip-measure {
+    opacity: 1;
+}
+
+.tooltip-static {
+    background-color: rgba(256, 204, 51, 1);
+    font-size: 0.8em;
+    color: black;
+    border: 1px solid white;
+}
+
+.tooltip-measure:before,
+.tooltip-static:before {
+    border-top: 6px solid rgba(0, 0, 0, 0.5);
+    border-top-color: rgba(256, 204, 51, 1);
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    margin-left: -7px;
+    left: 50%;
+}
+
+
+/* 找路 */
+
+
+/* 收藏 */
+.ol-popup {
+	position: absolute;
+	background-color: white;
+	-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	padding: 15px;
+	border-radius: 10px;
+	border: 1px solid #cccccc;
+	bottom: 12px;
+	left: -50px;
+	min-width: 150px;
+	min-height: 80px;
+}
+.ol-popup:after, .ol-popup:before {
+	top: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.ol-popup:after {
+	border-top-color: white;
+	border-width: 10px;
+	left: 48px;
+	margin-left: -10px;
+}
+.ol-popup:before {
+	border-top-color: #cccccc;
+	border-width: 11px;
+	left: 48px;
+	margin-left: -11px;
+}
+.ol-popup-collection {
+	position: absolute;
+	bottom: 6px;
+	right: 1.5em;
+	width: 3em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+}		
+.ol-popup-collection:hover{
+	background-color: rgba(256, 204, 51, 1);
+	color: white;
+}
+.ol-popup-closer {
+	text-decoration: none;
+	position: absolute;
+	top: 2px;
+	right: 8px;
+	
+}
+.ol-popup-closer:after {
+	content: "✖";
+}
+

@@ -1,0 +1,286 @@
+
+
+var svglocation = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
+	'<circle fill="#FFFFFF" stroke="#AAAAAA" stroke-width="1" cx="15" cy="15" r="8"/>' +
+	'<circle fill="#5555ff" stroke="#3333FF" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
+	
+var svgap = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
+	'<circle fill="#FFFFFF" stroke="#BBBBBB" stroke-width="1" cx="15" cy="15" r="8"/>' +
+	'<circle fill="#2828ff" stroke="#0000FF" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
+	
+var svgselect = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
+		'<path fill="#ff0000" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+		'</svg>';//<text x="9.5" dy="13" fill="#FFFFFF" font-size="5pt" >oo</text>
+	
+var svgroutestart = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
+	'<path fill="#00CD00" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+	'<text x="12" dy="15" fill="#FFFFFF" font-size="9pt" >S</text></svg>';	
+
+var svgrouteend = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
+	'<path fill="#CD0000" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+	'<text x="12" dy="15" fill="#FFFFFF" font-size="9pt" >E</text></svg>';
+
+	
+var mysvglocation = new Image();
+mysvglocation.src = 'data:image/svg+xml,' + escape(svglocation);
+var mysvgap = new Image();
+var mysvgselect = new Image();
+mysvgselect.src = 'data:image/svg+xml,' + escape(svgselect);
+var mysvgroutestart = new Image();
+mysvgroutestart.src = 'data:image/svg+xml,' + escape(svgroutestart);
+var mysvgrouteend = new Image();
+mysvgrouteend.src = 'data:image/svg+xml,' + escape(svgrouteend);
+	
+// interaction.Select
+var selectSingleClickStyle = new ol.style.Style({
+	image: new ol.style.Circle({
+		fill: new ol.style.Fill({
+			color: [255,255,255,0.1]
+		}),
+		radius: 6,
+	})
+});
+	
+// 定位 style
+var locationStyle = new ol.style.Style({
+	image: new ol.style.Icon({
+		img: mysvglocation,
+		imgSize: [30, 30],   // 图标大小
+		anchor: [0.5,0.5]    // 摆放位置
+	}),
+	zIndex: 600
+});
+
+// 收藏 style	
+var collectionStyle = new ol.style.Style({
+	image: new ol.style.RegularShape({
+		points: 5,  // 点数
+		radius1: 7,  // 外圈
+		radius2: 4,	  // 内圈
+		fill: new ol.style.Fill({
+			color: '#FF8C00'
+		}),
+		// stroke: new ol.style.Stroke({
+			// color: '#CD6600',
+			// size: 0
+		// }),
+		angle: 0,          // 旋转角度 
+		snapToPixel: false   // 模糊
+	}),
+	zIndex: 450
+});
+
+// 检索
+var selectStyle = {
+	'30050100' : new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvgselect,
+			imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,1]    // 摆放位置
+		}),
+		zIndex: 460
+	}),
+	'30050800' : new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvgselect,
+			imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,1]    // 摆放位置
+		}),
+		zIndex: 460
+	})
+};
+
+// 绘制
+// interaction.Draw
+var drawlinestringStyle = new ol.style.Style({
+	fill: new ol.style.Fill({
+		color: 'rgba(255, 255, 255, 0.2)'
+	}),
+	stroke: new ol.style.Stroke({
+		color: 'rgba(0, 0, 0, 0.5)',
+		lineDash: [10, 10],
+		width: 2
+	}),
+	image: new ol.style.Circle({
+		radius: 5,
+		stroke: new ol.style.Stroke({
+		color: 'rgba(0, 0, 0, 0.7)'
+		}),
+		fill: new ol.style.Fill({
+		color: 'rgba(255, 255, 255, 0.2)'
+		})
+	})
+});
+// Draw END
+var drawstyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+		color: 'rgba(255,0, 0, 1)'
+    }),
+    stroke: new ol.style.Stroke({
+		color: '#ffcc33',
+		width: 2
+    }),
+    image: new ol.style.Circle({
+		radius: 7,
+		fill: new ol.style.Fill({
+			color: '#ffcc33'
+		})
+	}),
+	zIndex: 500
+});
+var drawpointstyle = new ol.style.Style({
+    image: new ol.style.Circle({
+		radius: 4,
+		stroke: new ol.style.Stroke({
+			color: '#ffcc33',
+			width: 1.5
+		}),
+		fill: new ol.style.Fill({
+			color: '#ffffff'
+		})
+	}),
+	zIndex: 500
+});
+	
+// 基础图层style
+var geojsonstyle = {
+	'999999' : new ol.style.Style({
+		fill: new ol.style.Fill({
+			color: [255,240,240,1]
+		}),
+		zIndex: 100
+	}),
+	/************
+	*
+	*polygon
+	*
+	************/
+	'10020511'/*公司范围*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,255,1]
+		}),
+		zIndex:101
+	}),
+	'10030501'/*总经理室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [204,153,255,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030502' /*财务室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,204,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030504' /*会议室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,204,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030505' /*办公桌*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,204,0.8]
+		}),
+		zIndex: 103
+	}),
+	'10030602' /*卫生间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,153,204,0.5]
+		}),
+		zIndex:102
+	}),
+	/************
+	*
+	*point
+	*
+	************/
+	'30060000' /*公司名*/: new ol.style.Style({  
+		text: new ol.style.Text({
+			font: '1em sans-serif',
+			// scale: 100,
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [40,40,40,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 3
+			})
+		}),
+		zIndex:350
+	}),	
+	'30060100' /*工位*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/chair_right.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		zIndex:300
+	}),
+	'30060200' /*工位*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/chair_left.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		zIndex:300
+	}),	
+	'30060300' /*会议室&财务室&公共办公区&总经理室*/: new ol.style.Style({  
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			// scale: 100,
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [40,40,40,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:340
+	}),
+	'30050100' /*卫生间*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/wc.png',
+		}),
+		zIndex:330
+	}),	
+	'30050800' /*大门*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/door.png',
+		}),
+		zIndex:330
+	}),	
+	
+};
