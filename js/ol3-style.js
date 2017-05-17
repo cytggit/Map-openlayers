@@ -142,6 +142,134 @@ var drawpointstyle = new ol.style.Style({
 	zIndex: 500
 });
 	
+// 电子围栏 1-4 系数越大颜色越深
+var electronicFenceStyle = {
+	// polygon
+	'1' /*黄*/: new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [255,255,0,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,0,0.3]
+		})
+	}),
+	'2' /*橙*/: new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [250,128,10,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [250,128,10,0.3],
+		})
+	}),
+	'3' /*红*/: new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [255,0,0,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,0,0,0.3]
+		})
+	}),
+	'4' /*紫*/: new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [255,0,255,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,0,255,0.3]
+		})
+	}),
+	// point
+	'11' /*黄*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/electronic1.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [255,255,0,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:300
+	}),	
+	'22' /*橙*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/electronic2.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [250,128,10,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:300
+	}),		
+	'33' /*红*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/electronic3.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [255,0,0,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:300
+	}),		
+	'44' /*紫*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/electronic4.png',
+			anchor: [0.5,0.5],
+			rotateWithView: true
+		}),
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			textAlign: 'center',
+			textBaseline: 'bottom',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [255,0,255,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:300
+	})
+};
+	
+	
+	
 // 基础图层style
 var geojsonstyle = {
 	'999999' : new ol.style.Style({

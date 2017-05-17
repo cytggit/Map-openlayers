@@ -88,6 +88,26 @@
             </li>
 			<li class="divider"></li>
             <li class="dropdown" onClick="collectionPoi();"><a href="#"><i class="fa fa-star"></i></a></li>
+			<li class="divider"></li>
+            <li class="dropdown">
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+					<i class="fa fa-ban"></i>
+				</a>
+                <ul class="dropdown-menu feature-list">
+                    <li id="electronicFence" onclick="electronicFence();"><a href="#">显示</a></li>
+                    <li class="divider"></li>
+					<li id="AddElectronicFence" onclick="UpdateElectronicFence(this);"><a href="#">新增</a></li>
+                    <li class="divider"></li>
+					<li id="UpdateElectronicFence" onclick="UpdateElectronicFence(this);"><a href="#">修改</a></li>
+                    <li class="divider"></li>
+					<li id="RemoveElectronicFence" onclick="UpdateElectronicFence(this);"><a href="#">删除</a></li>
+                    <li class="divider"></li>
+					<li id="electronicFenceDrawOFF" onclick="electronicFenceDrawOFF();"><a href="#">停止</a></li> 
+					<li class="divider"></li>
+					<li id="SaveElectronicFence" onclick="SaveElectronicFence();"><a href="#">保存</a></li>
+                </ul>
+            </li>
+            <!-- <li class="dropdown" onClick="electronicFence();"><a href="#"><i class="fa fa-ban"></i></a></li> -->
         </ul>
     </div>
     <div class="floor-select">
@@ -98,11 +118,11 @@
 				<li class="floor-wheel " >
 					<!-- <div class="levels-select"> -->
 						<ul class="nav nav-pills nav-stacked ">
-							<li role="presentation" class="floorS active" onClick="floorSelect(this);"><a href="#">F01</a></li>
-							<li role="presentation" class="floorS" onClick="floorSelect(this);"><a href="#">F02</a></li>
-							<li role="presentation" class="floorS" onClick="floorSelect(this);"><a href="#">F03</a></li>
-							<li role="presentation" class="floorS" onClick="floorSelect(this);"><a href="#">F04</a></li>
-							<li role="presentation" class="floorS" onClick="floorSelect(this);"><a href="#">F22</a></li>
+							<li role="presentation" class="floorS 01 active" onClick="floorSelect(this);"><a href="#">F01</a></li>
+							<li role="presentation" class="floorS 02" onClick="floorSelect(this);"><a href="#">F02</a></li>
+							<li role="presentation" class="floorS 03" onClick="floorSelect(this);"><a href="#">F03</a></li>
+							<li role="presentation" class="floorS 04" onClick="floorSelect(this);"><a href="#">F04</a></li>
+							<li role="presentation" class="floorS 22" onClick="floorSelect(this);"><a href="#">F22</a></li>
 						</ul>
 					<!-- </div> -->
                 </li>

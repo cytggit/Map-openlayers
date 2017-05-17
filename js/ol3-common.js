@@ -5,9 +5,15 @@ var userId = '1592782'; //用户ID   从传入参数获取值   收藏
 var ltype; // 定位点类型 暂未用到
 
 var placeid = '2';
-var floorid = '2';// 楼层编号    选择楼层
+var floorid = '01';// 楼层编号    选择楼层
+var locateFloor;
 var LocationRequestParam; //定位param
-var wfsUrl = 'http://192.168.1.126:8088/geoserver/wfs';
+var DBs = 'mote'; //数据源
+// var DBs = 'wanhuayuan'; //数据源
+var comIp = 'http://114.215.83.3:8080';
+// var comIp = 'http://192.168.1.126:8088';
+var wfsUrl = comIp + '/geoserver/wfs';
+var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 
 // 设置中心点
 var center = [121.4287933,31.1664993]; 
@@ -22,7 +28,7 @@ var view = new ol.View({
 var geojsonObject = function(viewParams,Typename){
 	var geojson;
 	$.ajax({
-		url: 'http://192.168.1.126:8088/geoserver/wfs',
+		url: wfsUrl,
 		data: {
 			service: 'WFS',
 			version: '1.1.0',
@@ -68,12 +74,34 @@ var geojsonstylefunction = function(feature){
 	return geojsonstyle[featureiiiid];
 };
 
+// 电子围栏样式设置
+var electronicFenceStyleFun = function(feature){
+	// var featureiiiid = feature.values_.type_id;
+	var featureiiiid = '1';
+	// 返回数据的style
+	return electronicFenceStyle[featureiiiid];
+};
+
 
 // 确认网址的Flag 当为true时可以定位，加载定位信息
 var checkFlag = false;
 
 // 返回中心点的Flag 当为true时有定位信息，可以返回中心点
 var backcenterFlag = false;
+
+// 电子围栏
+var electronicLayerOff = true; // 显示电子围栏的FLAG 当为true时显示电子围栏图层
+var drawElectronicFlag = false;
+var addElectronicFlag = false; // 第一次add后，设为true 
+var updateElectronicFlag = false; // 第一次upd后，设为true 
+var rmElectronicFlag = false; // 第一次rm后，设为true 
+var drawtype = null;   // add or upd or rm
+var DrawElectronicFence; // 绘制的interaction  draw
+var ModifyElectronicFence; // 修改的interaction  select and modify
+var DeleteElectronicFence; // 删除的interaction  select
+// var electronicFeature = null; // 电子围栏的feature
+// var electronicFeatureDummy = new ol.source.Vector(); // 电子围栏的feature 临时存储
+var electronicFeatureDummy =[]; // 电子围栏的feature 临时存储
 
 // 显示收藏的FLAG 当为true时显示收藏图层
 var collectionoff = true;
@@ -86,6 +114,7 @@ var featureid; // 记录当前的检索类型对应的数据类型
 
 // 热力图开关Flag
 var heatmapoff = true;
+var guideHeatmapTimeoutId;
 
 // 测距
 var lengthoff = true; // 当为FALSE时不执行加载测距图层  防止测距图层多次被加入图层组
@@ -111,5 +140,38 @@ var LabelX,LabelY; // 取起点或终点时临时存储坐标值
 var labelOnMap; // 点选起终点的interaction
 var LabelOnMapFlag = false; // 点选起终点的Flag 当为FALSE时启动点选
 
+// 修改记录
+function updateNewFeature(features,featureType,updType){
+	var WFSTSerializer = new ol.format.WFS();
+    var formatGML = new ol.format.GML({  
+		featureNS: 'http://www.' + DBs + '.com',
+		featurePrefix: DBs,
+        featureType: featureType,
+        srsName: 'EPSG:4326',
+    }); 	
+	var featObject;
+	switch (updType) {  
+		case 'insert': 
+			featObject = WFSTSerializer.writeTransaction(features,null,null,formatGML);
+			break;
+		case 'update': 
+			featObject = WFSTSerializer.writeTransaction(null,features,null,formatGML);
+			break;
+		case 'remove': 
+			featObject = WFSTSerializer.writeTransaction(null,null,features,formatGML);
+			break;
+	}
+	var serializer = new XMLSerializer();
+	var featString = serializer.serializeToString(featObject);
+	featObjectSend(featString);
+	console.log(featString);
+}
 
+// 发送操作数据库请求
+function featObjectSend(featString){
+	var request = new XMLHttpRequest();
+	request.open('POST', wfsUrl + '?service=wfs');
+	request.setRequestHeader('Content-Type', 'text/xml');
+	request.send(featString);		
+}
 

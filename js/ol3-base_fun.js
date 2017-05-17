@@ -26,7 +26,7 @@ function getlocation(){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: 'wanhuayuan:location_personal', // 定位点图层
+		typeName: DBs + ':location_personal', // 定位点图层
 		outputFormat: 'application/json',
 		cql_filter: 'l_id=' + deviceId
 	};	
@@ -41,16 +41,18 @@ function getlocation(){
 			var featureOBJ = response.features;
 			// console.log(featureOBJ[0].properties.floor_id);
 			// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
-			if (featureOBJ[0].properties.floor_id == floorid){
+			locateFloor = featureOBJ[0].properties.floor_id;
+			if (locateFloor == floorid){
 				center_wfs.addFeatures(features);
 			}
 			// 得到定位点的坐标，用于返回定位点&路径规划
-			locate = featureOBJ[0].geometry.coordinates; // 取得位置信息			
+			locate = featureOBJ[0].geometry.coordinates; // 取得位置信息	
+			
 		}
 	}); 		
 }
 
-// 获取定位信息
+// 获取实时定位信息
 function startlocation(){  
 	setTimeout(startlocation,5000);  
 	center_wfs.clear();
@@ -78,6 +80,7 @@ function backcenter(){
 	// }else {
 		// alert('fetch can not use!');
 	// }
+
 	// 平移动画
 	if (backcenterFlag){
 		view.animate({
@@ -85,6 +88,340 @@ function backcenter(){
 			center: locate
 		});		
 	}
+	// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
+	if (locateFloor != floorid){
+		// 定位点楼层的图标高亮
+		var floorLength = document.getElementsByClassName('floorS').length;
+		for (var i =0; i< floorLength; i++){
+			document.getElementsByClassName('floorS')[i].classList.remove('active');
+			// console.log(document.getElementsByClassName('floorS')[i]);
+		}
+		document.getElementsByClassName(locateFloor)[0].classList.add('active');
+		// 切换楼层
+		floorUpdate(locateFloor);
+	}	
+}
+
+
+// 电子围栏MAIN
+function UpdateElectronicFence(drawinfo){
+	drawElectronicFlag = true;
+	// 确认影响电子围栏的模块
+	checkElectronicReady();
+	
+	var newDrawtype = drawinfo.id;
+	//本次编辑和上次不同
+	if (drawtype != newDrawtype ){
+		// 关闭上一次的编辑并判断之前的编辑操作（draw or modify）是否需要保存
+		checkSaveElectronicFence();
+		// 显示电子围栏
+		electronicFence();
+		
+		switch (newDrawtype) {  
+			case 'AddElectronicFence': 
+				console.log(drawinfo.innerText);
+				ADDelectronicFence();
+				break;
+			case 'UpdateElectronicFence': 
+				console.log(drawinfo.innerText);
+				UpdElectronicFence();
+				break;
+			case 'RemoveElectronicFence': 
+				console.log(drawinfo.innerText);
+				RmElectronicFence();
+				break;
+		}		
+		drawtype = newDrawtype;
+	}
+}
+// 判断之前的编辑操作（draw or modify）是否需要保存
+function checkSaveElectronicFence(){	
+	// 关闭上一次的编辑
+	switch (drawtype) {  
+		case 'AddElectronicFence': 
+			DrawElectronicFence.setActive(false);
+			break;
+		case 'UpdateElectronicFence': 
+			ModifyElectronicFence.setActive(false);
+			break;
+		case 'RemoveElectronicFence': 
+			DeleteElectronicFence.setActive(false);
+			break;
+	}			
+
+	// 保存上一次的编辑
+	if(electronicFeatureDummy.length != 0){
+		// 弹出是否保存
+		if(confirm("有未保存的编辑，是否需要保存？")){
+			SaveElectronicFence();
+		}else{
+			electronicFeatureDummy = [];
+			electronicFence();
+			alert('已清除未保存的编辑！');
+		}
+	}	
+}
+// 新增电子围栏
+function ADDelectronicFence(){
+	if(!addElectronicFlag){
+		// draw polygon
+		DrawElectronicFence = {
+			init: function() {
+				map.addInteraction(this.Polygon);
+				this.Polygon.setActive(true);
+			},
+			Polygon: new ol.interaction.Draw({
+				source: electronicLayer.getSource(),
+				type: /** @type {ol.geom.GeometryType} */ ('Polygon'),
+				geometryName: 'geom'
+			}),
+			setActive: function(active) {
+				this.Polygon.setActive(active);
+			}			
+		};
+		DrawElectronicFence.init();
+		var j=0;
+		DrawElectronicFence.Polygon.on('drawend',
+			function(evt) {
+				var Coordinates = evt.feature.values_.geom.getCoordinates()[0];
+				var CoordinatesLength = Coordinates.length;
+
+				var newCoordinates = [];
+				var oldCoordinates;
+				for (var i=0;i<CoordinatesLength;i++){
+					oldCoordinates = Coordinates[i];
+					newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
+				}
+				var newFeature = new ol.Feature();
+				newFeature.setId('electronic_fence.'  + deviceId);
+				newFeature.setGeometryName('geom');	
+				newFeature.set('geom', null);
+				newFeature.set('place_id', placeid);
+				newFeature.set('floor_id', floorid);
+				newFeature.set('type_id', '1');
+				newFeature.set('name', 'test');		
+				newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));
+				electronicFeatureDummy[j] = newFeature;
+				j++
+			}, this);			
+
+		addElectronicFlag = true;
+	} else {
+		DrawElectronicFence.setActive(true);
+	}	
+}
+// 修改电子围栏
+function UpdElectronicFence(){
+	if(!updateElectronicFlag){
+		ModifyElectronicFence = {
+			init: function() {
+				this.select = new ol.interaction.Select({
+					layers: [electronicLayer]
+				}); 
+				this.modify = new ol.interaction.Modify({
+					features: this.select.getFeatures()
+				});
+				map.addInteraction(this.select);
+				map.addInteraction(this.modify);
+			
+				this.setEvents();
+			},
+			setEvents: function() {
+				var selectedFeatures = this.select.getFeatures();
+			
+				this.select.on('change:active', function() {
+					selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
+				});
+			},
+			setActive: function(active) {
+				this.select.setActive(active);
+				this.modify.setActive(active);
+			}
+		};
+		ModifyElectronicFence.init();
+		var j=0;
+		var modifyIdInfo = [];
+		ModifyElectronicFence.modify.on('modifyend',
+			function(evt) {
+				var modifyInfo = evt.features.getArray()[0].values_;
+				var modifyId = evt.features.getArray()[0].id_;
+				
+				var Coordinates = modifyInfo.geometry.getCoordinates()[0];
+				var CoordinatesLength = Coordinates.length;
+				
+				var newCoordinates = [];
+				var oldCoordinates;
+				for (var i=0;i<CoordinatesLength;i++){
+					oldCoordinates = Coordinates[i];
+					newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
+				}
+				
+				var modifyPlaceid = modifyInfo.place_id;
+				var modifyFloorid = modifyInfo.floor_id;
+				var modifyTypeid = modifyInfo.type_id;
+				var modifyName = modifyInfo.name;		
+				
+				var newFeature = new ol.Feature();
+				newFeature.setId(modifyId);
+				newFeature.setGeometryName('geom');	
+				newFeature.set('geom', null);
+				newFeature.set('place_id', modifyPlaceid);
+				newFeature.set('floor_id', modifyFloorid);
+				newFeature.set('type_id', modifyTypeid);
+				newFeature.set('name', modifyName);		
+				newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));							
+
+				if (j !=0){
+					for (var num = 0;num<j;num++){
+						if(modifyIdInfo[num] == modifyId){
+							electronicFeatureDummy[num] = newFeature;
+						}
+					}
+				}else{
+					modifyIdInfo[j] = modifyId;
+					electronicFeatureDummy[j] = newFeature;
+					j++;
+				}			
+			}, this);			
+		updateElectronicFlag = true;
+	} else {
+		ModifyElectronicFence.setActive(true);
+	}
+}
+// 删除电子围栏
+function RmElectronicFence(){
+	if(!rmElectronicFlag){
+		DeleteElectronicFence = {
+			init: function() {
+				this.select = new ol.interaction.Select({
+					layers: [electronicLayer]
+				}); 
+				map.addInteraction(this.select);
+			
+				this.setEvents();
+			},
+			setEvents: function() {
+				var selectedFeatures = this.select.getFeatures();
+			
+				this.select.on('change:active', function() {
+					selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
+				});
+			},
+			setActive: function(active) {
+				this.select.setActive(active);
+			}
+		};
+		DeleteElectronicFence.init();
+		DeleteElectronicFence.select.on('select',
+			function(evt) {
+				if(evt.target.getFeatures().getArray().length != 0) {  
+					// 弹出是否删除
+					if(confirm("确认删除？")){
+						var selectInfo = evt.target.getFeatures().getArray()[0].values_;
+						var selectId = evt.target.getFeatures().getArray()[0].id_;
+						
+						var Coordinates = selectInfo.geometry.getCoordinates()[0];
+						var CoordinatesLength = Coordinates.length;
+						
+						var newCoordinates = [];
+						var oldCoordinates;
+						for (var i=0;i<CoordinatesLength;i++){
+							oldCoordinates = Coordinates[i];
+							newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
+						}
+		
+						var newFeature = new ol.Feature();
+						newFeature.setId(selectId);
+						newFeature.setGeometryName('geom');	
+						newFeature.set('geom', null);		
+						newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));							
+						
+						updateNewFeature([newFeature],'electronic_fence','remove');
+						alert('删除电子围栏成功！');	
+						electronicFence();
+					}else{
+						alert('取消电子围栏删除！');
+					}		
+				}			
+			}, this);			
+		rmElectronicFlag = true;
+	} else {
+		DeleteElectronicFence.setActive(true);
+	}
+}
+// 保存电子围栏编辑
+function SaveElectronicFence(){
+	// request
+	var featureType = 'electronic_fence';
+	switch (drawtype) {  
+		case 'AddElectronicFence': 
+			updateNewFeature(electronicFeatureDummy,featureType,'insert');
+			alert('新增电子围栏成功！');	
+			break;
+		case 'UpdateElectronicFence': 
+			updateNewFeature(electronicFeatureDummy,featureType,'update');
+			alert('修改电子围栏成功！');	
+			break;
+	}	
+	electronicFeatureDummy = [];
+	electronicFence();
+}
+// 关闭电子围栏编辑
+function electronicFenceDrawOFF(){
+	// 判断是否已保存
+	if(drawElectronicFlag){
+		checkSaveElectronicFence();	
+		// 编辑的Flag初始化
+		drawtype = null;
+		drawElectronicFlag = false;
+		loadselectSingleClick();
+	}
+
+}
+// 确认影响电子围栏的模块
+function checkElectronicReady(){
+	// 关闭高亮
+	removeSelectSingleClick();		
+	// 关闭并清除测距
+	stopAndRemoveLength();	
+	// 关闭路径规划
+	if (!pathPlanningOFF){
+		clearPath();
+	}
+	
+}
+
+// 显示电子围栏
+function electronicFence(){
+	if (electronicLayerOff) {
+		var electronicParam = {
+			service: 'WFS',
+			version: '1.1.0',
+			request: 'GetFeature',
+			typeName: DBs + ':electronic_fence', // 电子围栏图层
+			outputFormat: 'application/json',
+			cql_filter: 'place_id=' + placeid + ' and floor_id=' + floorid
+		};	
+		$.ajax({  
+			url: wfsUrl,
+			data: $.param(electronicParam), 
+			type: 'GET',
+			dataType: 'json',
+			success: function(response){
+				var features = new ol.format.GeoJSON().readFeatures(response);
+				electronicLayer.getSource().addFeatures(features);
+			}
+		}); 	
+		overmap.getLayers().extend([electronicLayer]);
+		electronicLayerOff = false;
+	}else {
+		electronicLayer.getSource().clear();
+		overmap.getLayers().remove(electronicLayer);
+		electronicLayerOff = true;
+		if (drawElectronicFlag){
+			electronicFence();
+		}
+	}	
 }
 
 // 点选-高亮+属性
@@ -135,7 +472,7 @@ function checkCollection(selectId,coordinate){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: 'wanhuayuan:poi_collection', // 定位点图层
+		typeName: DBs + ':poi_collection', // 定位点图层
 		outputFormat: 'application/json',
 		cql_filter: 'user_id=' + userId + ' and poi_id=' + selectId
 	};	
@@ -158,7 +495,7 @@ function checkCollection(selectId,coordinate){
 				newFeature.set('place_id', placeid);
 				newFeature.set('floor_id', floorid);
 				newFeature.setGeometry(new ol.geom.Point([coordinate[1],coordinate[0]]));
-				addNewFeature([newFeature],featureType);
+				updateNewFeature([newFeature],featureType,'insert');
 				collectionoff = true;
 				alert('收藏成功！');
 			}else {
@@ -166,28 +503,6 @@ function checkCollection(selectId,coordinate){
 			}
 		}
 	}); 	
-}
-
-// 添加记录
-function addNewFeature(features,featureType){
-	var WFSTSerializer = new ol.format.WFS();
-	var featObjectInsert = WFSTSerializer.writeTransaction(features,
-	null, null, {
-		featureNS: 'http://www.wanhuayuan.com',
-		featurePrefix: 'wanhuayuan',
-		featureType: featureType,
-		srsName: 'EPSG:4326',
-	});
-	var serializer = new XMLSerializer();
-	var featString = serializer.serializeToString(featObjectInsert);
-	featObjectSend(featString);
-}
-// 发送操作数据库请求
-function featObjectSend(featString){
-	var request = new XMLHttpRequest();
-	request.open('POST', 'http://192.168.1.126:8088/geoserver/wfs?service=wfs');
-	request.setRequestHeader('Content-Type', 'text/xml');
-	request.send(featString);		
 }
 
 // 显示收藏
@@ -198,7 +513,7 @@ function collectionPoi(){
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typeName: 'wanhuayuan:poi_collection', // 定位点图层
+			typeName: DBs + ':poi_collection', // 定位点图层
 			outputFormat: 'application/json',
 			cql_filter: 'user_id=' + userId + ' and place_id=' + placeid + ' and floor_id=' + floorid
 		};	
@@ -228,38 +543,51 @@ function floorSelect(e){
 	}
 	e.classList.add('active');
 	// 切换楼层
-	// console.log(e.innerText.substr(1));
-	if ( e.innerText.substr(1) != floorid){
-		// 取点击的楼层 赋值给floor_id   第二个字符后两位
-		floorid = e.innerText.substr(1,2);	
-		// 刷新图层（背景，道路，poi 其他清空）
-		loadBasemap();	
-	
-		// 刷新收藏
-		if(!collectionoff){
-			collectionoff = true;
-			collectionPoi();
-		}
-		// 清除 检索
-		removeselect();
-		// 刷新 热力图
-		if(!heatmapoff){
-			removeHeatmap();
-			guideHeatmap();
-		}	
-		// 清除 测距
-		stopAndRemoveLength();
-		// 清除 路径规划  & 刷新 点选
-		if (!pathPlanningOFF){
-			// clearPath();  // 只清除 路径规划
-			backPathPlan();  // 清除 路径规划  & 刷新 点选
-		}
-		// 清除点选 再增加点选（刷新）
-		// removeSelectSingleClick();
-		// loadselectSingleClick();		
+	var floorSelectId = e.innerText.substr(1,2);
+	// console.log(floorSelectId);
+	if ( floorSelectId != floorid){
+		floorUpdate(floorSelectId);
 	}
 
 }
+// 切换楼层
+function floorUpdate(newfloorId){
+	// 取点击的楼层 赋值给floor_id   第二个字符后两位
+	floorid = newfloorId;	
+	// 刷新图层（背景，道路，poi 其他清空）
+	loadBasemap();	
+
+	// 刷新电子围栏
+	if(!electronicLayerOff){
+		electronicLayerOff = true;
+		electronicFence();
+		// 增删改都关闭
+		
+	}	
+	// 刷新收藏
+	if(!collectionoff){
+		collectionoff = true;
+		collectionPoi();
+	}
+	// 清除 检索
+	removeselect();
+	// 刷新 热力图
+	if(!heatmapoff){
+		removeHeatmap();
+		guideHeatmap();
+	}	
+	// 清除 测距
+	stopAndRemoveLength();
+	// 清除 路径规划  & 刷新 点选
+	if (!pathPlanningOFF){
+		// clearPath();  // 只清除 路径规划
+		backPathPlan();  // 清除 路径规划  & 刷新 点选
+	}
+	// 清除点选 再增加点选（刷新）
+	// removeSelectSingleClick();
+	// loadselectSingleClick();		
+}
+
 
 // 刷新图层 背景，道路，poi
 function loadBasemap(){
@@ -309,7 +637,7 @@ function getselectLayerSource(){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: 'wanhuayuan:select', // 定位点图层
+		typeName: DBs + ':select', // 定位点图层
 		outputFormat: 'application/json',
 		cql_filter: 'place_id=' + placeid + 'and floor_id=' + floorid + 'and feature_id=' + featureid
 	};		
@@ -334,43 +662,59 @@ function removeselect(){
 }	
 
 // 增加热力图
-function guideHeatmap(){
+function startHeatmap(){
+	guideHeatmapTimeoutId = setTimeout(startHeatmap,5000);  
+	heatmapLayer.getSource().clear();
+	// 增加楼层选择filter
+	var heatmapRequestParam = {
+		service: 'WFS',
+		version: '1.1.0',
+		request: 'GetFeature',
+		typeName: DBs + ':location_personal', // 定位点图层
+		outputFormat: 'application/json',
+		cql_filter: 'floor_id=' + floorid
+	};		
+	$.ajax({  
+		url: wfsUrl,
+		data: $.param(heatmapRequestParam), 
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+			heatmapLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
+		}
+	}); 			
+}
+
+// 实时热力图
+function guideHeatmap(){  
 	if (heatmapoff) {
-		// 增加楼层选择filter BUG
-		var heatmapRequestParam = {
-			service: 'WFS',
-			version: '1.1.0',
-			request: 'GetFeature',
-			typeName: 'wanhuayuan:location_personal', // 定位点图层
-			outputFormat: 'application/json',
-			cql_filter: 'floor_id=' + floorid
-		};		
-		$.ajax({  
-			url: wfsUrl,
-			data: $.param(heatmapRequestParam), 
-			type: 'GET',
-			dataType: 'json',
-			success: function(response){
-				heatmapLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
-			}
-		}); 			
+		startHeatmap();
 		overmap.getLayers().extend([heatmapLayer]);	
 		heatmapoff = false;
-	}else {
+	}	else {
 		removeHeatmap();
-	}
+	}	
 }
+
+//清除热力图
 function removeHeatmap(){
+	clearTimeout(guideHeatmapTimeoutId);
 	heatmapLayer.getSource().clear();
 	overmap.getLayers().remove(heatmapLayer);
 	heatmapoff = true;	
 }
 
-
 // 测距
 // 开始测距
 function startLength(){
+	// 关闭高亮
 	removeSelectSingleClick();
+	// 关闭路径规划
+	if (!pathPlanningOFF){
+		clearPath();
+	}	
+	// 关闭电子围栏编辑
+	electronicFenceDrawOFF();
 	
 	if (lengthoff ){
 		lengthoff = false;
@@ -554,6 +898,8 @@ function checkPathReady(){
 	removeSelectSingleClick();		
 	// 关闭并清除测距
 	stopAndRemoveLength();
+	// 关闭电子围栏编辑
+	electronicFenceDrawOFF();
 }
 
 // 初始化路线规划图层
@@ -682,7 +1028,7 @@ function StartPathPlanning(){
 				service: 'WFS',
 				version: '1.1.0',
 				request: 'GetFeature',
-				typeName: 'wanhuayuan:route_new', // 定位点图层
+				typeName: DBs + ':route_new', // 路径规划图层
 				outputFormat: 'application/json',
 				viewparams: RouteParam
 			};	

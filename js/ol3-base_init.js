@@ -16,15 +16,15 @@
 		title: 'background map',
 		visible: true,
 		source: new ol.source.TileWMS({
-			url: 'http://192.168.1.126:8088/geoserver/wanhuayuan/wms',
-			params: {LAYERS:'wanhuayuan:mote_background',version:'1.1.0',viewparams:viewParam}
+			url: wmsUrl,
+			params: {LAYERS: DBs + ':mote_background',version:'1.1.0',viewparams:viewParam}
 		}),
 		zIndex: 0
 	});	
 	
 	// 2D
 	// var polygonFilter =  'place_id='+ placeid + 'and floor_id='+ floorid ;
-	var polygonTypename = 'wanhuayuan:mote_polygon';
+	var polygonTypename = DBs + ':mote_polygon';
 	var polygonLayer = new ol.layer.Vector({
 		title: 'polygon map',
 		visible: true,
@@ -47,7 +47,7 @@
 	// });
 	
 	// var pointFilter =  'place_id='+ placeid + 'and floor_id='+ floorid ;
-	var pointTypename = 'wanhuayuan:mote_point';
+	var pointTypename = DBs + ':mote_point';
 	var pointLayer = new ol.layer.Vector({
 		title: 'point map',
 		visible: true,
@@ -84,6 +84,15 @@
 		visible: true,
 		zIndex: 50
 	});
+	
+	// 电子围栏图层 	
+	var electronicLayer = new ol.layer.Vector({
+		title: 'electronicFence map',
+		visible: true,
+		style: electronicFenceStyleFun,
+		source: new ol.source.Vector(),
+		zIndex: 80
+	});		
 	
 	// 收藏图层 	
 	var collectionLayer = new ol.layer.Vector({
