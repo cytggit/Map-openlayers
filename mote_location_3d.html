@@ -35,13 +35,16 @@
 <body >
     <div id="map" class="map" ></div>
     <button onclick="backcenter();" type="button" class="control-locate btn btn-default">
-		<i class="glyphicon glyphicon-map-marker"></i>
+		<img style="width:1em" src="./icon/locate.png" />
+		<!-- <i class="glyphicon glyphicon-map-marker"></i> -->
 	</button>
     <div class="feature-select">
         <ul class="nav nav-pills nav-stacked">
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                    <i class="fa fa-search"></i>
+					<!-- 检索 -->
+                    <img style="width:1em" src="./icon/search.png" />
+					<!-- <i class="fa fa-search"></i> -->
                 </a>
                 <ul class="dropdown-menu feature-list">
                     <!-- <li class="dropdown-header">查找</li> -->
@@ -54,7 +57,9 @@
 			<li class="divider"></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                    <i class="fa fa-picture-o"></i>
+					<!-- 导览 -->
+                    <img style="width:1em" src="./icon/heatmap.png" />
+					<!-- <i class="fa fa-picture-o"></i> -->
                 </a>
                 <ul class="dropdown-menu feature-list">
                     <!-- <li class="dropdown-header">导览</li> -->
@@ -66,8 +71,9 @@
 			<li class="divider"></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                    <!-- <img style="width:1em" src="./icon/measure-length.png" /> -->
-					<i class="fa fa-arrows-h"></i>
+                    <!-- 测距 -->
+					<img style="width:1em" src="./icon/length.png" /> 
+					<!-- <i class="fa fa-arrows-h"></i> -->
 				</a>
                 <ul class="dropdown-menu feature-list">
                     <!-- <li class="dropdown-header">测距</li> -->
@@ -81,16 +87,25 @@
 			<li class="divider"></li>
             <li class="dropdown" onClick="pathPlanningMain();">
                 <a href="#" data-toggle="modal" data-target="#pathModal">
-                    <!-- <img style="width:1em" src="./icon/route-planning.png" /> -->
-					<i class="fa fa-level-up"></i>
+					<!-- 路径规划 -->
+                    <img style="width:1em" src="./icon/route-planning.png" />
+					<!-- <i class="fa fa-level-up"></i> -->
 				</a>
             </li>
 			<li class="divider"></li>
-            <li class="dropdown" onClick="collectionPoi();"><a href="#"><i class="fa fa-star"></i></a></li>
+            <li class="dropdown" onClick="collectionPoi();">
+				<a href="#">
+					<!-- 收藏 -->
+					<img style="width:1em" src="./icon/collection.png" />
+					<!-- <i class="fa fa-star"></i> -->
+				</a>
+			</li>
 			<li class="divider"></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-					<i class="fa fa-ban"></i>
+					<!-- 电子围栏 -->
+					<img style="width:1em" src="./icon/electronicFence.png" />
+					<!-- <i class="fa fa-ban"></i> -->
 				</a>
                 <ul class="dropdown-menu feature-list">
                     <li id="electronicFence" onclick="electronicFence();"><a href="#">显示</a></li>
