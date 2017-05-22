@@ -21,35 +21,30 @@ function checkUrlParam(checkName){
 }
 
 // 获取定位信息
-function getlocation(){
-	LocationRequestParam = {
-		service: 'WFS',
-		version: '1.1.0',
-		request: 'GetFeature',
-		typeName: DBs + ':location_personal', // 定位点图层
-		outputFormat: 'application/json',
-		cql_filter: 'l_id=' + deviceId
-	};	
-	$.ajax({  
-		url: wfsUrl,
-		data: $.param(LocationRequestParam), 
+function getlocation(){	
+	// 从位置服务器获取定位信息
+	$.ajax({
+		url: locateUrl,
+		data: {'deviceId':deviceId}, 
 		type: 'GET',
-		dataType: 'json',
+		dataType: 'jsonp',
+		jsonp: 'callback',
+		jsonpCallback: 'successCallBack',
 		success: function(response){
+			// console.log(response);
 			var features = new ol.format.GeoJSON().readFeatures(response);
-			// console.log(floorid);
+			
 			var featureOBJ = response.features;
-			// console.log(featureOBJ[0].properties.floor_id);
-			// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
+			// // console.log(featureOBJ[0].properties.floor_id);
+			// // 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 			locateFloor = featureOBJ[0].properties.floor_id;
 			if (locateFloor == floorid){
 				center_wfs.addFeatures(features);
 			}
-			// 得到定位点的坐标，用于返回定位点&路径规划
+			// // 得到定位点的坐标，用于返回定位点&路径规划
 			locate = featureOBJ[0].geometry.coordinates; // 取得位置信息	
-			
-		}
-	}); 		
+		}		
+	});
 }
 
 // 获取实时定位信息
@@ -393,6 +388,7 @@ function checkElectronicReady(){
 
 // 显示电子围栏
 function electronicFence(){
+	electronicLayer.getSource().clear();
 	if (electronicLayerOff) {
 		var electronicParam = {
 			service: 'WFS',
@@ -412,11 +408,9 @@ function electronicFence(){
 				electronicLayer.getSource().addFeatures(features);
 			}
 		}); 	
-		overmap.getLayers().extend([electronicLayer]);
 		electronicLayerOff = false;
 	}else {
-		electronicLayer.getSource().clear();
-		overmap.getLayers().remove(electronicLayer);
+
 		electronicLayerOff = true;
 		if (drawElectronicFlag){
 			electronicFence();
@@ -665,24 +659,18 @@ function removeselect(){
 function startHeatmap(){
 	guideHeatmapTimeoutId = setTimeout(startHeatmap,5000);  
 	heatmapLayer.getSource().clear();
-	// 增加楼层选择filter
-	var heatmapRequestParam = {
-		service: 'WFS',
-		version: '1.1.0',
-		request: 'GetFeature',
-		typeName: DBs + ':location_personal', // 定位点图层
-		outputFormat: 'application/json',
-		cql_filter: 'floor_id=' + floorid
-	};		
-	$.ajax({  
-		url: wfsUrl,
-		data: $.param(heatmapRequestParam), 
+	// 从位置服务器获取所有定位信息
+	$.ajax({
+		url: locateAllUrl,
+		data: {'floor':floorid}, 
 		type: 'GET',
-		dataType: 'json',
-		success: function(response){
-			heatmapLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
-		}
-	}); 			
+		dataType: 'jsonp',
+		jsonp: 'callback',
+		jsonpCallback: 'successCallBack',
+		success: function(data){
+			heatmapLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(data));
+		}		
+	});	
 }
 
 // 实时热力图

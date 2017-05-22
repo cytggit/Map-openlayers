@@ -14,6 +14,8 @@ var comIp = 'http://114.215.83.3:8080';
 // var comIp = 'http://192.168.1.126:8088';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
+var locateUrl = 'http://192.168.1.115:8080/LocateServer/getLocation.action';
+var locateAllUrl = 'http://192.168.1.115:8080/LocateServer/getAllLocation.action';
 
 // 设置中心点
 var center = [121.4287933,31.1664993]; 
