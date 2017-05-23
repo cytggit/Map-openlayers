@@ -22,27 +22,40 @@ function checkUrlParam(checkName){
 
 // 获取定位信息
 function getlocation(){	
+	// 当deviceId为all的时候，显示所有当前楼层的位置
+	var WFSUrl,DATAParam;
+	if(deviceId == 'all'){
+		WFSUrl = locateAllUrl;
+		DATAParam = {'floor':floorid,'place':placeid};
+	}else{
+		WFSUrl = locateUrl;
+		DATAParam = {'deviceId':deviceId};
+	}
 	// 从位置服务器获取定位信息
 	$.ajax({
-		url: locateUrl,
-		data: {'deviceId':deviceId}, 
+		url: WFSUrl,
+		data: DATAParam, 
 		type: 'GET',
 		dataType: 'jsonp',
 		jsonp: 'callback',
 		jsonpCallback: 'successCallBack',
 		success: function(response){
-			// console.log(response);
 			var features = new ol.format.GeoJSON().readFeatures(response);
 			
 			var featureOBJ = response.features;
 			// // console.log(featureOBJ[0].properties.floor_id);
 			// // 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
-			locateFloor = featureOBJ[0].properties.floor_id;
-			if (locateFloor == floorid){
+			if(deviceId != 'all'){
+				locateFloor = featureOBJ[0].properties.floor_id;
+				if (locateFloor == floorid){
+					center_wfs.addFeatures(features);
+				}
+				// // 得到定位点的坐标，用于返回定位点&路径规划
+				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息					
+			}else{
 				center_wfs.addFeatures(features);
 			}
-			// // 得到定位点的坐标，用于返回定位点&路径规划
-			locate = featureOBJ[0].geometry.coordinates; // 取得位置信息	
+
 		}		
 	});
 }
