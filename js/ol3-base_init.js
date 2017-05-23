@@ -17,7 +17,7 @@
 		visible: true,
 		source: new ol.source.TileWMS({
 			url: wmsUrl,
-			params: {LAYERS: DBs + ':mote_background',version:'1.1.0',viewparams:viewParam}
+			params: {LAYERS: DBs + ':mote_background',VERSION:'1.1.0',viewparams:viewParam}
 		}),
 		zIndex: 0
 	});	
@@ -41,7 +41,7 @@
 		// visible: true,
 		// source: new ol.source.TileWMS({
 			// url: 'http://192.168.1.126:8088/geoserver/wanhuayuan/wms',
-			// params: {LAYERS:polygonTypename,version:'1.1.0',viewparams:viewParam}
+			// params: {LAYERS:polygonTypename,VERSION:'1.1.0',viewparams:viewParam}
 		// }),
 		// zIndex: 10
 	// });
