@@ -3,6 +3,10 @@
 var svglocation = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
 	'<circle fill="#FFFFFF" stroke="#AAAAAA" stroke-width="1" cx="15" cy="15" r="8"/>' +
 	'<circle fill="#5555ff" stroke="#3333FF" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
+
+var svglocationWarn = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
+	'<circle fill="#FFFFFF" stroke="#AA0000" stroke-width="1" cx="15" cy="15" r="8"/>' +
+	'<circle fill="#ff3333" stroke="#ff0000" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
 	
 var svgap = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
 	'<circle fill="#FFFFFF" stroke="#BBBBBB" stroke-width="1" cx="15" cy="15" r="8"/>' +
@@ -41,11 +45,20 @@ var selectSingleClickStyle = new ol.style.Style({
 	})
 });
 	
-// 定位 style
+// 定位 style 
 var locationStyle = new ol.style.Style({
 	image: new ol.style.Icon({
 		img: mysvglocation,
 		imgSize: [30, 30],   // 图标大小
+		anchor: [0.5,0.5]    // 摆放位置
+	}),
+	zIndex: 600
+});
+// 定位 style 电子围栏预警
+var locationWarnStyle = new ol.style.Style({
+	image: new ol.style.Icon({
+		img: svglocationWarn,
+		imgSize: [40, 40],   // 图标大小
 		anchor: [0.5,0.5]    // 摆放位置
 	}),
 	zIndex: 600

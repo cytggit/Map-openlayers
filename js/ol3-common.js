@@ -14,8 +14,8 @@ var comIp = 'http://114.215.83.3:8080';
 // var comIp = 'http://192.168.1.126:8088';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
-var locateUrl = 'http://192.168.1.115:8080/LocateServer/getLocation.action';
-var locateAllUrl = 'http://192.168.1.115:8080/LocateServer/getAllLocation.action';
+var locateUrl = comIp + '/LocateServer/getLocation.action';
+var locateAllUrl = comIp + '/LocateServer/getAllLocation.action';
 
 // 设置中心点
 var center = [121.4287933,31.1664993]; 
@@ -88,6 +88,9 @@ var electronicFenceStyleFun = function(feature){
 // 确认网址的Flag 当为true时可以定位，加载定位信息
 var checkFlag = false;
 
+// 当为TRUE时 定位点在电子围栏内，定位点的style为特殊式样
+var locateStyleWarn = false;
+
 // 返回中心点的Flag 当为true时有定位信息，可以返回中心点
 var backcenterFlag = false;
 
@@ -101,9 +104,9 @@ var drawtype = null;   // add or upd or rm
 var DrawElectronicFence; // 绘制的interaction  draw
 var ModifyElectronicFence; // 修改的interaction  select and modify
 var DeleteElectronicFence; // 删除的interaction  select
-// var electronicFeature = null; // 电子围栏的feature
 // var electronicFeatureDummy = new ol.source.Vector(); // 电子围栏的feature 临时存储
 var electronicFeatureDummy =[]; // 电子围栏的feature 临时存储
+var OldWarnType = null; // 电子围栏预警的flag 对比前一次的变化去预警
 
 // 显示收藏的FLAG 当为true时显示收藏图层
 var collectionoff = true;

@@ -44,14 +44,17 @@ function getlocation(){
 			
 			var featureOBJ = response.features;
 			// // console.log(featureOBJ[0].properties.floor_id);
-			// // 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
+			//
 			if(deviceId != 'all'){
 				locateFloor = featureOBJ[0].properties.floor_id;
+				// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 				if (locateFloor == floorid){
 					center_wfs.addFeatures(features);
 				}
 				// // 得到定位点的坐标，用于返回定位点&路径规划
-				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息					
+				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
+				// 电子围栏预警
+				electronicFenceWarn();				
 			}else{
 				center_wfs.addFeatures(features);
 			}
@@ -76,7 +79,11 @@ function loadlocation(){
 		// 获取定位信息
 		startlocation();
 		LocationLayer.setSource(center_wfs);
-		LocationLayer.setStyle(locationStyle);
+		if (locateStyleWarn){
+			LocationLayer.setStyle(locationWarnStyle);
+		}else{
+			LocationLayer.setStyle(locationStyle);
+		}
 		backcenterFlag = true;
 	}	
 }
@@ -429,6 +436,67 @@ function electronicFence(){
 			electronicFence();
 		}
 	}	
+}
+// 电子围栏预警
+function electronicFenceWarn(){
+	WarnParam = 'locatex:' + locate[0] + ';locatey:' + locate[1] + ';locatefloor:' + locateFloor;			
+	WarnRequestParam = {
+		service: 'WFS',
+		version: '1.1.0',
+		request: 'GetFeature',
+		typeName: DBs + ':electronicWarn', // 电子围栏预警图层
+		outputFormat: 'application/json',
+		viewparams: WarnParam
+	};	
+	$.ajax({  
+		url: wfsUrl,
+		data: $.param(WarnRequestParam), 
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+			var WarnFeatures = response.features;
+			var WarnLength = WarnFeatures.length;
+			// 获取预警等级和当前电子围栏的name
+			if (WarnLength != 0){
+				var WarnName,WarnType;
+				WarnName = WarnFeatures[0].properties.name;
+				WarnType = WarnFeatures[0].properties.type_id;
+				if(WarnLength > 1){
+					for (var i=1;i<WarnLength;i++){
+						if (WarnType < WarnFeatures[i].properties.type_id){
+							WarnType = WarnFeatures[i].properties.type_id;
+							WarnName = WarnFeatures[i].properties.name;
+						}
+					}
+				}
+				// 预警时定位点的style为特殊式样
+				locateStyleWarn = true;
+				// 预警提醒
+				if(WarnType != OldWarnType){
+					switch (WarnType){
+						case '1':
+							alert('危险系数低[' + WarnName + ']!');
+							break;
+						case '2':
+							alert('危险系数中等[' + WarnName + ']!');
+							break;
+						case '3':
+							alert('危险系数高[' + WarnName + ']!');
+							break;
+						case '4':
+							alert('禁止入内，请立即退出[' + WarnName + ']!');
+							break;
+							// 需要报警给后台
+					}
+					OldWarnType = WarnType;
+				}				
+			}else {
+				locateStyleWarn = false;
+				OldWarnType = null;
+			}
+
+		}
+	}); 	
 }
 
 // 点选-高亮+属性
