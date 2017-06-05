@@ -356,6 +356,26 @@ var geojsonstyle = {
 		}),
 		zIndex:102
 	}),
+	'10030604' /*电梯间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [180,180,180,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030605' /*楼梯间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [204,153,255,0.5]
+		}),
+		zIndex:102
+	}),
 	/************
 	*
 	*point
@@ -414,6 +434,18 @@ var geojsonstyle = {
 	'30050100' /*卫生间*/: new ol.style.Style({  
 		image: new ol.style.Icon({
 			src: './icon/wc.png',
+		}),
+		zIndex:330
+	}),	
+	'30050200' /*楼梯*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/stair.png',
+		}),
+		zIndex:330
+	}),	
+	'30050300' /*电梯*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/elevator.png',
 		}),
 		zIndex:330
 	}),	

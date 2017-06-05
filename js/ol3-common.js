@@ -65,7 +65,7 @@ var geojsonstylefunction = function(feature){
 			geojsonstyle[featureiiiid].getImage().setScale(0.1);
 		}
 	}
-	if (featureiiiid == '30050100' || featureiiiid == '30050800' ){
+	if (featureiiiid == '30050100' || featureiiiid == '30050800' || featureiiiid == '30050200' || featureiiiid == '30050300' ){
 		if (map.getView().getZoom() > 18){
 			geojsonstyle[featureiiiid].getImage().setScale((map.getView().getZoom()-18)*0.06);
 		}else {
