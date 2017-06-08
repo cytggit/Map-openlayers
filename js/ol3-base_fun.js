@@ -485,8 +485,8 @@ function electronicFenceWarn(){
 							break;
 						case '4':
 							alert('禁止入内，请立即退出[' + WarnName + ']!');
-							break;
 							// 需要报警给后台
+							break;
 					}
 					OldWarnType = WarnType;
 				}				
@@ -523,6 +523,8 @@ function loadselectSingleClick(){
 		}
 		HighlightElementContent	.innerHTML = selectInfo;
 		HighlightOverlay.setPosition(coordinate);		
+		// 清除路径规划
+		clearPath();
 	});		
 	HighlightElementCloser.onclick = function (){
 		HighlightOverlay.setPosition(undefined);
@@ -533,8 +535,33 @@ function loadselectSingleClick(){
 	HighlightElementCollection.onclick = function (){
 		checkCollection(selectId,coordinate);
 	}
+	// 搜周边
+	HighlightElementSearch.onclick = function (){
+		// 周边检索
+	}
+	// 从这走
+	HighlightElementFrom.onclick = function (){
+		// 打开路径规划功能
+		pathPlanningMain();
+		// 设置起点为选中的点
+		clearStartLabel();
+		LabelAction = 'startLabel';
+		document.getElementById('label-start').value = selectInfo;
+		setlabelOnClick(LabelAction,coordinate);
+		// 地图点选终点
+		getEndLabelOnMap();
+	}
+	// 去这里
+	HighlightElementTo.onclick = function (){
+		// 打开路径规划功能
+		pathPlanningMain();
+		// 设置终点为选中的点，自动规划完路线
+		LabelAction = 'endLabel';
+		document.getElementById('label-end').value = selectInfo;
+		setlabelOnClick(LabelAction,coordinate);
+	}
 }
-
+	
 // 关闭 selectSingleClick 点选
 function removeSelectSingleClick(){
 	HighlightOverlay.setPosition(null);
@@ -962,9 +989,7 @@ function pathPlanningMain(){
 }
 
 // 确认影响路径规划的模块
-function checkPathReady(){
-	// 关闭高亮
-	removeSelectSingleClick();		
+function checkPathReady(){	
 	// 关闭并清除测距
 	stopAndRemoveLength();
 	// 关闭电子围栏编辑
@@ -1013,6 +1038,8 @@ function getStartLabelFromLocate(){
 }
 // 从地图取点取起点
 function getStartLabelOnMap(){	
+	// 关闭高亮
+	removeSelectSingleClick();	
 	RouteStartLayer.getSource().clear();	
 	labelOnMapClear();
 	LabelAction = 'startLabel';
@@ -1043,6 +1070,8 @@ function CreateRouteDestLayer(){
 }
 // 从location取终点
 function getEndLabelFromLocate(){
+	// 关闭高亮
+	removeSelectSingleClick();	
 	if (RouteDestLayer != null ){RouteDestLayer.getSource().clear();}
 	labelOnMapClear();
 	LabelAction = 'endLabel';
@@ -1051,6 +1080,8 @@ function getEndLabelFromLocate(){
 }
 // 从地图取点取终点
 function getEndLabelOnMap(){	
+	// 关闭高亮
+	removeSelectSingleClick();	
 	if (RouteDestLayer != null ){RouteDestLayer.getSource().clear();}
 	labelOnMapClear();
 	LabelAction = 'endLabel';
@@ -1107,7 +1138,6 @@ function StartPathPlanning(){
 				type: 'GET',
 				dataType: 'json',
 				success: function(response){
-					// console.log(response);
 					RouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
 				}
 			}); 				
@@ -1119,7 +1149,9 @@ function StartPathPlanning(){
 					// params: {LAYERS:'wanhuayuan:route_new',version:'1.1.0',viewparams:RouteParam}
 				// })
 			// });	
-			overmap.getLayers().extend([RouteLayer]);		
+			overmap.getLayers().extend([RouteLayer]);	
+			labelOnMapClear();	
+			loadselectSingleClick();
 		}
 	}
 }
@@ -1228,6 +1260,33 @@ function setlabelOnMap(){
 		map.removeInteraction(labelOnMap);
 		LabelOnMapFlag = false;
 	}
+}
+
+function setlabelOnClick(LabelAction,coordinate){
+	if (LabelAction == 'startLabel'){
+		if (RouteStartLayer != null ){RouteStartLayer.getSource().clear();}
+	}else if(LabelAction == 'endLabel'){
+		if (RouteDestLayer != null ){RouteDestLayer.getSource().clear();}
+	}
+	myPoint = new ol.Feature({
+		geometry: new ol.geom.Point(coordinate)
+	});
+	LabelX = coordinate[0];
+	LabelY = coordinate[1];
+	if (LabelAction == 'startLabel'){
+		sourceLabelX = LabelX;
+		sourceLabelY = LabelY;
+		RouteStartLayer.getSource().addFeature(myPoint);		
+		overmap.getLayers().extend([RouteStartLayer]);	
+	}else if (LabelAction == 'endLabel'){
+		targetLabelX = LabelX;
+		targetLabelY = LabelY;
+		RouteDestLayer.getSource().addFeature(myPoint);	
+		overmap.getLayers().extend([RouteDestLayer]);	
+	}
+	StartPathPlanning();	
+	LabelX = null;
+	LabelY = null;				
 }
 
 function clearStartLabel(){

@@ -140,11 +140,29 @@
 	var HighlightElementCollection = document.createElement('input');
 	HighlightElementCollection.setAttribute('type', 'button');
 	HighlightElementCollection.className = 'ol-popup-collection';
-	HighlightElementCollection.value = '收藏';
+	HighlightElementCollection.value = '收藏';	
+	
+	var HighlightElementFrom = document.createElement('input');
+	HighlightElementFrom.setAttribute('type', 'button');
+	HighlightElementFrom.className = 'ol-popup-from';
+	HighlightElementFrom.value = '从这走';		
+	
+	var HighlightElementTo = document.createElement('input');
+	HighlightElementTo.setAttribute('type', 'button');
+	HighlightElementTo.className = 'ol-popup-to';
+	HighlightElementTo.value = '去这里';	
+	
+	var HighlightElementSearch = document.createElement('input');
+	HighlightElementSearch.setAttribute('type', 'button');
+	HighlightElementSearch.className = 'ol-popup-search';
+	HighlightElementSearch.value = '搜周边';
 	
 	HighlightElement.appendChild(HighlightElementCloser);	
 	HighlightElement.appendChild(HighlightElementContent);	
 	HighlightElement.appendChild(HighlightElementCollection);	
+	HighlightElement.appendChild(HighlightElementFrom);	
+	HighlightElement.appendChild(HighlightElementTo);	
+	HighlightElement.appendChild(HighlightElementSearch);	
 	
 	var HighlightOverlay = new ol.Overlay({
 		element: HighlightElement,

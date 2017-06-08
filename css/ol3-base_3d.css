@@ -38,7 +38,7 @@ ul.feature-list {
     left: 3.2em;
 	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
 	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
-	border: 0px ;
+	border: 0px;
 }
 
 .divider{
@@ -216,7 +216,7 @@ img.ol-compass {
 	border: 1px solid #cccccc;
 	bottom: 12px;
 	left: -50px;
-	min-width: 150px;
+	min-width: 200px;
 	min-height: 80px;
 }
 .ol-popup:after, .ol-popup:before {
@@ -242,14 +242,51 @@ img.ol-compass {
 }
 .ol-popup-collection {
 	position: absolute;
-	bottom: 6px;
-	right: 1.5em;
-	width: 3em;
+	bottom: 40px;
+	right: 1em;
+	width: 3.5em;
+	background-color: rgb(168,100,45);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}	
+.ol-popup-from {
+	position: absolute;
+	bottom: 10px;
+	right: 5.5em;
+	width: 3.5em;
 	background-color: rgb(45,100,168);
 	color: white;
 	border-radius: 0.3em;
 	padding: 0px;
 	border: 0px;
+	font-size:small;
+}	
+.ol-popup-to {
+	position: absolute;
+	bottom: 10px;
+	right: 1em;
+	width: 3.5em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}	
+.ol-popup-search {
+	position: absolute;
+	bottom: 10px;
+	right: 10em;
+	width: 3.5em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
 }		
 .ol-popup-collection:hover{
 	background-color: rgba(256, 204, 51, 1);
