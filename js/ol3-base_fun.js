@@ -46,19 +46,26 @@ function getlocation(){
 			// // console.log(featureOBJ[0].properties.floor_id);
 			//
 			if(deviceId != 'all'){
+				// 得到定位点的坐标，用于返回定位点&路径规划
+				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
 				locateFloor = featureOBJ[0].properties.floor_id;
+				
+				// 电子围栏预警
+				electronicFenceWarn();	
+				// 设置定位点style
+				if (locateStyleWarn){
+					LocationLayer.setStyle(locationWarnStyle);
+				}else{
+					LocationLayer.setStyle(locationStyle);
+				}
+
 				// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 				if (locateFloor == floorid){
 					center_wfs.addFeatures(features);
 				}
-				// // 得到定位点的坐标，用于返回定位点&路径规划
-				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
-				// 电子围栏预警
-				electronicFenceWarn();				
 			}else{
 				center_wfs.addFeatures(features);
 			}
-
 		}		
 	});
 }
@@ -79,11 +86,6 @@ function loadlocation(){
 		// 获取定位信息
 		startlocation();
 		LocationLayer.setSource(center_wfs);
-		if (locateStyleWarn){
-			LocationLayer.setStyle(locationWarnStyle);
-		}else{
-			LocationLayer.setStyle(locationStyle);
-		}
 		backcenterFlag = true;
 	}	
 }
