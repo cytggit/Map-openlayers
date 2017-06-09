@@ -26,7 +26,9 @@ var svgrouteend = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http:
 
 	
 var mysvglocation = new Image();
-mysvglocation.src = 'data:image/svg+xml,' + escape(svglocation);
+mysvglocation.src = 'data:image/svg+xml,' + escape(svglocation);	
+var mysvglocationWarn = new Image();
+mysvglocationWarn.src = 'data:image/svg+xml,' + escape(svglocationWarn);
 var mysvgap = new Image();
 var mysvgselect = new Image();
 mysvgselect.src = 'data:image/svg+xml,' + escape(svgselect);
@@ -57,7 +59,7 @@ var locationStyle = new ol.style.Style({
 // 定位 style 电子围栏预警
 var locationWarnStyle = new ol.style.Style({
 	image: new ol.style.Icon({
-		img: svglocationWarn,
+		img: mysvglocationWarn,
 		imgSize: [40, 40],   // 图标大小
 		anchor: [0.5,0.5]    // 摆放位置
 	}),
