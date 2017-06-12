@@ -64,6 +64,7 @@ function getlocation(){
 					center_wfs.addFeatures(features);
 				}
 			}else{
+				LocationLayer.setStyle(locationStyle);
 				center_wfs.addFeatures(features);
 			}
 		}		
