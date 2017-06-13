@@ -11,6 +11,7 @@ function checkUrlParam(checkName){
 		var checkValue = unescape(checkValues[2]);  
 		if (checkValue != ''){
 			checkFlag = true;
+			view.setZoom(21);
 		}else{
 			alert('未设置参数“' + checkName + '”的值');
 		}
@@ -44,7 +45,7 @@ function getlocation(){
 			
 			var featureOBJ = response.features;
 			// // console.log(featureOBJ[0].properties.floor_id);
-			//
+			center_wfs.clear();
 			if(deviceId != 'all'){
 				// 得到定位点的坐标，用于返回定位点&路径规划
 				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
@@ -74,7 +75,6 @@ function getlocation(){
 // 获取实时定位信息
 function startlocation(){  
 	setTimeout(startlocation,5000);  
-	center_wfs.clear();
 	getlocation();
 }
 

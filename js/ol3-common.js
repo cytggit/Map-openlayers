@@ -23,7 +23,7 @@ var center = [121.4287933,31.1664993];
 var view = new ol.View({
 	center: center,
 	projection: 'EPSG:4326',
-	zoom: 21
+	zoom: 19
 });
 
 // 室内图数据获取 	

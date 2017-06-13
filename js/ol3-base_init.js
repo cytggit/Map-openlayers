@@ -1,3 +1,13 @@
+
+	var amapLayer = new ol.layer.Tile({
+		title: '高德地图',
+		visible: true,
+		source: new ol.source.XYZ({
+			url: 'http://webst0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}'
+		}),
+		zIndex: 0
+	});
+	
 	var viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
 	// 2D
 	// var backgroundFilter = 'place_id=2 and floor_id=22 and feature_id=999999';
@@ -19,7 +29,7 @@
 			url: wmsUrl,
 			params: {LAYERS: DBs + ':mote_background',VERSION:'1.1.0',viewparams:viewParam}
 		}),
-		zIndex: 0
+		zIndex: 1
 	});	
 	
 	// 2D

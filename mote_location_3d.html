@@ -203,6 +203,10 @@
 <script>
 	
 	// 创建地图
+	var amap = new ol.layer.Group({
+		title: 'amap',
+		layers: [amapLayer],
+	});	
 	var basemap = new ol.layer.Group({
 		title: 'base map',
 		layers: [backgroundLayer,polygonLayer,pointLayer],
@@ -223,6 +227,7 @@
 		// 让id为map的div作为地图的容器
 		target: 'map' ,
 		layers: [
+			amap,
 			basemap,
 			overmap,
 			selectmap
