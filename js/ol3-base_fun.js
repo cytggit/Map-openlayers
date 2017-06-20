@@ -26,8 +26,8 @@ function getlocation(){
 	// 当deviceId为all的时候，显示所有当前楼层的位置
 	var WFSUrl,DATAParam;
 	if(deviceId == 'all'){
-		WFSUrl = locateAllUrl;
-		DATAParam = {'floor':floorid,'place':placeid};
+		WFSUrl = locateCertainUrl;
+		DATAParam = {'floor_id':floorid,'place_id':placeid};
 	}else{
 		WFSUrl = locateUrl;
 		DATAParam = {'deviceId':deviceId};
@@ -44,7 +44,7 @@ function getlocation(){
 			var features = new ol.format.GeoJSON().readFeatures(response);
 			
 			var featureOBJ = response.features;
-			// // console.log(featureOBJ[0].properties.floor_id);
+			// console.log(featureOBJ[0].properties.floor_id);
 			center_wfs.clear();
 			if(deviceId != 'all'){
 				// 得到定位点的坐标，用于返回定位点&路径规划
