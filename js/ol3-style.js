@@ -289,7 +289,11 @@ var electronicFenceStyle = {
 var geojsonstyle = {
 	'999999' : new ol.style.Style({
 		fill: new ol.style.Fill({
-			color: [255,240,240,1]
+			color: [200,200,200,1]
+		}),
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width:1
 		}),
 		zIndex: 100
 	}),
@@ -299,6 +303,16 @@ var geojsonstyle = {
 	*
 	************/
 	'10020511'/*公司范围*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,255,1]
+		}),
+		zIndex:101
+	}),
+	'10020401'/*教室*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
 			width:1
@@ -344,7 +358,47 @@ var geojsonstyle = {
 			width: 1
 		}),
 		fill: new ol.style.Fill({
-			color: [204,204,204,0.8]
+			color: [108,94,80,0.8]
+		}),
+		zIndex: 103
+	}),
+	'10030603' /*沙发*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,104,0.8]
+		}),
+		zIndex: 103
+	}),
+	'10030606' /*书架*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [224,224,224,0.8]
+		}),
+		zIndex: 103
+	}),
+	'10030607' /*机柜*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [104,104,104,0.8]
+		}),
+		zIndex: 103
+	}),
+	'10030608' /*资料架*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,254,0.8]
 		}),
 		zIndex: 103
 	}),
@@ -377,6 +431,18 @@ var geojsonstyle = {
 			color: [204,153,255,0.5]
 		}),
 		zIndex:102
+	}),
+	/************
+	*
+	*polyline
+	*
+	************/
+	'20020900'/*道路*/: new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [208,128,128,0.6],
+			width: 0.8
+		}),
+		zIndex:200	
 	}),
 	/************
 	*
@@ -433,6 +499,23 @@ var geojsonstyle = {
 		}),
 		zIndex:340
 	}),
+	'30040100' /*教室*/: new ol.style.Style({  
+		text: new ol.style.Text({
+			font: '0.61em sans-serif',
+			// scale: 100,
+			textAlign: 'center',
+			textBaseline: 'middle',
+			offsetY: -5,
+			fill: new ol.style.Fill({
+				color: [40,40,40,1]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,255,255,1],
+				width: 1
+			})
+		}),
+		zIndex:340
+	}),
 	'30050100' /*卫生间*/: new ol.style.Style({  
 		image: new ol.style.Icon({
 			src: './icon/wc.png',
@@ -457,5 +540,6 @@ var geojsonstyle = {
 		}),
 		zIndex:330
 	}),	
+
 	
 };

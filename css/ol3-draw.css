@@ -1,0 +1,222 @@
+.map {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+	background-color: rgba(255,250,250,1);
+}
+
+.draw {
+	position: absolute;
+    width: 30%;
+    height: 100%;
+	top: 10%;
+	left: 1%;
+}
+
+
+/* 楼层条 */
+div.floor-select {
+    position: absolute;
+    height: 11.88em;
+	width: 3em;
+    top: 30%;
+    right: 2%;
+	background-color: white; 
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+.wheel ul li a{
+	padding: 2px 14px;
+}
+.up{
+	background-color: rgb(240,240,240);
+}
+.down{
+	background-color: rgb(240,240,240);
+}
+
+.up>a {
+	width: 3em;
+	height: 1.5em;
+	margin: 0px 0px -2px 0px;
+}
+
+.down>a {
+	width: 3em;
+	height: 1.5em;
+	margin: -2px 0px 0px 0px;
+}
+
+.floor-wheel {
+    height: 8.6em;
+    overflow: scroll;
+	width: 6em;
+	overflow-x: hidden;
+}
+.floor-wheel ul {
+    position: absolute;
+    top: 0em;
+    transition: .3s top;
+}
+
+.floor-wheel ul li {
+	margin: 0px 0px -4px 0px;
+	width: 3em;
+	height: 3em;
+	
+}
+.floor-wheel ul li a{
+	padding: 12px 12px;
+	font-size: 12px;
+}
+
+/* li.active{
+	color: red;
+} */
+
+/* 修改默认控件 */
+/* 缩放 */
+.ol-zoom {
+    position: absolute;
+    bottom: 80%;
+    right: 3%;
+	background-color: rgba(255,255,255,1);
+	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+.ol-control button {
+	background-color: rgba(255,255,255,0);
+	color: rgb(45,100,168);
+}
+.ol-control button:hover{
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 2px 2px 2px 2px;
+}
+/* 比例尺 */
+.ol-scale-line {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    background-color: rgba(255, 255, 255, 0);
+}
+div.ol-scale-line-inner {
+    color: black;
+    border: 1px solid #444;
+    border-top: none;
+    /*background-color: rgba(0, 0, 0, 0);*/
+}
+/* 指北针 */
+div.ol-rotate {
+    top: 2%;
+    right: 5%;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+div.ol-rotate button.ol-rotate-reset {
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+img.ol-compass {
+	width: 40px;
+	height: 40px;
+}
+
+/* 收藏 */
+.ol-popup {
+	position: absolute;
+	background-color: white;
+	-webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+	padding: 15px;
+	border-radius: 10px;
+	border: 1px solid #cccccc;
+	bottom: 12px;
+	left: -50px;
+	min-width: 200px;
+	min-height: 80px;
+}
+.ol-popup:after, .ol-popup:before {
+	top: 100%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+.ol-popup:after {
+	border-top-color: white;
+	border-width: 10px;
+	left: 48px;
+	margin-left: -10px;
+}
+.ol-popup:before {
+	border-top-color: #cccccc;
+	border-width: 11px;
+	left: 48px;
+	margin-left: -11px;
+}
+.ol-popup-collection {
+	position: absolute;
+	bottom: 40px;
+	right: 1em;
+	width: 3.5em;
+	background-color: rgb(168,100,45);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}	
+.ol-popup-from {
+	position: absolute;
+	bottom: 10px;
+	right: 5.5em;
+	width: 3.5em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}	
+.ol-popup-to {
+	position: absolute;
+	bottom: 10px;
+	right: 1em;
+	width: 3.5em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}	
+.ol-popup-search {
+	position: absolute;
+	bottom: 10px;
+	right: 10em;
+	width: 3.5em;
+	background-color: rgb(45,100,168);
+	color: white;
+	border-radius: 0.3em;
+	padding: 0px;
+	border: 0px;
+	font-size:small;
+}		
+.ol-popup-collection:hover{
+	background-color: rgba(256, 204, 51, 1);
+	color: white;
+}
+.ol-popup-closer {
+	text-decoration: none;
+	position: absolute;
+	top: 2px;
+	right: 8px;
+	
+}
+.ol-popup-closer:after {
+	content: "✖";
+}
+

@@ -55,7 +55,7 @@ var geojsonstylefunction = function(feature){
 	// console.log(feature);
 	// var featureiiiid = feature.I.feature_id;
 	var featureiiiid = feature.values_.feature_id;
-	if (feature.getGeometry().getType() == 'Point'  && (featureiiiid == '30060300' || featureiiiid == '30060000')){
+	if (feature.getGeometry().getType() == 'Point'  && (featureiiiid == '30060300' || featureiiiid == '30060000' || featureiiiid == '30040100')){
 		// geojsonstyle[featureiiiid].getText().setText(feature.I.name);
 		geojsonstyle[featureiiiid].getText().setText(feature.values_.name);
 	}
