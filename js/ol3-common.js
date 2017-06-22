@@ -19,10 +19,12 @@ var locateCertainUrl = comIp + '/LocateServer/getCertainLocation.action';
 var locateAllUrl = comIp + '/LocateServer/getAllLocation.action';
 
 // 设置中心点
-var center = [121.4287933,31.1664993]; 
+var motecenter = [121.4286933,31.1664993]; 
+var zhongbeicenter = [121.407241820159,31.2265797284321]; 
+var minhangcenter = [121.4287933,31.1664993]; 
 // 设置视图
 var view = new ol.View({
-	center: center,
+	center: motecenter,
 	projection: 'EPSG:4326',
 	zoom: 19
 });

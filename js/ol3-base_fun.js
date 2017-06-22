@@ -14,9 +14,11 @@ function checkUrlParam(checkName){
 			view.setZoom(21);
 		}else{
 			alert('未设置参数“' + checkName + '”的值');
+			checkFlag = false;
 		}
 	}else {
 		alert('未设置参数：' + checkName);
+		checkFlag = false;
 	} 
 	return checkValue;	
 }
@@ -47,10 +49,16 @@ function getlocation(){
 			// console.log(featureOBJ[0].properties.floor_id);
 			center_wfs.clear();
 			if(deviceId != 'all'){
-				// 得到定位点的坐标，用于返回定位点&路径规划
-				locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
-				locateFloor = featureOBJ[0].properties.floor_id;
-				
+				if(locate == null){
+					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
+					locateFloor = featureOBJ[0].properties.floor_id;
+					backcenter();
+				}else{
+					// 得到定位点的坐标，用于返回定位点&路径规划
+					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
+					locateFloor = featureOBJ[0].properties.floor_id;					
+				}
+
 				// 电子围栏预警
 				electronicFenceWarn();	
 				// 设置定位点style
@@ -82,8 +90,27 @@ function startlocation(){
 function loadlocation(){	
 	checkName = 'deviceId';
 	deviceId = checkUrlParam(checkName);
-	
-	if (checkFlag) {
+
+	if(deviceId == 'all'){
+		checkName = 'place_id';
+		placeid = checkUrlParam(checkName);
+		if (checkFlag){
+			startlocation();
+			LocationLayer.setSource(center_wfs);			
+			switch(placeid){
+				case '2':
+					view.setCenter(motecenter);
+					break;
+				case '3':
+					view.setCenter(zhongbeicenter);
+					break;
+				case '4':
+					view.setCenter(minhangcenter);
+					break;
+			}
+		}
+	}
+	if (deviceId != 'all' && checkFlag) {
 		// 获取定位信息
 		startlocation();
 		LocationLayer.setSource(center_wfs);
