@@ -4,7 +4,7 @@ var deviceId; //手环id   从传入参数获取值  点位点&收藏
 var userId = '1592782'; //用户ID   从传入参数获取值   收藏     
 var ltype; // 定位点类型 暂未用到
 
-var placeid = '2';
+var placeid = '1';
 var floorid = '01';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param

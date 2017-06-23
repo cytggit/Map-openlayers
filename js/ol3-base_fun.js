@@ -52,13 +52,16 @@ function getlocation(){
 				if(locate == null){
 					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
 					locateFloor = featureOBJ[0].properties.floor_id;
-					backcenter();
+					// 切换到定位点所在的区域
+					placeid = featureOBJ[0].properties.place_id;
+					// 加载楼层条
+					getFloorList();
 				}else{
 					// 得到定位点的坐标，用于返回定位点&路径规划
 					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
 					locateFloor = featureOBJ[0].properties.floor_id;					
 				}
-
+				
 				// 电子围栏预警
 				electronicFenceWarn();	
 				// 设置定位点style
@@ -95,6 +98,7 @@ function loadlocation(){
 		checkName = 'place_id';
 		placeid = checkUrlParam(checkName);
 		if (checkFlag){
+			getFloorList();
 			startlocation();
 			LocationLayer.setSource(center_wfs);			
 			switch(placeid){
@@ -116,6 +120,49 @@ function loadlocation(){
 		LocationLayer.setSource(center_wfs);
 		backcenterFlag = true;
 	}	
+}
+// 加载楼层条
+function getFloorList(){
+	var FloorTag = [];
+	var FloorId = [];
+	var GetFloorParam = {
+		service: 'WFS',
+		version: '1.1.0',
+		request: 'GetFeature',
+		typeName: DBs + ':polygon_background ', // 电子围栏图层
+		outputFormat: 'application/json',
+		cql_filter: 'place_id=' + placeid
+	};	
+	$.ajax({  
+		url: wfsUrl,
+		data: $.param(GetFloorParam), 
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+			var features = new ol.format.GeoJSON().readFeatures(response);
+			var floorLength = features.length
+			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+				FloorId[FloorNum] = features[FloorNum].values_.floor_id;
+			}
+			var floorDummy;
+			for (var Floori =0;Floori < floorLength;Floori++){
+				for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
+					if (FloorId[Floori] >= FloorId[Floorj]){
+						floorDummy = FloorId[Floori];
+						FloorId[Floori] = FloorId[Floorj];
+						FloorId[Floorj] = floorDummy;
+					}					
+				}
+			}
+			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a href="#">F' + FloorId[FloorNum] + '</a></li>';
+			}
+			$("#floorlist").html(FloorTag);
+			if(deviceId != 'all'){
+				backcenter();
+			}
+		}
+	}); 	
 }
 
 // 回到定位点
