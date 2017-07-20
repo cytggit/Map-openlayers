@@ -10,13 +10,13 @@ var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
 // var DBs = 'wanhuayuan'; //数据源
-var comIp = 'http://114.215.83.3:8080';
-// var comIp = 'http://192.168.1.126:8088';
+var locateIp = 'http://114.215.83.3:8090';
+var comIp = 'http://192.168.1.141:9088';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
-var locateUrl = comIp + '/LocateServer/getLocation.action';
-var locateCertainUrl = comIp + '/LocateServer/getCertainLocation.action';
-var locateAllUrl = comIp + '/LocateServer/getAllLocation.action';
+var locateUrl = locateIp + '/LocateServer/getLocation.action';
+var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
+var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 
 // 设置中心点
 var motecenter = [121.4286933,31.1664993]; 
@@ -143,6 +143,7 @@ var pathPlanningOFF = true; // 当为FALSE时不执行路径规划任何功能  
 var myLocate,myPoint; // 选择中心点、地图选点作为起终点
 var RouteStartLayer,RouteDestLayer,RouteLayer; // 分别为起点图层、终点图层、路线图层
 var RouteParam,sourceLabelX,sourceLabelY,targetLabelX,targetLabelY; // 取得路线的param及param下起终点的坐标值
+var RouteSourceFloor,RouteTargetFloor; // 路径规划起终点所在的楼层
 var LabelAction = null;  // 记录当前取点是起点或者终点
 var LabelX,LabelY; // 取起点或终点时临时存储坐标值
 var labelOnMap; // 点选起终点的interaction
