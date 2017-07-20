@@ -155,7 +155,7 @@ function getFloorList(){
 				}
 			}
 			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a href="#">F' + FloorId[FloorNum] + '</a></li>';
+				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
 			}
 			$("#floorlist").html(FloorTag);
 			if(deviceId != 'all'){
@@ -590,7 +590,7 @@ function loadselectSingleClick(){
 		// console.log(e.selected[0]);
 		// selectInfo = e.selected[0].I.name;
 		selectInfo = e.selected[0].values_.name;
-		selectId = e.selected[0].values_.id;
+		selectId = e.selected[0].values_.fid;
 		var geom = e.selected[0].values_.geometry;
 		var geomtype = geom.getType();
 		if (geomtype == 'Polygon'){
