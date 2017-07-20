@@ -5,7 +5,7 @@ var placeType = 'null';// 区域名称
 var tableType = 'null' // 表名
 
 var DBs = 'mote'; //数据源
-var comIp = 'http://192.168.1.141:9080';
+var comIp = 'http://101.81.226.116:9080';
 // var comIp = 'http://114.215.83.3:8080';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
