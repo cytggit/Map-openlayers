@@ -11,7 +11,7 @@ var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
 // var DBs = 'wanhuayuan'; //数据源
 var locateIp = 'http://114.215.83.3:8090';
-var comIp = 'http://101.81.226.116:9088';
+var comIp = 'http://116.231.55.50:9088';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
