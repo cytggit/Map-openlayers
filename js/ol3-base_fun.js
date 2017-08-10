@@ -73,7 +73,15 @@ function getlocation(){
 
 				// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 				if (locateFloor == floorid){
-					center_wfs.addFeatures(features);
+					
+					// 判断是否正在路径规划，做路网吸附
+					// if(!pathPlanningOFF &&  ){
+					if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
+						var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
+						center_wfs.addFeatures(newcenterFearure);
+					}else{
+						center_wfs.addFeatures(features);
+					}
 				}
 			}else{
 				LocationLayer.setStyle(locationStyle);

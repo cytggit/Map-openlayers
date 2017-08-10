@@ -12,7 +12,7 @@ var DBs = 'mote'; //数据源
 // var DBs = 'wanhuayuan'; //数据源
 var locateIp = 'http://114.215.83.3:8090';
 var comIp = 'http://114.215.83.3:8090';
-//var comIp = 'http://116.231.55.50:9088';备用
+// var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
@@ -184,4 +184,90 @@ function featObjectSend(featString){
 	request.setRequestHeader('Content-Type', 'text/xml');
 	request.send(featString);		
 }
+
+
+// 路径规划时对定位点做路网吸附
+function pointToLinestring(pointFeature,lineFeature){
+	// 做成point的geometry
+	var point = pointFeature[0].getGeometry().getCoordinates();
+	// 做成line的geometry的array
+	var line = lineFeature[0].getGeometry().getCoordinates();
+	
+	var A,B;
+	var distance = 2,newpoint;
+	var newPointFeature = pointFeature;
+	
+	A = line[0];
+	for (var num = 1; num < line.length; num++){
+		B = line[num];
+		if (A[0] == B[0] && A[1] == B[1] ){
+			var distanceDummy = distanceFromAToB(point,A);
+			if(distance > distanceDummy){
+				distance = distanceDummy;
+				newpoint= A;
+			}
+		}else if (((A[1] - point[1])*(B[0] - A[0])) == ((A[0] - point[0])*(B[1] - A[1]))){
+			distance = 0;
+			newpoint= point;
+			break;
+		}else {
+			var r = (((point[0] - A[0])*(B[0] - A[0])) + ((point[1] - A[1])*(B[1] - A[1])))/(((B[0] - A[0])*(B[0] - A[0])) + ((B[1] - A[1])*(B[1] - A[1])));
+			if (r <= 0){
+				var distanceDummy = distanceFromAToB(point,A);
+				if(distance > distanceDummy){
+					distance = distanceDummy;
+					newpoint= A;
+				}
+			}else if (r >= 1){
+				var distanceDummy = distanceFromAToB(point,B);
+				if(distance > distanceDummy){
+					distance = distanceDummy;
+					newpoint= B;
+				}		
+			}else {
+				var C = [];
+				C[0] = A[0] + (r*(B[0] - A[0]));
+				C[1] = A[1] + (r*(B[1] - A[1]));
+				var distanceDummy = distanceFromAToB(point,C);
+				if(distance > distanceDummy){
+					distance = distanceDummy;
+					newpoint= C;
+				}				
+			}	
+			
+		}
+		A = B;
+	}
+	
+	if( 0 < distance &&  distance < 2){
+		newPointFeature[0].setGeometry(new ol.geom.Point(newpoint));
+	}
+
+	return newPointFeature;
+}
+
+function distanceFromAToB(A,B){
+	var sourceProj = map.getView().getProjection();
+	var c1 = ol.proj.transform(A, sourceProj, 'EPSG:4326');
+	var c2 = ol.proj.transform(B, sourceProj, 'EPSG:4326');
+	var length = wgs84Sphere.haversineDistance(c1, c2);
+	return length;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
