@@ -5,14 +5,14 @@ var placeType = 'null';// 区域名称
 var tableType = 'null' // 表名
 
 var DBs = 'mote'; //数据源
-// var comIp = 'http://116.231.55.50:9080';// 备用
+// var comIp = 'http://101.81.226.116:9080';
 var comIp = 'http://114.215.83.3:8090';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 // 设置中心点
 var motecenter = [121.4287933,31.1664993]; 
 var zhongbeicenter = [121.407121820159,31.2265797284321]; 
-var minhangcenter = [121.4287933,31.1664993]; 
+var minhangcenter = [121.457171250547,31.0275850273072]; 
 // 设置视图
 var view = new ol.View({
 	center: motecenter,
