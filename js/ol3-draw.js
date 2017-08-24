@@ -19,6 +19,10 @@ function loadTable(){
 				placeid = '4';
 				view.setCenter(minhangcenter);
 				break;
+			case 'zhanlan':
+				placeid = '5';
+				view.setCenter(zhanlancenter);
+				break;
 			case 'newplace':
 				tablecheck.value = 'polygon_background';
 				$("#tabel-key").html(place + feature + floor + Fname);
