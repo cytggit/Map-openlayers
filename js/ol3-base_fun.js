@@ -119,6 +119,9 @@ function loadlocation(){
 				case '4':
 					view.setCenter(minhangcenter);
 					break;
+				case '5':
+					view.setCenter(zhanlancenter);
+					break;
 			}
 		}
 	}

@@ -5,7 +5,7 @@ var userId = '1592782'; //用户ID   从传入参数获取值   收藏
 var ltype; // 定位点类型 暂未用到
 
 var placeid = '1';
-var floorid = '01';// 楼层编号    选择楼层
+var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
@@ -23,6 +23,7 @@ var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 var motecenter = [121.4286933,31.1664993]; 
 var zhongbeicenter = [121.407241820159,31.2265797284321]; 
 var minhangcenter = [121.4287933,31.1664993]; 
+var zhanlancenter = [121.452368605797,31.2253976215524]; 
 // 设置视图
 var view = new ol.View({
 	center: motecenter,
