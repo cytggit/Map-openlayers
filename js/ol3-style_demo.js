@@ -51,7 +51,7 @@ var selectSingleClickStyle = new ol.style.Style({
 var locationStyle = new ol.style.Style({
 	image: new ol.style.Icon({
 		src: './icon/location.png',
-		scale: 0.4,
+		scale: 0.3,
 		anchor: [0.5,0.5],
 	}),
 	zIndex: 600
@@ -484,7 +484,7 @@ var geojsonstyle = {
 	}),	
 	'30060300' /*会议室&财务室&公共办公区&总经理室*/: new ol.style.Style({  
 		text: new ol.style.Text({
-			font: '0.61em sans-serif',
+			font: '0.71em sans-serif',
 			// scale: 100,
 			textAlign: 'center',
 			textBaseline: 'bottom',
@@ -501,7 +501,7 @@ var geojsonstyle = {
 	}),
 	'30040100' /*教室*/: new ol.style.Style({  
 		text: new ol.style.Text({
-			font: '0.61em sans-serif',
+			font: '0.71em sans-serif',
 			// scale: 100,
 			textAlign: 'center',
 			textBaseline: 'middle',
