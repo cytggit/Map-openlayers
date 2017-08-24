@@ -362,6 +362,16 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
+	'10030101' /*看板*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,153,204,0.8]
+		}),
+		zIndex: 103
+	}),
 	'10030603' /*沙发*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
