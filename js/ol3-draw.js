@@ -54,7 +54,7 @@ function loadTable(){
 				$("#tabel-key").html(place + floor + Fname);
 				break;
 			case 'point':
-				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded);
+				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded + angle);
 				break;
 			case 'polygon':
 				$("#tabel-key").html(feature + Fname);
@@ -343,6 +343,7 @@ function getcolumn(){
 					newFeature.set('node', document.getElementById('node_value').value);
 					newFeature.set('cnodeu', document.getElementById('cnodeu_value').value);
 					newFeature.set('cnoded', document.getElementById('cnoded_value').value);
+					newFeature.set('angle', document.getElementById('angle_value').value);
 					FeatureDummy[newdrawNum] = newFeature;	
 					newdrawNum++;
 					newFeature =  null;
@@ -464,6 +465,7 @@ function setcolumn(selectInfo){
 				document.getElementById('node_value').value = selectInfo.node;
 				document.getElementById('cnodeu_value').value = selectInfo.cnodeu;
 				document.getElementById('cnoded_value').value = selectInfo.cnoded;
+				document.getElementById('angle_value').value = selectInfo.angle;
 				break;
 			case 'polygon':
 				document.getElementById('feature_value').value = selectInfo.feature_id;
@@ -608,6 +610,7 @@ function clearAllcolumn(){
 			document.getElementById('node_value').value = '';
 			document.getElementById('cnodeu_value').value = '';
 			document.getElementById('cnoded_value').value = '';
+			document.getElementById('angle_value').value = '';
 			break;
 		case 'polygon':
 			document.getElementById('feature_value').value = '';
@@ -657,6 +660,9 @@ function clear_column(e){
 			break;
 		case 'clear_cnoded':
 			document.getElementById('cnoded_value').value = '';	
+			break;
+		case 'clear_angle':
+			document.getElementById('angle_value').value = '';	
 			break;
 	}		
 }

@@ -710,3 +710,8 @@ var cnoded = "<div class='input-group has-feedback' id='cnoded'>" +
 	"<input class='form-control' id='cnoded_value'>"+
 	"<a class='btn close form-control-feedback'  id='clear_cnoded' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>"+
 "</div>";		
+var angle = "<div class='input-group has-feedback' id='angle'>" +
+	"<span class='input-group-addon' id='angle_key'>旋转角度</span>" +
+	"<input class='form-control' id='angle_value'>"+
+	"<a class='btn close form-control-feedback'  id='clear_angle' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>"+
+"</div>";		
