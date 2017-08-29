@@ -48,6 +48,7 @@ var geojsonObject = function(viewParams,Typename){
 var geojsonstylefunction = function(feature){
 	// var featureiiiid = feature.I.feature_id;
 	var featureiiiid = feature.values_.feature_id;
+	var featureangle = feature.values_.angle = null ? 0: feature.values_.angle;
 	if (feature.getGeometry().getType() == 'Point'  && (featureiiiid == '30060300' || featureiiiid == '30060000' || featureiiiid == '30040100')){
 		// geojsonstyle[featureiiiid].getText().setText(feature.I.name);
 		geojsonstyle[featureiiiid].getText().setText(feature.values_.name);
@@ -58,6 +59,7 @@ var geojsonstylefunction = function(feature){
 		}else {
 			geojsonstyle[featureiiiid].getImage().setScale(0.1);
 		}
+		geojsonstyle[featureiiiid].getImage().setRotation(featureangle);
 	}
 	if (featureiiiid == '30050100' || featureiiiid == '30050800' || featureiiiid == '30050200' || featureiiiid == '30050300' ){
 		if (map.getView().getZoom() > 18){

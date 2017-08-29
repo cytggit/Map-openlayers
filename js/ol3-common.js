@@ -22,7 +22,7 @@ var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 // 设置中心点
 var motecenter = [121.4286933,31.1664993]; 
 var zhongbeicenter = [121.407241820159,31.2265797284321]; 
-var minhangcenter = [121.4287933,31.1664993]; 
+var minhangcenter = [121.457171250547,31.0275850273072]; 
 var zhanlancenter = [121.452368605797,31.2253976215524]; 
 // 设置视图
 var view = new ol.View({
@@ -59,6 +59,8 @@ var geojsonstylefunction = function(feature){
 	// console.log(feature);
 	// var featureiiiid = feature.I.feature_id;
 	var featureiiiid = feature.values_.feature_id;
+	var featureangle = feature.values_.angle = null ? 0: feature.values_.angle;
+	
 	if (feature.getGeometry().getType() == 'Point'  && (featureiiiid == '30060300' || featureiiiid == '30060000' || featureiiiid == '30040100')){
 		// geojsonstyle[featureiiiid].getText().setText(feature.I.name);
 		geojsonstyle[featureiiiid].getText().setText(feature.values_.name);
@@ -66,9 +68,11 @@ var geojsonstylefunction = function(feature){
 	if (featureiiiid == '30060100' || featureiiiid == '30060200' ){
 		if (map.getView().getZoom() > 19){
 			geojsonstyle[featureiiiid].getImage().setScale((map.getView().getZoom()-19)*0.1);
+			console.log(0000000000000);
 		}else {
 			geojsonstyle[featureiiiid].getImage().setScale(0.1);
 		}
+		geojsonstyle[featureiiiid].getImage().setRotation(featureangle);
 	}
 	if (featureiiiid == '30050100' || featureiiiid == '30050800' || featureiiiid == '30050200' || featureiiiid == '30050300' ){
 		if (map.getView().getZoom() > 18){
