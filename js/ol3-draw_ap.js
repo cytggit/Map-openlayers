@@ -1,46 +1,64 @@
+
+
+// 确认网址的参数 返回参数值
+function checkUrlParam(checkName){
+	var checkUrlParams = window.location.search.substr(1)
+	
+	var reg = new RegExp("(^|&)"+ checkName +"=([^&]*)(&|$)");
+
+	var checkValues = checkUrlParams.match(reg);
+	
+	if(checkValues!=null){
+		var checkValue = unescape(checkValues[2]);  
+		if (checkValue != ''){
+			checkFlag = true;
+			view.setZoom(21);
+		}else{
+			alert('未设置参数“' + checkName + '”的值');
+			checkFlag = false;
+		}
+	}else {
+		alert('未设置参数：' + checkName);
+		checkFlag = false;
+	} 
+	return checkValue;	
+}
+
 function loadTable(){
-	placecheck.onchange = function(){
-		placeType = placecheck.value;
-		switch(placeType){
-			case 'null':
-				placeid = '0';
+		switch(placeid){
+			case '0':
 				$("#tabel-key").html("");
 				break;
-			case 'mote':
-				placeid = '2';
+			case '2':
 				view.setCenter(motecenter);
 				// 显示电子围栏
 				electronicFence();
 				break;
-			case 'zhongbei':
-				placeid = '3';
+			case '3':
 				view.setCenter(zhongbeicenter);
 				// 显示电子围栏
 				electronicFence();
 				break;
-			case 'minhang':
-				placeid = '4';
+			case '4':
 				view.setCenter(minhangcenter);
 				// 显示电子围栏
 				electronicFence();
 				break;
-			case 'zhanlan':
-				placeid = '5';
+			case '5':
 				view.setCenter(zhanlancenter);
 				// 显示电子围栏
 				electronicFence();
 				break;
 		}
 		// 当编辑打开时，判断之前的编辑操作是否需要保存
-		if(drawFlag){
-			checkDrawData();
-			drawtype = null;
-		}
+		// if(drawFlag){
+			// checkDrawData();
+			// drawtype = null;
+		// }
 		// 根据background的floor动态生成楼层选择框
 		getFloorList();
 		// 刷新图层
 		Refreshlayer();
-	}
 		
 }
 
@@ -57,7 +75,7 @@ function initdraw(){
 		}),
 		setActive: function(active) {
 			this['apinfo'].setActive(active);
-		}			
+		}		
 	};
 	DrawFeature.init(); 
 	
@@ -78,6 +96,15 @@ function initdraw(){
 			this.apinfo.setActive(false);	
 			
 			this.apinfomodify.setActive(false);		
+			
+			this.setEvents();
+		},
+		setEvents: function() {
+			var selectedFeatures = this.apinfo.getFeatures();
+		
+			this.apinfo.on('change:active', function() {
+				selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
+			});
 		},
 		setActive: function(active) {
 			this['apinfo'].setActive(active);
@@ -95,7 +122,15 @@ function initdraw(){
 			
 			map.addInteraction(this.apinfo);
 			
-			this.apinfo.setActive(false);		
+			this.apinfo.setActive(false);	
+			this.setEvents();			
+		},
+		setEvents: function() {
+			var selectedFeatures = this.apinfo.getFeatures();
+		
+			this.apinfo.on('change:active', function() {
+				selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
+			});
 		},
 		setActive: function(active) {
 			this['apinfo'].setActive(active);
@@ -107,7 +142,7 @@ function initdraw(){
 
 // 绘制MAIN
 function Updatedraw(drawinfo){
-	if(placeType == 'null'){
+	if(placeid == '0'){
 		alert('请选择待编辑的区域');
 	}else{
 		drawFlag = true;
@@ -150,16 +185,16 @@ function checkDrawData(){
 			break;
 	}			
 	// 保存上一次的编辑
-	if(FeatureDummy.length != 0){
-		// 弹出是否保存
-		if(confirm("有未保存的编辑，是否需要保存？")){
-			SaveData();
-		}else{
-			FeatureDummy = [];
-			Refreshlayer();
-			alert('已清除未保存的编辑！');
-		}
-	}	
+	// if(FeatureDummy.length != 0){
+		// // 弹出是否保存
+		// if(confirm("有未保存的编辑，是否需要保存？")){
+			// SaveData();
+		// }else{
+			// FeatureDummy = [];
+			// Refreshlayer();
+			// alert('已清除未保存的编辑！');
+		// }
+	// }	
 }
 
 // 新增
@@ -169,61 +204,41 @@ function addData(){
 	newdrawNum=0;
 	DrawFeature['apinfo'].on('drawend',
 		function(evt) {
-			var newCoordinates = [];
-			var oldCoordinates;
-			
-			newFeature = new ol.Feature();
-			newFeature.setId(placeType + newdrawNum);
-			newFeature.setGeometryName('geom');	
-			newFeature.set('geom', null);
-			
-				oldCoordinates = evt.feature.values_.geom.getCoordinates();
-				var Coordinates = [oldCoordinates[1],oldCoordinates[0]];
-				newFeature.setGeometry(new ol.geom.Point(Coordinates));
+
+			var oldCoordinates = evt.feature.values_.geom.getCoordinates();
+
+				window.android.addPoint(oldCoordinates[0],oldCoordinates[1], floorid);
 
 		}, this);			
-}
-function getcolumn(){
-	if ( newFeature != null ){
-					newFeature.set('place_id', placeid);
-					newFeature.set('floor_id', floorid);
-					FeatureDummy[newdrawNum] = newFeature;	
-					newdrawNum++;
-					newFeature =  null;
-		
-	}else {
-		alert('请先编辑形状');
-	}
 }
 
 // 修改
 function updata(){
 	ModifyFeature.setActive(true);
-	// 选中时获取要素信息，加载到输入框中
-	ModifyFeature['apinfo'].on('select',
-		function(evt){
-			var selectInfo = evt.target.getFeatures().getArray()[0].values_;
-		},this);
-	
-	newdrawNum =0;
-	var modifyIdInfo = [];
+
 	ModifyFeature['apinfomodify'].on('modifyend',
 		function(evt) {
-			var modifyId = evt.features.getArray()[0].id_;
-			var modifyInfo = evt.features.getArray()[0].values_;
-			
-			var newCoordinates = [];
-			var oldCoordinates;
-			
-			newFeature = new ol.Feature();
-			newFeature.setId(modifyId);
-			newFeature.setGeometryName('geom');	
-			newFeature.set('geom', null);	
 
+			var modifyInfo = evt.features.getArray()[0].values_;
+
+			var featureMac = modifyInfo.mac;
+
+			var oldCoordinates = modifyInfo.geometry.getCoordinates();
+				
+				$.ajax({  
+					url: UpdAPUrl,
+					data: {'mac':featureMac,'avgLevel':'-10','lat':oldCoordinates[1],'lon':oldCoordinates[0]}, 
+					type: 'GET',
+					dataType: 'json',
+					success: function(response){
+						if(response.ret == '1'){
+							alert('修改成功~');
+							ModifyFeature.setActive(false);
+							ModifyFeature.setActive(true);
+						}
 			
-				oldCoordinates = modifyInfo.geometry.getCoordinates();
-				var Coordinates = [oldCoordinates[1],oldCoordinates[0]];
-				newFeature.setGeometry(new ol.geom.Point(Coordinates));
+					}
+				})
 			
 		}, this);			
 }
@@ -235,35 +250,32 @@ function deletedata(){
 		function(evt) {
 			if(evt.target.getFeatures().getArray().length != 0) {  
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
-				//setcolumn(selectInfo);
+
 				// 弹出是否删除
 				if(confirm("确认删除？")){
-					var selectId = evt.target.getFeatures().getArray()[0].id_;
+					var featureMac = selectInfo.mac;
 					
-					var Coordinates = selectInfo.geometry.getCoordinates()[0];
-					var CoordinatesLength = Coordinates.length;
-					
-					var newCoordinates = [];
-					var oldCoordinates;
-					for (var i=0;i<CoordinatesLength;i++){
-						oldCoordinates = Coordinates[i];
-						newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
-					}
-	
-					newFeature = new ol.Feature();
-					newFeature.setId(selectId);
-					newFeature.setGeometryName('geom');	
-					newFeature.set('geom', null);		
-					newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));							
-					
-					updateNewFeature([newFeature],'apinfo','remove');
-					alert('删除要素成功！');	
-					newFeature =  null;
-					Refreshlayer();
-					
+					var oldCoordinates = selectInfo.geometry.getCoordinates();
+					$.ajax({  
+						url: DltAPUrl,
+						data: {'mac':featureMac}, 
+						type: 'GET',
+						dataType: 'json',
+						success: function(response){
+							if(response.ret == '1'){
+								alert('删除成功~');
+							}
+							electronicLayer.getSource().clear();
+							getdrawLayer(':apinfo');
+
+						}
+					})
+
 				}else{
 					alert('取消要素删除！');
-				}		
+				}	
+				DeleteFeature.setActive(false);
+				DeleteFeature.setActive(true);				
 			}			
 		}, this);			
 }
@@ -306,6 +318,29 @@ function electronicFence(){
 	}	
 }
 function getdrawLayer(dbtype){
+	if(dbtype == ':apinfo'){
+		$.ajax({  
+			url: APUrl,
+			data: {'placeId':placeid,'floorId':parseInt(floorid)}, 
+			type: 'GET',
+			dataType: 'json',
+			success: function(response){
+				if(response.length > 0){
+					var APFeatures = [];
+					for(var num = 0; num < response.length ; num++){
+						APFeatures[num] = new ol.Feature({
+							geometry: new ol.geom.Point([response[num].lon,response[num].lat])
+						});
+						APFeatures[num].set('mode',response[num].mode);
+						APFeatures[num].set('mac',response[num].mac);
+						
+					}
+					electronicLayer.getSource().addFeatures(APFeatures);	
+				}
+	
+			}
+		})
+	}else{
 		var drawParam = {
 			service: 'WFS',
 			version: '1.1.0',
@@ -334,12 +369,11 @@ function getdrawLayer(dbtype){
 					case ':point':
 						pointLayer.getSource().addFeatures(features);
 						break;
-					case ':apinfo':
-						electronicLayer.getSource().addFeatures(features);
-						break;
 				}
 			}
-		}); 		
+		}); 	
+	}
+	
 }
 
 // 刷新图层 背景，道路，poi
@@ -437,9 +471,41 @@ function floorUpdate(newfloorId){
 	// 刷新图层（背景，道路，poi 其他清空）
 	Refreshlayer();	
 
-	// 刷新电子围栏
-	if(!electronicLayerOff){
-		electronicLayerOff = true;
-		electronicFence();
-	}		
+}
+
+// 控制定位开关
+function locateCtrl(locateflag){
+	if(locateflag == 'true'){
+		startlocation();			
+	}else{
+		clearTimeout(locateTimeout);
+	}
+}
+
+
+// 获取定位信息
+function getlocation(){	
+	// 从位置服务器获取定位信息
+	$.ajax({
+		url: locateCertainUrl,
+		data: {'floor_id':floorid,'place_id':placeid}, 
+		type: 'GET',
+		dataType: 'jsonp',
+		jsonp: 'callback',
+		jsonpCallback: 'successCallBack',
+		success: function(response){
+			var features = new ol.format.GeoJSON().readFeatures(response);
+			
+			// console.log(featureOBJ[0].properties.floor_id);
+			center_wfs.clear();
+			center_wfs.addFeatures(features);
+			
+		}		
+	});
+}
+
+// 获取实时定位信息
+function startlocation(){  
+	locateTimeout = setTimeout(startlocation,1000);  
+	getlocation();
 }

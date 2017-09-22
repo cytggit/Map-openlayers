@@ -1,14 +1,15 @@
-<!Doctype html>
+
+<!DOCTYPE HTML>
 <html xmlns=http://www.w3.org/1999/xhtml>
-<head>                  
+  <head>
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
     <meta content=always name=referrer>
-    <title>DRAW TOOL</title>
+    <title>Mote</title>
     <link rel="stylesheet" href="http://map.intmote.com/map/css/ol.css" type="text/css">
     <link rel="stylesheet" href="http://map.intmote.com/map/css/ol3-layerswitcher.css" type="text/css" />
-    <link rel="stylesheet" href="http://map.intmote.com/map/css/ol3-draw_ap.css" type="text/css" />
+    <link rel="stylesheet" href="./css/ol3-draw_ap.css" type="text/css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
  	<script type="text/JavaScript" src="http://map.intmote.com/map/js/jquery-1.9.1.js" ></script>	
@@ -16,14 +17,13 @@
 	<script type="text/JavaScript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
 	<script type="text/javascript" src="http://map.intmote.com/map/js/ol3-layerswitcher.js"></script>
 	<script type="text/javascript" src="http://map.intmote.com/map/js/coordtransform.js"></script>
-	<script type="text/javascript" src="http://map.intmote.com/map/js/ol3-draw_ap.js"></script>
-	<script type="text/javascript" src="http://map.intmote.com/map/js/ol3-draw_ap_common.js"></script>
+	<script type="text/javascript" src="./js/ol3-draw_ap.js"></script>
+	<script type="text/javascript" src="./js/ol3-draw_ap_common.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<script src="https://use.fontawesome.com/546fdd4a00.js"></script>
-</head>
-
-<body >
-    <div id="map" class="map" ></div>
+	<script src="https://use.fontawesome.com/546fdd4a00.js"></script>	
+  </head>
+  <body>
+  <div id="map" class="map" ></div>
     <div class="floor-select">
         <div class="wheel">
             <ul class="nav nav-pills nav-stacked">
@@ -32,18 +32,6 @@
 				<li class="floor-wheel " >
 					<!-- <div class="levels-select"> -->
 						<ul class="nav nav-pills nav-stacked " id="floorlist">
-<!-- 							<li role="presentation" class="floorS 01 active" onClick="floorSelect(this);"><a href="#">F01</a></li>
-							<li role="presentation" class="floorS 02" onClick="floorSelect(this);"><a href="#">F02</a></li>
-							<li role="presentation" class="floorS 03" onClick="floorSelect(this);"><a href="#">F03</a></li>
-							<li role="presentation" class="floorS 04" onClick="floorSelect(this);"><a href="#">F04</a></li>
-							<li role="presentation" class="floorS 05" onClick="floorSelect(this);"><a href="#">F05</a></li>
-							<li role="presentation" class="floorS 06" onClick="floorSelect(this);"><a href="#">F06</a></li>
-							<li role="presentation" class="floorS 07" onClick="floorSelect(this);"><a href="#">F07</a></li>
-							<li role="presentation" class="floorS 08" onClick="floorSelect(this);"><a href="#">F08</a></li>
-							<li role="presentation" class="floorS 09" onClick="floorSelect(this);"><a href="#">F09</a></li>
-							<li role="presentation" class="floorS 10" onClick="floorSelect(this);"><a href="#">F10</a></li>
-							<li role="presentation" class="floorS 11" onClick="floorSelect(this);"><a href="#">F11</a></li>
-							<li role="presentation" class="floorS 22" onClick="floorSelect(this);"><a href="#">F22</a></li> -->
 						</ul>
 					<!-- </div> -->
                 </li>
@@ -52,71 +40,36 @@
             </ul>
         </div>
     </div>
-    <!--路径规划模态框-->
-    <div class="draw" >
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">ap标点</h4>
-					<div class="form-group">
-						<div class="col-xs-9">
-							<div class="input-group has-feedback">
-								<span class="input-group-addon">区域</span>
-								<select class="form-control" id="db-place">
-									<option value="null">请选择区域</option>
-									<option value="mote">懋特物联</option>
-									<option value="zhongbei">华师大中北校区</option>
-									<option value="minhang">华师大闵行校区</option>
-								</select>
-							</div>
-						</div>
-						<div class="btn-group col-xs-2">
+    <div class="draw">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="dropdown">
+<!--                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+					编辑
+				</a> -->
+				<button type="button" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">编辑</button>
+                <ul class="dropdown-menu feature-list" style="min-width: 10px;">
+					<li>
 							<button type="button" class="btn btn-primary btn-sm" onclick="Refreshlayer();">刷新</button>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-xs-9">						
-						</div>						
-						<div class="btn-group col-xs-2">
-							<button type="button" class="btn btn-success btn-sm" onclick="SaveData();">保存</button>
-						</div>
-					</div>
-				</div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <div class="col-xs-9 tabel-key" id="tabel-key">
-                            </div>
-							<div class="col-xs-2">
-								<button type="button" class="btn btn-success btn-sm" onclick="getcolumn();">确定</button>
-							</div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-					<div class="col-xs-2">
-						<button type="button" class="btn btn-info btn-sm" id="addData" onclick="Updatedraw(this);">新增</button>
-                    </div>		
-					<div class="col-xs-2">
-						<button type="button" class="btn btn-warning btn-sm" id="updata" onclick="Updatedraw(this);">修改</button>
-                    </div>	
-					<div class="col-xs-2">
-						<button type="button" class="btn btn-danger btn-sm" id="deletedata" onclick="Updatedraw(this);">删除</button>
-                    </div>	
-					<div class="col-xs-2"></div>	
-<!-- 					<div class="col-xs-2">
-						<button type="button" class="btn btn-sm" onclick="();">...</button>
-                    </div>	 -->
-					<div class="col-xs-2">
-						<button type="button" class="btn btn-sm" onclick="stopdraw();">停止</button>
-					</div>	
-				</div>
-            </div>
+					</li>
+					<li>
+							<button type="button" class="btn btn-info btn-sm" id="addData" onclick="Updatedraw(this);">新增</button>
+					</li>
+					<li>
+							<button type="button" class="btn btn-warning btn-sm" id="updata" onclick="Updatedraw(this);">修改</button>
+					</li>
+					<li>
+							<button type="button" class="btn btn-danger btn-sm" id="deletedata" onclick="Updatedraw(this);">删除</button>
+					</li>	
+					<li>
+							<button type="button" class="btn btn-sm" onclick="stopdraw();">停止</button>
+					</li>					
+                </ul>
+            </li>
+        </ul>
     </div>	
-</body>
-<script>
-
-
 	
+  </body>
+    <script type="text/javascript">
 	// 创建地图
 	var amap = new ol.layer.Group({
 		title: 'amap',
@@ -146,14 +99,16 @@
 		})
 	});	
 	// 设置控件
-	map.addControl(new ol.control.Rotate());          // 指北针
+	//map.addControl(new ol.control.Rotate());          // 指北针
 	map.addControl(new ol.control.ScaleLine());       // 比例尺
 	map.addControl(new ol.control.Zoom());            // 地图缩放
-	map.addControl(new ol.control.LayerSwitcher());   // 图层控制
+	//map.addControl(new ol.control.LayerSwitcher());   // 图层控制
 
-	var placecheck = document.getElementById('db-place');
+	placeid = checkUrlParam('place_id');
+	mode = checkUrlParam('mode');
+
 	loadTable();
 	initdraw();
-</script>
-
+	locateCtrl(checkUrlParam('locate'));
+  </script>
 </html>

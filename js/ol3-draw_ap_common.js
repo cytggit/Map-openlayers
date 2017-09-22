@@ -1,11 +1,18 @@
 var placeid = '0';
 var floorid = '01';// 楼层编号    选择楼层
 
+var mode;
 var placeType = 'null';// 区域名称
+var locateTimeout;
 
 var DBs = 'mote'; //数据源
-// var comIp = 'http://101.81.226.116:9080';
+var locateIp = 'http://114.215.83.3:8090';
+var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var comIp = 'http://114.215.83.3:8090';
+var APUrl = 'http://114.215.83.3:8091/ConfigServer/getBeacons.action';
+var UpdAPUrl = 'http://114.215.83.3:8091/ConfigServer/updateBeacon.action';
+var DltAPUrl = 'http://114.215.83.3:8091/ConfigServer/delBeacon.action';
+
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 // 设置中心点
@@ -88,12 +95,12 @@ var geojsonstylefunction = function(feature){
 	}
 };
 
-// 电子围栏样式设置
-var electronicFenceStyleFun = function(feature){
-	// var featureiiiid = feature.values_.type_id;
-	var featureiiiid = '1';
+// ap样式设置
+var APStyleFun = function(feature){
+	var featureMode = feature.values_.mode ==  undefined ? 11 + mode :  feature.values_.mode + mode;
+
 	// 返回数据的style
-	return electronicFenceStyle[featureiiiid];
+	return APStyle[featureMode];
 };
 
 // 编辑
@@ -174,6 +181,86 @@ var drawpointstyle = new ol.style.Style({
 	zIndex: 500
 });
 	
+// AP style
+var APStyle = {
+	'00': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 7,  // 外圈
+			fill: new ol.style.Fill({
+				color: '#FF8C00'
+			}),
+		}),
+		//text: 
+		zIndex: 450
+	}),
+	'01': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 7,  // 外圈
+			fill: new ol.style.Fill({
+				color: [255,140,0,.3]
+			}),
+		}),
+		//text: 
+		zIndex: 450
+	}),
+	'11': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 7,  // 外圈
+			fill: new ol.style.Fill({
+				color: '#008CFF'
+			}),
+		}),
+		//text: 
+		zIndex: 450
+	}),
+	'10': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 7,  // 外圈
+			fill: new ol.style.Fill({
+				color: [0,140,255,.3]
+			}),
+		}),
+		//text: 
+		zIndex: 450
+	}),
+	'110': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 4,
+			stroke: new ol.style.Stroke({
+				color: '#FF8C00',
+				width: 1.5
+			}),
+			fill: new ol.style.Fill({
+				color: '#ffffff'
+			})
+		}),
+		zIndex: 500
+	}),
+	'111': new ol.style.Style({
+		image: new ol.style.Circle({
+			radius: 4,
+			stroke: new ol.style.Stroke({
+				color: '#008CFF',
+				width: 1.5
+			}),
+			fill: new ol.style.Fill({
+				color: '#ffffff'
+			})
+		}),
+		zIndex: 500
+	})
+}
+
+// 定位 style 
+var locationStyle = new ol.style.Style({
+	image: new ol.style.Icon({
+		src: 'http://map.intmote.com/map/icon/location.png',
+		scale: 0.3,
+		anchor: [0.5,0.5],
+	}),
+	zIndex: 600
+});
+
 // 基础图层style
 var geojsonstyle = {
 	'999999' : new ol.style.Style({
@@ -523,8 +610,17 @@ var pointLayer = new ol.layer.Vector({
 var electronicLayer = new ol.layer.Vector({
 	title: 'electronicFence map',
 	visible: true,
-	style: geojsonstylefunction,
+	style: APStyleFun,
 	source: new ol.source.Vector(),
 	zIndex: 80
 });		
 
+	// 定位图层 			
+var center_wfs = new ol.source.Vector();
+var LocationLayer = new ol.layer.Vector({
+	title: 'center point',
+	visible: true,
+	source: center_wfs,
+	style: locationStyle,
+	zIndex: 60
+});	

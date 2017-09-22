@@ -7,12 +7,10 @@
 
 .draw {
 	position: absolute;
-    width: 30%;
-    height: 100%;
-	top: 10%;
+    height: 20%;
+	top: 1%;
 	left: 1%;
 }
-
 
 /* 楼层条 */
 div.floor-select {
