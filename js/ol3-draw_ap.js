@@ -208,8 +208,6 @@ function addData(){
 			var oldCoordinates = evt.feature.values_.geom.getCoordinates();
 
 				window.android.addPoint(oldCoordinates[0],oldCoordinates[1], floorid);
-				electronicLayer.getSource().clear();
-				getdrawLayer(':apinfo');
 
 		}, this);			
 }
@@ -217,6 +215,15 @@ function addData(){
 // 修改
 function updata(){
 	ModifyFeature.setActive(true);
+	
+	ModifyFeature['apinfo'].on('select',
+		function(evt) {
+			if(evt.target.getFeatures().getArray().length != 0) {  
+				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
+				document.getElementById('avgLevel_value').value = selectInfo.avgLevel;
+				
+			}
+		}, this);		
 
 	ModifyFeature['apinfomodify'].on('modifyend',
 		function(evt) {
@@ -226,10 +233,12 @@ function updata(){
 			var featureMac = modifyInfo.mac;
 
 			var oldCoordinates = modifyInfo.geometry.getCoordinates();
-				
+			var avgLevel = document.getElementById('avgLevel_value').value;
+			
+			if(avgLevel != null){
 				$.ajax({  
 					url: UpdAPUrl,
-					data: {'mac':featureMac,'avgLevel':'-10','lat':oldCoordinates[1],'lon':oldCoordinates[0]}, 
+					data: {'mac':featureMac,'avgLevel':avgLevel,'lat':oldCoordinates[1],'lon':oldCoordinates[0]}, 
 					type: 'GET',
 					dataType: 'json',
 					success: function(response){
@@ -240,10 +249,24 @@ function updata(){
 						}
 			
 					}
-				})
+				})				
+			}else{
+				alert('请输入平均场强~');
+			}
+
 			
 		}, this);			
 }
+// 清空输入框的值
+function clear_column(e){
+	var columnName = e.id;
+	switch (columnName){
+		case 'clear_avgLevel':
+			document.getElementById('avgLevel_value').value = '';	
+			break;
+	}		
+}
+
 
 // 删除
 function deletedata(){
@@ -267,8 +290,7 @@ function deletedata(){
 							if(response.ret == '1'){
 								alert('删除成功~');
 							}
-							electronicLayer.getSource().clear();
-							getdrawLayer(':apinfo');
+							RefreshAPlayer();
 
 						}
 					})
@@ -390,6 +412,10 @@ function Refreshlayer(){
 	getdrawLayer(':polyline');
 	pointLayer.getSource().clear();
 	getdrawLayer(':point');
+	RefreshAPlayer()
+}
+
+function RefreshAPlayer(){
 	electronicLayer.getSource().clear();
 	getdrawLayer(':apinfo');
 }

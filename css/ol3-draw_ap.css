@@ -11,6 +11,13 @@
 	top: 1%;
 	left: 1%;
 }
+.avgLevel {
+    position: absolute;
+/*     height: 11.88em;
+	width: 3em; */
+    bottom: 10%;
+    left: 2%;	
+}
 
 /* 楼层条 */
 div.floor-select {

@@ -68,6 +68,14 @@
         </ul>
     </div>	
 	
+		
+	<div class="avgLevel"> 
+		<div class='input-group has-feedback' id='avgLevel'>
+			<span class='input-group-addon' id='avgLevel_key'>平均场强</span>
+			<input class='form-control' id='avgLevel_value'>
+			<a class='btn close form-control-feedback' id='clear_avgLevel' onclick='clear_column(this);' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>
+		</div>
+	</div>
   </body>
     <script type="text/javascript">
 	// 创建地图
@@ -81,7 +89,7 @@
 	});
 	var overmap = new ol.layer.Group({
 		title: 'over map',
-		layers: [electronicLayer,LocationLayer],
+		layers: [electronicLayer],
 	});
 	var map = new ol.Map({
 		logo: {src: './icon/LOGO.png',href: 'http://www.intmote.com/'},
