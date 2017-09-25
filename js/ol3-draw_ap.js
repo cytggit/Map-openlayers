@@ -219,6 +219,7 @@ function updata(){
 	ModifyFeature['apinfo'].on('select',
 		function(evt) {
 			if(evt.target.getFeatures().getArray().length != 0) {  
+				console.log(evt.target.getFeatures().getArray()[0].values_);
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
 				document.getElementById('avgLevel_value').value = selectInfo.avgLevel;
 				
@@ -412,7 +413,7 @@ function Refreshlayer(){
 	getdrawLayer(':polyline');
 	pointLayer.getSource().clear();
 	getdrawLayer(':point');
-	RefreshAPlayer()
+	RefreshAPlayer();
 }
 
 function RefreshAPlayer(){
