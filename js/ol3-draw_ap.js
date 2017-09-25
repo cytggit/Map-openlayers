@@ -235,7 +235,7 @@ function updata(){
 			var oldCoordinates = modifyInfo.geometry.getCoordinates();
 			var avgLevel = document.getElementById('avgLevel_value').value;
 			
-			if(avgLevel != null){
+			if(avgLevel != undefined && avgLevel != ''){
 				$.ajax({  
 					url: UpdAPUrl,
 					data: {'mac':featureMac,'avgLevel':avgLevel,'lat':oldCoordinates[1],'lon':oldCoordinates[0]}, 
@@ -246,6 +246,7 @@ function updata(){
 							alert('修改成功~');
 							ModifyFeature.setActive(false);
 							ModifyFeature.setActive(true);
+							document.getElementById('avgLevel_value').value = '';
 						}
 			
 					}

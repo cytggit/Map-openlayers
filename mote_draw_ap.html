@@ -23,7 +23,7 @@
 	<script src="https://use.fontawesome.com/546fdd4a00.js"></script>	
   </head>
   <body>
-  <div id="map" class="map" ></div>
+	<div id="map" class="map" ></div>
     <div class="floor-select">
         <div class="wheel">
             <ul class="nav nav-pills nav-stacked">
@@ -43,12 +43,12 @@
     <div class="draw">
         <ul class="nav nav-pills nav-stacked">
             <li class="dropdown">
-<!--                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-					编辑
-				</a> -->
-				<button type="button" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">编辑</button>
-                <ul class="dropdown-menu feature-list" style="min-width: 10px;">
-					<li>
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle" style="padding: 0 0;">
+					<img style="width: 2em" src="./icon/APDraw.png" />
+				</a> 
+				<!-- <button type="button" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">编辑</button> -->
+                <ul class="dropdown-menu feature-list" style="min-width: 10px; background-color: rgba(0,0,0,0)">
+					<li style="margin:-4px 0 0 0">
 							<button type="button" class="btn btn-primary btn-sm" onclick="Refreshlayer();">刷新</button>
 					</li>
 					<li>
@@ -60,22 +60,21 @@
 					<li>
 							<button type="button" class="btn btn-danger btn-sm" id="deletedata" onclick="Updatedraw(this);">删除</button>
 					</li>	
-					<li>
+					<li style="margin:0 0 -4px 0 ">
 							<button type="button" class="btn btn-sm" onclick="stopdraw();">停止</button>
 					</li>					
                 </ul>
             </li>
         </ul>
     </div>	
-	
-		
+
 	<div class="avgLevel"> 
 		<div class='input-group has-feedback' id='avgLevel'>
 			<span class='input-group-addon' id='avgLevel_key'>平均场强</span>
 			<input class='form-control' id='avgLevel_value'>
 			<a class='btn close form-control-feedback' id='clear_avgLevel' onclick='clear_column(this);' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>
 		</div>
-	</div>
+	</div> 
   </body>
     <script type="text/javascript">
 	// 创建地图
