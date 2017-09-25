@@ -249,6 +249,7 @@ function updata(){
 							ModifyFeature.setActive(false);
 							ModifyFeature.setActive(true);
 							document.getElementById('avgLevel_value').value = '';
+							RefreshAPlayer();
 						}
 			
 					}
