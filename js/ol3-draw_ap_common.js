@@ -191,7 +191,7 @@ var APStyle = {
 			}),
 		}),
 		stroke: new ol.style.Stroke({
-			color: [255,140,0,.2]
+			color: [255,140,0,.2],
 			width: 25
 		}),
 		//text: 
