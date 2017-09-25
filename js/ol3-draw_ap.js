@@ -219,7 +219,6 @@ function updata(){
 	ModifyFeature['apinfo'].on('select',
 		function(evt) {
 			if(evt.target.getFeatures().getArray().length != 0) {  
-				console.log(evt.target.getFeatures().getArray()[0].values_);
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
 				document.getElementById('avgLevel_value').value = selectInfo.avgLevel;
 				
@@ -357,6 +356,7 @@ function getdrawLayer(dbtype){
 							geometry: new ol.geom.Point([response[num].lon,response[num].lat])
 						});
 						APFeatures[num].set('mode',response[num].mode);
+						APFeatures[num].set('avgLevel',response[num].avgLevel);
 						APFeatures[num].set('mac',response[num].mac);
 						
 					}
