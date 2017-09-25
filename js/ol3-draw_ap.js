@@ -208,6 +208,8 @@ function addData(){
 			var oldCoordinates = evt.feature.values_.geom.getCoordinates();
 
 				window.android.addPoint(oldCoordinates[0],oldCoordinates[1], floorid);
+				electronicLayer.getSource().clear();
+				getdrawLayer(':apinfo');
 
 		}, this);			
 }
