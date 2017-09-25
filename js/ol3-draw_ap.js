@@ -160,6 +160,7 @@ function Updatedraw(drawinfo){
 				case 'updata': 
 					console.log(drawinfo.innerText);
 					updata();
+					$(".avgLevel").attr("style"," display: block;"); 
 					break;
 				case 'deletedata': 
 					console.log(drawinfo.innerText);
@@ -179,6 +180,7 @@ function checkDrawData(){
 			break;
 		case 'updata': 
 			ModifyFeature.setActive(false);
+			$(".avgLevel").attr("style"," display: none;"); 
 			break;
 		case 'deletedata': 
 			DeleteFeature.setActive(false);
