@@ -185,10 +185,14 @@ var drawpointstyle = new ol.style.Style({
 var APStyle = {
 	'00': new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 7,  // 外圈
+			radius: 5,  // 外圈
 			fill: new ol.style.Fill({
-				color: '#FF8C00'
+				color: [255,140,0,1]
 			}),
+		}),
+		stroke: new ol.style.Stroke({
+			color: [255,140,0,.2]
+			width: 25
 		}),
 		//text: 
 		zIndex: 450
