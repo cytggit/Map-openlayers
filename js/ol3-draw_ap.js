@@ -475,7 +475,7 @@ function floorUpdate(newfloorId){
 
 // 控制定位开关
 function locateCtrl(locateflag){
-	if(locateflag == 'true'){
+	if(locateflag == '1'){
 		startlocation();			
 	}else{
 		clearTimeout(locateTimeout);
