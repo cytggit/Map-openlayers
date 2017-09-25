@@ -190,7 +190,7 @@ var APStyle = {
 				color: [255,140,0,1]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [255,140,0,.2]
+				color: [255,140,0,.2],
 				width: 1.5
 			}),
 		}),
