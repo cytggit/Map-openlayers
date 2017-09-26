@@ -226,7 +226,7 @@ function updata(){
 		function(evt) {
 			if(evt.target.getFeatures().getArray().length != 0) {  
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
-				document.getElementById('avgLevel_value').value = selectInfo.avgLevel;
+				document.getElementById("avgLevel_value").value = selectInfo.avgLevel;
 				document.getElementById("mac_value").value = selectInfo.mac;			
 				
 				document.getElementById("draw-center").style.display = "block";			
@@ -262,7 +262,7 @@ function clear_column(e){
 // 修改后保存
 function ModifyFeatureSave(){
 	var drawCenter = view.getCenter();
-	var avgLevel = document.getElementById('avgLevel_value').value;
+	var avgLevel = document.getElementById("avgLevel_value").value;
 	var featureMac = document.getElementById("mac_value").value;
 	if(featureMac != undefined && featureMac != ''){
 		if(avgLevel != undefined && avgLevel != ''){
@@ -276,8 +276,8 @@ function ModifyFeatureSave(){
 						alert('修改成功~');
 						ModifyFeature.setActive(false);
 						ModifyFeature.setActive(true);
-						document.getElementById('avgLevel_value').value = '';
-						document.getElementById('mac_value').value = '';
+						document.getElementById("avgLevel_value").value = '';
+						document.getElementById("mac_value").value = '';
 						document.getElementById("draw-center").style.display = "none";		
 						RefreshAPlayer();
 					}
