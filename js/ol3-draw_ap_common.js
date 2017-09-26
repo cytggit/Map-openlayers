@@ -185,13 +185,13 @@ var drawpointstyle = new ol.style.Style({
 var APStyle = {
 	'00': new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 7,  // 外圈
+			radius: 4,  // 外圈
 			fill: new ol.style.Fill({
 				color: [255,140,0,1]
 			}),
 			stroke: new ol.style.Stroke({
-				color: [255,140,0,.2],
-				width: 1.5
+				color: [255,140,255,.1],
+				width: 10
 			}),
 		}),
 
@@ -200,9 +200,13 @@ var APStyle = {
 	}),
 	'01': new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 7,  // 外圈
+			radius: 4,  // 外圈
 			fill: new ol.style.Fill({
 				color: [255,140,0,.3]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,140,255,.1],
+				width: 10
 			}),
 		}),
 		//text: 
@@ -210,9 +214,13 @@ var APStyle = {
 	}),
 	'11': new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 7,  // 外圈
+			radius: 4,  // 外圈
 			fill: new ol.style.Fill({
 				color: '#008CFF'
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,140,255,.1],
+				width: 10
 			}),
 		}),
 		//text: 
@@ -220,9 +228,13 @@ var APStyle = {
 	}),
 	'10': new ol.style.Style({
 		image: new ol.style.Circle({
-			radius: 7,  // 外圈
+			radius: 4,  // 外圈
 			fill: new ol.style.Fill({
 				color: [0,140,255,.3]
+			}),
+			stroke: new ol.style.Stroke({
+				color: [255,140,255,.1],
+				width: 10
 			}),
 		}),
 		//text: 

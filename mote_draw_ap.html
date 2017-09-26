@@ -23,7 +23,9 @@
 	<script src="https://use.fontawesome.com/546fdd4a00.js"></script>	
   </head>
   <body>
-	<div id="map" class="map" ></div>
+	<div id="map" class="map" >
+		<img class="map-initcenterimg" id="draw-center" src="./icon/asset_setcenter.png " />
+	</div>
     <div class="floor-select">
         <div class="wheel">
             <ul class="nav nav-pills nav-stacked">
@@ -68,15 +70,26 @@
         </ul>
     </div>	
 
-	<div class="avgLevel"  style="display:none"> 
-		<div class='input-group has-feedback' id='avgLevel'>
-			<span class='input-group-addon' id='avgLevel_key'>平均场强</span>
-			<input class='form-control' id='avgLevel_value'>
-			<a class='btn close form-control-feedback' id='clear_avgLevel' onclick='clear_column(this);' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>
-		</div>
+	<div class="avgLevel form-group"  style="display:none"> 
+		<div  style='padding-left: 15px;' >
+			<span id='mac_key'>MAC：</span>
+			<span id='mac_value'></span>
+		</div> 
+		<div class="col-xs-10">
+			<div class='input-group has-feedback' id='avgLevel'>
+				<span class='input-group-addon' id='avgLevel_key'>平均场强</span>
+				<input class='form-control' id='avgLevel_value'>
+				<a class='btn close form-control-feedback' id='clear_avgLevel' onclick='clear_column(this);' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>
+			</div>
+		</div> 
+		<div class="col-xs-2">
+			<button type="button" class="btn btn-primary btn-sm" onclick="ModifyFeatureSave();">确定</button>
+		</div> 
 	</div> 
   </body>
     <script type="text/javascript">
+	loadinitcenterimg();
+
 	// 创建地图
 	var amap = new ol.layer.Group({
 		title: 'amap',

@@ -11,6 +11,13 @@
 	top: 1%;
 	left: 1%;
 }
+
+.map-initcenterimg {
+	display:none;
+	position:absolute; 
+	z-index:1;
+}
+
 .avgLevel {
     position: absolute;
 /*     height: 11.88em;

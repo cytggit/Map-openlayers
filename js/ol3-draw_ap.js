@@ -1,4 +1,8 @@
 
+function loadinitcenterimg(){
+	document.getElementById("draw-center").style.left = document.documentElement.clientWidth/2 -16 + "px";
+	document.getElementById("draw-center").style.top = document.documentElement.clientHeight/2 -32 + "px";	
+}
 
 // 确认网址的参数 返回参数值
 function checkUrlParam(checkName){
@@ -223,43 +227,28 @@ function updata(){
 			if(evt.target.getFeatures().getArray().length != 0) {  
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
 				document.getElementById('avgLevel_value').value = selectInfo.avgLevel;
+				document.getElementById("mac_value").value = selectInfo.mac;			
+				
+				document.getElementById("draw-center").style.display = "block";			
+					
 				
 			}
 		}, this);		
 
-	ModifyFeature['apinfomodify'].on('modifyend',
-		function(evt) {
+	// ModifyFeature['apinfomodify'].on('modifyend',
+		// function(evt) {
 
-			var modifyInfo = evt.features.getArray()[0].values_;
+			// var modifyInfo = evt.features.getArray()[0].values_;
 
-			var featureMac = modifyInfo.mac;
+			// var featureMac = modifyInfo.mac;
 
-			var oldCoordinates = modifyInfo.geometry.getCoordinates();
-			var avgLevel = document.getElementById('avgLevel_value').value;
+			// var oldCoordinates = modifyInfo.geometry.getCoordinates();
+			// var avgLevel = document.getElementById('avgLevel_value').value;
 			
-			if(avgLevel != undefined && avgLevel != ''){
-				$.ajax({  
-					url: UpdAPUrl,
-					data: {'mac':featureMac,'avgLevel':avgLevel,'lat':oldCoordinates[1],'lon':oldCoordinates[0]}, 
-					type: 'GET',
-					dataType: 'json',
-					success: function(response){
-						if(response.ret == '1'){
-							alert('修改成功~');
-							ModifyFeature.setActive(false);
-							ModifyFeature.setActive(true);
-							document.getElementById('avgLevel_value').value = '';
-							RefreshAPlayer();
-						}
-			
-					}
-				})				
-			}else{
-				alert('请输入平均场强~');
-			}
+
 
 			
-		}, this);			
+		// }, this);			
 }
 // 清空输入框的值
 function clear_column(e){
@@ -270,7 +259,40 @@ function clear_column(e){
 			break;
 	}		
 }
+// 修改后保存
+function ModifyFeatureSave(){
+	var drawCenter = view.getCenter();
+	var avgLevel = document.getElementById('avgLevel_value').value;
+	var featureMac = document.getElementById("mac_value").value;
+	if(featureMac != undefined && featureMac != ''){
+		if(avgLevel != undefined && avgLevel != ''){
+			$.ajax({  
+				url: UpdAPUrl,
+				data: {'mac':featureMac,'avgLevel':avgLevel,'lat':drawCenter[1],'lon':drawCenter[0]}, 
+				type: 'GET',
+				dataType: 'json',
+				success: function(response){
+					if(response.ret == '1'){
+						alert('修改成功~');
+						ModifyFeature.setActive(false);
+						ModifyFeature.setActive(true);
+						document.getElementById('avgLevel_value').value = '';
+						document.getElementById('mac_value').value = '';
+						document.getElementById("draw-center").style.display = "none";		
+						RefreshAPlayer();
+					}
+		
+				}
+			})				
+		}else{
+			alert('请输入平均场强~');
+		}		
+	}else{
+		alert('请选择AP~');
+	}
 
+	
+}
 
 // 删除
 function deletedata(){
