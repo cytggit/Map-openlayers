@@ -185,6 +185,7 @@ function checkDrawData(){
 		case 'updata': 
 			ModifyFeature.setActive(false);
 			$(".avgLevel").attr("style"," display: none;"); 
+			document.getElementById("draw-center").style.display = "none";		
 			break;
 		case 'deletedata': 
 			DeleteFeature.setActive(false);
@@ -227,7 +228,7 @@ function updata(){
 			if(evt.target.getFeatures().getArray().length != 0) {  
 				var selectInfo = evt.target.getFeatures().getArray()[0].values_;
 				document.getElementById("avgLevel_value").value = selectInfo.avgLevel;
-				document.getElementById("mac_value").value = selectInfo.mac;			
+				document.getElementById("mac_value").innerText = selectInfo.mac;			
 				
 				document.getElementById("draw-center").style.display = "block";			
 					
@@ -263,7 +264,7 @@ function clear_column(e){
 function ModifyFeatureSave(){
 	var drawCenter = view.getCenter();
 	var avgLevel = document.getElementById("avgLevel_value").value;
-	var featureMac = document.getElementById("mac_value").value;
+	var featureMac = document.getElementById("mac_value").innerText;
 	if(featureMac != undefined && featureMac != ''){
 		if(avgLevel != undefined && avgLevel != ''){
 			$.ajax({  
@@ -277,7 +278,7 @@ function ModifyFeatureSave(){
 						ModifyFeature.setActive(false);
 						ModifyFeature.setActive(true);
 						document.getElementById("avgLevel_value").value = '';
-						document.getElementById("mac_value").value = '';
+						document.getElementById("mac_value").innerText = '';
 						document.getElementById("draw-center").style.display = "none";		
 						RefreshAPlayer();
 					}
