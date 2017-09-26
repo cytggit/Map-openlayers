@@ -233,6 +233,11 @@ function updata(){
 				document.getElementById("draw-center").style.display = "block";			
 					
 				
+			}else{
+				document.getElementById("avgLevel_value").value = "";
+				document.getElementById("mac_value").innerText = "";			
+				
+				document.getElementById("draw-center").style.display = "none";					
 			}
 		}, this);		
 
