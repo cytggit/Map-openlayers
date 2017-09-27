@@ -190,6 +190,7 @@ var APStyle = {
 			src: './icon/00.png',
 			anchor: [0.5,0.5],
 			opacity: 1,
+			scale: 0.4
 		}),
 		zIndex: 450
 	}),
@@ -198,6 +199,7 @@ var APStyle = {
 			src: './icon/00.png',
 			anchor: [0.5,0.5],
 			opacity: 0.5,
+			scale: 0.4
 		}),
 		zIndex: 450
 	}),
@@ -206,6 +208,7 @@ var APStyle = {
 			src: './icon/11.png',
 			anchor: [0.5,0.5],
 			opacity: 1,
+			scale: 0.4
 		}),
 		zIndex: 450
 	}),
@@ -214,6 +217,7 @@ var APStyle = {
 			src: './icon/11.png',
 			anchor: [0.5,0.5],
 			opacity: 0.5,
+			scale: 0.4
 		}),
 		zIndex: 450
 	}),
@@ -222,6 +226,7 @@ var APStyle = {
 			src: './icon/110.png',
 			anchor: [0.5,0.5],
 			opacity: 1,
+			scale: 0.4
 		}),
 		zIndex: 500
 	}),
@@ -230,6 +235,7 @@ var APStyle = {
 			src: './icon/111.png',
 			anchor: [0.5,0.5],
 			opacity: 1,
+			scale: 0.4
 		}),
 		zIndex: 500
 	})
