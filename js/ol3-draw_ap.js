@@ -231,7 +231,7 @@ function updata(){
 				document.getElementById("mac_value").innerText = selectInfo.mac;			
 				
 				document.getElementById("draw-center").style.display = "block";			
-					
+				view.setCenter(selectInfo.geometry.getCoordinates());
 				
 			}else{
 				document.getElementById("avgLevel_value").value = "";
@@ -557,10 +557,13 @@ function getlocation(){
 		jsonpCallback: 'successCallBack',
 		success: function(response){
 			var features = new ol.format.GeoJSON().readFeatures(response);
-			
-			// console.log(featureOBJ[0].properties.floor_id);
 			center_wfs.clear();
-			center_wfs.addFeatures(features);
+			if(response.features.length == 1 && response.features[0].properties.floor_id == floorid){
+				
+				center_wfs.addFeatures(features);			
+			}
+			// console.log(featureOBJ[0].properties.floor_id);
+
 			
 		}		
 	});
