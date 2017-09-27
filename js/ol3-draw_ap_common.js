@@ -4,9 +4,11 @@ var floorid = '01';// 楼层编号    选择楼层
 var mode;
 var placeType = 'null';// 区域名称
 var locateTimeout;
+var deviceId;//设备自动生成
 
 var DBs = 'mote'; //数据源
 var locateIp = 'http://114.215.83.3:8090';
+var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var comIp = 'http://114.215.83.3:8090';
 var APUrl = 'http://114.215.83.3:8091/ConfigServer/getBeacons.action';
@@ -183,86 +185,51 @@ var drawpointstyle = new ol.style.Style({
 	
 // AP style
 var APStyle = {
-	'00': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,  // 外圈
-			fill: new ol.style.Fill({
-				color: [255,140,0,1]
-			}),
-			stroke: new ol.style.Stroke({
-				color: [255,140,255,.1],
-				width: 10
-			}),
+	'00'/*wifi*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/00.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
 		}),
-
-		//text: 
 		zIndex: 450
 	}),
-	'01': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,  // 外圈
-			fill: new ol.style.Fill({
-				color: [255,140,0,.3]
-			}),
-			stroke: new ol.style.Stroke({
-				color: [255,140,255,.1],
-				width: 10
-			}),
+	'01'/*wifi*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/00.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
 		}),
-		//text: 
 		zIndex: 450
 	}),
-	'11': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,  // 外圈
-			fill: new ol.style.Fill({
-				color: '#008CFF'
-			}),
-			stroke: new ol.style.Stroke({
-				color: [255,140,255,.1],
-				width: 10
-			}),
+	'11'/*蓝牙*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/11.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
 		}),
-		//text: 
 		zIndex: 450
 	}),
-	'10': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,  // 外圈
-			fill: new ol.style.Fill({
-				color: [0,140,255,.3]
-			}),
-			stroke: new ol.style.Stroke({
-				color: [255,140,255,.1],
-				width: 10
-			}),
+	'10'/*蓝牙*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/11.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
 		}),
-		//text: 
 		zIndex: 450
 	}),
-	'110': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,
-			stroke: new ol.style.Stroke({
-				color: '#FF8C00',
-				width: 1.5
-			}),
-			fill: new ol.style.Fill({
-				color: '#ffffff'
-			})
+	'110'/*增加WiFi*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/110.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
 		}),
 		zIndex: 500
 	}),
-	'111': new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: 4,
-			stroke: new ol.style.Stroke({
-				color: '#008CFF',
-				width: 1.5
-			}),
-			fill: new ol.style.Fill({
-				color: '#ffffff'
-			})
+	'111'/*增加蓝牙*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/111.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
 		}),
 		zIndex: 500
 	})

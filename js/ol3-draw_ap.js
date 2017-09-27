@@ -537,6 +537,7 @@ function floorUpdate(newfloorId){
 // 控制定位开关
 function locateCtrl(locateflag){
 	if(locateflag == '1'){
+		deviceId = checkUrlParam('deviceId');
 		startlocation();			
 	}else{
 		clearTimeout(locateTimeout);
@@ -548,8 +549,8 @@ function locateCtrl(locateflag){
 function getlocation(){	
 	// 从位置服务器获取定位信息
 	$.ajax({
-		url: locateCertainUrl,
-		data: {'floor_id':floorid,'place_id':placeid}, 
+		url: locateUrl,
+		data: {'deviceId':deviceId}, 
 		type: 'GET',
 		dataType: 'jsonp',
 		jsonp: 'callback',
