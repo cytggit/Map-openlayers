@@ -38,14 +38,50 @@ var mysvgrouteend = new Image();
 mysvgrouteend.src = 'data:image/svg+xml,' + escape(svgrouteend);
 	
 // interaction.Select
-var selectSingleClickStyle = new ol.style.Style({
-	image: new ol.style.Circle({
-		fill: new ol.style.Fill({
-			color: [255,255,255,0.1]
-		}),
-		radius: 6,
-	})
-});
+var selectSingleClickStyle = function(feature){
+	if (feature.values_.sfloor != undefined){
+		var style = new ol.style.Style({
+			image: new ol.style.Icon({
+				img: mysvgroutestart,
+				imgSize: [30, 30],   // 图标大小
+				anchor: [0.5,1],     // 摆放位置
+				scale: map.getView().getZoom() / 20  // 根据层级缩放SVG图标
+			}),
+			zIndex: 700
+		});
+	}else if (feature.values_.efloor != undefined){
+		var style = new ol.style.Style({
+			image: new ol.style.Icon({
+				img: mysvgrouteend,
+				imgSize: [30, 30],   // 图标大小
+				anchor: [0.5,1],     // 摆放位置
+				scale: map.getView().getZoom() / 20  // 根据层级缩放SVG图标
+			}),
+			zIndex: 700
+		});
+	}else{
+		var style =  new ol.style.Style({
+			image: new ol.style.Circle({
+				fill: new ol.style.Fill({
+					color: [255,255,255,0.1]
+				}),
+				radius: 6,
+			})
+		});
+	}
+	return style;
+};
+
+
+
+// = new ol.style.Style({
+	// image: new ol.style.Circle({
+		// fill: new ol.style.Fill({
+			// color: [255,255,255,0.1]
+		// }),
+		// radius: 6,
+	// })
+// });
 	
 // 定位 style 
 var locationStyle = new ol.style.Style({
@@ -283,7 +319,32 @@ var electronicFenceStyle = {
 	})
 };
 	
-	
+var routeStyle = 	{
+	'1': new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [0,255,255,1],
+			// lineCap: , //butt, round, or square Default is round.
+			// lineJoin: , //bevel, round, or miter Default is round.
+			lineDash: [1,2,3,4,5,6], // 虚线
+			lineDashOffset: 1,
+			// miterLimit: ,  // 最大斜接长度
+			width: 2
+		}),
+		zIndex: 250
+	}),
+	'0': new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: [0,255,255,0.4],
+			// lineCap: , //butt, round, or square Default is round.
+			// lineJoin: , //bevel, round, or miter Default is round.
+			lineDash: [1,2,3,4,5,6], // 虚线
+			lineDashOffset: 1,
+			// miterLimit: ,  // 最大斜接长度
+			width: 2
+		}),
+		zIndex: 250
+	})
+};
 	
 // 基础图层style
 var geojsonstyle = {

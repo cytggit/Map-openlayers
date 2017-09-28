@@ -9,10 +9,9 @@ var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
-// var DBs = 'wanhuayuan'; //数据源
 var locateIp = 'http://114.215.83.3:8090';
-var comIp = 'http://114.215.83.3:8090';
-// var comIp = 'http://116.231.55.50:9088';//备用
+// var comIp = 'http://114.215.83.3:8090';
+var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
@@ -68,7 +67,7 @@ var geojsonstylefunction = function(feature){
 	if (featureiiiid == '30060100' || featureiiiid == '30060200' ){
 		if (map.getView().getZoom() > 19){
 			geojsonstyle[featureiiiid].getImage().setScale((map.getView().getZoom()-19)*0.1);
-			console.log(0000000000000);
+			//console.log(0000000000000);
 		}else {
 			geojsonstyle[featureiiiid].getImage().setScale(0.1);
 		}
@@ -148,6 +147,7 @@ var drawlinestring,drawpoint; // 绘制的interaction
 var pathPlanningOFF = true; // 当为FALSE时不执行路径规划任何功能  防止路径规划功能被重复打开
 var myLocate,myPoint; // 选择中心点、地图选点作为起终点
 var RouteStartLayer,RouteDestLayer,RouteLayer; // 分别为起点图层、终点图层、路线图层
+var routeFeature = []; // 跨楼层路径规划时，存放规划出来的路线
 var RouteParam,sourceLabelX,sourceLabelY,targetLabelX,targetLabelY; // 取得路线的param及param下起终点的坐标值
 var RouteSourceFloor,RouteTargetFloor; // 路径规划起终点所在的楼层
 var LabelAction = null;  // 记录当前取点是起点或者终点
