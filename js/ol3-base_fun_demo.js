@@ -73,7 +73,15 @@ function getlocation(){
 
 				// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 				if (locateFloor == floorid){
-					center_wfs.addFeatures(features);
+					
+					// 判断是否正在路径规划，做路网吸附
+					// if(!pathPlanningOFF &&  ){
+					if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
+						var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
+						center_wfs.addFeatures(newcenterFearure);
+					}else{
+						center_wfs.addFeatures(features);
+					}
 				}
 			}else{
 				LocationLayer.setStyle(locationStyle);
@@ -110,6 +118,9 @@ function loadlocation(){
 					break;
 				case '4':
 					view.setCenter(minhangcenter);
+					break;
+				case '5':
+					view.setCenter(zhanlancenter);
 					break;
 			}
 		}
@@ -155,7 +166,7 @@ function getFloorList(){
 				}
 			}
 			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a href="#">F' + FloorId[FloorNum] + '</a></li>';
+				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
 			}
 			$("#floorlist").html(FloorTag);
 			if(deviceId != 'all'){
@@ -579,29 +590,48 @@ function electronicFenceWarn(){
 // 点选-高亮+属性
 function loadselectSingleClick(){
 	var selectInfo;   //点击poi 的详细信息
+	var selectName;   //点击poi 的详细信息
 	var coordinate;	//点击poi 的坐标
 	var selectId;   //点击poi 的形状id
 	selectSingleClick = new ol.interaction.Select({
-		layers: [selectSingleClickLayter],
+		layers: [selectSingleClickLayter,RouteStartLayer,RouteDestLayer],
 		style: selectSingleClickStyle,
+	});
+	var selectedFeatures = selectSingleClick.getFeatures();	
+	selectSingleClick.on('change:active', function() {
+		selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
 	});
 	map.addInteraction(selectSingleClick);
 	selectSingleClick.on('select', function(e) {
-		// console.log(e.selected[0]);
-		// selectInfo = e.selected[0].I.name;
-		selectInfo = e.selected[0].values_.name;
-		selectId = e.selected[0].values_.id;
-		var geom = e.selected[0].values_.geometry;
-		var geomtype = geom.getType();
-		if (geomtype == 'Polygon'){
-			coordinate = geom.getInteriorPoint().getCoordinates();
-		}else if (geomtype == 'Point'){
-			coordinate = geom.getCoordinates();
+		selectInfo = e.selected[0].values_;
+
+		if (selectInfo.sfloor != undefined){
+			// alert('选中起点');
+			setFloorAndCenter(selectInfo.sfloor,sourceLabelX,sourceLabelY);
+			selectSingleClick.setActive(false);
+			selectSingleClick.setActive(true);
+		}else if(selectInfo.efloor != undefined){
+			// alert('选中终点');
+			setFloorAndCenter(selectInfo.efloor,targetLabelX,targetLabelY);
+			selectSingleClick.setActive(false);
+			selectSingleClick.setActive(true);
+		}else{
+			// alert('选中poi');
+			selectName = selectInfo.name;
+			selectId = selectInfo.fid;
+			var geom = selectInfo.geometry;
+			var geomtype = geom.getType();
+			if (geomtype == 'Polygon'){
+				coordinate = geom.getInteriorPoint().getCoordinates();
+			}else if (geomtype == 'Point'){
+				coordinate = geom.getCoordinates();
+			}
+			HighlightElementContent.innerHTML = selectName;
+			HighlightOverlay.setPosition(coordinate);		
+			// 清除路径规划
+			clearPath();				
 		}
-		HighlightElementContent	.innerHTML = selectInfo;
-		HighlightOverlay.setPosition(coordinate);		
-		// 清除路径规划
-		clearPath();
+
 	});		
 	HighlightElementCloser.onclick = function (){
 		HighlightOverlay.setPosition(undefined);
@@ -623,19 +653,20 @@ function loadselectSingleClick(){
 		// 设置起点为选中的点
 		clearStartLabel();
 		LabelAction = 'startLabel';
-		document.getElementById('label-start').value = selectInfo;
-		setlabelOnClick(LabelAction,coordinate);
+		document.getElementById('label-start').value = selectName;
+		setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
 		// 地图点选终点
 		getEndLabelOnMap();
 	}
 	// 去这里
 	HighlightElementTo.onclick = function (){
+		removeSelectSingleClick();
 		// 打开路径规划功能
 		pathPlanningMain();
 		// 设置终点为选中的点，自动规划完路线
 		LabelAction = 'endLabel';
-		document.getElementById('label-end').value = selectInfo;
-		setlabelOnClick(LabelAction,coordinate);
+		document.getElementById('label-end').value = selectName;
+		setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
 	}
 }
 	
@@ -760,7 +791,24 @@ function floorUpdate(newfloorId){
 	// 清除 路径规划  & 刷新 点选
 	if (!pathPlanningOFF){
 		// clearPath();  // 只清除 路径规划
-		backPathPlan();  // 清除 路径规划  & 刷新 点选
+		// backPathPlan();  // 清除 路径规划  & 刷新 点选
+		if(RouteLayer != null && RouteLayer != undefined){
+			if(RouteSourceFloor == RouteTargetFloor/* 非跨楼层*/ ){
+				if(RouteSourceFloor == floorid){/* 切换到路线所在楼层 */
+					routeFeature[0].setStyle(routeStyle[1]);
+					RouteStartLayer.setOpacity(1);
+					RouteDestLayer.setOpacity(1);
+				}else{/* 切换到路线之外楼层 */
+					routeFeature[0].setStyle(routeStyle[0]);
+					RouteStartLayer.setOpacity(0.4);
+					RouteDestLayer.setOpacity(0.4);
+				}
+			}else{/* 跨楼层*/
+				setRouteStyleWithFloor();
+				//RouteLayer.setStyle();
+			}
+		}
+		
 	}
 	// 清除点选 再增加点选（刷新）
 	// removeSelectSingleClick();
@@ -1178,7 +1226,7 @@ function labelOnMapClear(){
 function StartPathPlanning(){
 	if (document.getElementById('label-start').value != '' && document.getElementById('label-end').value != '' ){
 		console.log('起点和终点不为空！');
-		if((sourceLabelX == targetLabelX) && (sourceLabelY == targetLabelY)){
+		if((RouteSourceFloor == RouteTargetFloor) && (sourceLabelX == targetLabelX) && (sourceLabelY == targetLabelY)){
 			alert('起点和终点不能相同！');
 		}else{
 			console.log('开始路径规划！');
@@ -1186,50 +1234,114 @@ function StartPathPlanning(){
 				title: 'route map',
 				visible: true,
 				source: new ol.source.Vector(),
-				style: new ol.style.Style({
-					stroke: new ol.style.Stroke({
-						color: [0,255,255,1],
-						// lineCap: , //butt, round, or square Default is round.
-						// lineJoin: , //bevel, round, or miter Default is round.
-						lineDash: [1,2,3,4,5,6], // 虚线
-						lineDashOffset: 1,
-						// miterLimit: ,  // 最大斜接长度
-						width: 2
-					}),
-					zIndex: 250
-				}),
-				zIndex: 20
-			});	
-			RouteParam = 'x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
-			RouteRequestParam = {
-				service: 'WFS',
-				version: '1.1.0',
-				request: 'GetFeature',
-				typeName: DBs + ':route_new', // 路径规划图层
-				outputFormat: 'application/json',
-				viewparams: RouteParam
-			};	
-			$.ajax({  
-				url: wfsUrl,
-				data: $.param(RouteRequestParam), 
-				type: 'GET',
-				dataType: 'json',
-				success: function(response){
-					RouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
-				}
-			}); 				
-			// RouteLayer = new ol.layer.Tile({
-				// title: 'route map',
-				// visible: true,
-				// source: new ol.source.TileWMS({
-					// url: 'http://192.168.1.126:8088/geoserver/wanhuayuan/wms',
-					// params: {LAYERS:'wanhuayuan:route_new',version:'1.1.0',viewparams:RouteParam}
-				// })
-			// });	
+				zIndex: 20		
+			});		
+			
+			if (RouteSourceFloor == RouteTargetFloor){
+				RouteParam = 'x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
+				var RouteRequestParam = {
+					service: 'WFS',
+					version: '1.1.0',
+					request: 'GetFeature',
+					typeName: DBs + ':route_new', // 路径规划图层
+					outputFormat: 'application/json',
+					viewparams: RouteParam
+				};	
+				$.ajax({  
+					url: wfsUrl,
+					data: $.param(RouteRequestParam), 
+					type: 'GET',
+					dataType: 'json',
+					success: function(response){
+						var routeCoordinates = response.features[0].geometry.coordinates;
+
+						routeFeature[0] = new ol.Feature({
+							geometry: new ol.geom.LineString(routeCoordinates),
+						});
+						
+						routeFeature[0].setStyle(routeStyle[1]);
+						RouteLayer.getSource().addFeatures(routeFeature);
+					}
+				});				
+			}else{
+				RouteParam = 'startfloor:' + RouteSourceFloor + ';endfloor:' + RouteTargetFloor + ';x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
+				var RouteRequestParam = {
+					service: 'WFS',
+					version: '1.1.0',
+					request: 'GetFeature',
+					typeName: DBs + ':route_withfloor', // 路径规划图层
+					outputFormat: 'application/json',
+					viewparams: RouteParam
+				};	
+				$.ajax({  
+					url: wfsUrl,
+					data: $.param(RouteRequestParam), 
+					type: 'GET',
+					dataType: 'json',
+					success: function(response){
+						if(response.features.length > 0){
+							var routeCoordinatesa = response.features[0].geometry.coordinates;
+							var routeCoordinatesb = response.features[0].properties.line2.coordinates;
+	
+							routeFeature[0] = new ol.Feature({
+								geometry: new ol.geom.LineString(routeCoordinatesa),
+							});		
+							routeFeature[1] = new ol.Feature({
+								geometry: new ol.geom.LineString(routeCoordinatesb),
+							});		
+						
+							// 规划完了之后默认显示在起点处
+							setFloorAndCenter(RouteSourceFloor,sourceLabelX,sourceLabelY);
+							setRouteStyleWithFloor();
+							// RouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(response));
+							RouteLayer.getSource().addFeatures(routeFeature);							
+						}else{
+							alert('未找到合适的路线！');
+						}
+
+					}
+				});				
+			}
+
 			overmap.getLayers().extend([RouteLayer]);	
 			labelOnMapClear();	
 			loadselectSingleClick();
 		}
+	}
+}
+// 跨楼层路径规划设置默认显示在起点位置和所在楼层
+function setFloorAndCenter(floor,geomx,geomy){
+	view.setCenter([geomx,geomy]);
+	// 当所在楼层不是起点所在楼层时，切换到起点的楼层
+	if (floor != floorid){
+		//起点楼层的图标高亮
+		var floorLength = document.getElementsByClassName('floorS').length;
+		for (var i =0; i< floorLength; i++){
+			document.getElementsByClassName('floorS')[i].classList.remove('active');
+		}
+		document.getElementsByClassName(floor)[0].classList.add('active');
+		// 切换楼层
+		floorUpdate(floor);
+	}	
+}
+
+// 跨楼层路径规划设style
+function setRouteStyleWithFloor(){
+	if(RouteSourceFloor == floorid){
+		routeFeature[0].setStyle(routeStyle[1]);
+		routeFeature[1].setStyle(routeStyle[0]);
+		RouteStartLayer.setOpacity(1);
+		RouteDestLayer.setOpacity(0.4);		
+	}else if (RouteTargetFloor == floorid){
+		routeFeature[0].setStyle(routeStyle[0]);
+		routeFeature[1].setStyle(routeStyle[1]);
+		RouteStartLayer.setOpacity(0.4);
+		RouteDestLayer.setOpacity(1);		
+	}else{
+		routeFeature[0].setStyle(routeStyle[0]);
+		routeFeature[1].setStyle(routeStyle[0]);
+		RouteStartLayer.setOpacity(0.4);
+		RouteDestLayer.setOpacity(0.4);		
 	}
 }
 
@@ -1276,13 +1388,17 @@ function setMyLocation(){
 	if (LabelAction == 'startLabel'){
 		sourceLabelX = LabelX;
 		sourceLabelY = LabelY;
+		myLocate.set('sfloor',locateFloor);
 		RouteStartLayer.getSource().addFeature(myLocate);	
-		overmap.getLayers().extend([RouteStartLayer]);					
+		overmap.getLayers().extend([RouteStartLayer]);	
+		RouteSourceFloor = locateFloor;
 	}else if (LabelAction == 'endLabel'){
 		targetLabelX = LabelX;
 		targetLabelY = LabelY;
+		myLocate.set('efloor',locateFloor);
 		RouteDestLayer.getSource().addFeature(myLocate);	
 		overmap.getLayers().extend([RouteDestLayer]);	
+		RouteTargetFloor = locateFloor;
 	}
 	StartPathPlanning();	
 	LabelX = null;
@@ -1320,13 +1436,17 @@ function setlabelOnMap(){
 			if (LabelAction == 'startLabel'){
 				sourceLabelX = LabelX;
 				sourceLabelY = LabelY;
+				myPoint.set('sfloor',e.selected[0].values_.floor_id);
 				RouteStartLayer.getSource().addFeature(myPoint);		
 				overmap.getLayers().extend([RouteStartLayer]);	
+				RouteSourceFloor = e.selected[0].values_.floor_id;
 			}else if (LabelAction == 'endLabel'){
 				targetLabelX = LabelX;
 				targetLabelY = LabelY;
+				myPoint.set('efloor',e.selected[0].values_.floor_id);
 				RouteDestLayer.getSource().addFeature(myPoint);	
 				overmap.getLayers().extend([RouteDestLayer]);	
+				RouteTargetFloor = e.selected[0].values_.floor_id;
 			}
 			StartPathPlanning();	
 			LabelX = null;
@@ -1339,7 +1459,7 @@ function setlabelOnMap(){
 	}
 }
 
-function setlabelOnClick(LabelAction,coordinate){
+function setlabelOnClick(LabelAction,coordinate,ClickFloor){
 	if (LabelAction == 'startLabel'){
 		if (RouteStartLayer != null ){RouteStartLayer.getSource().clear();}
 	}else if(LabelAction == 'endLabel'){
@@ -1353,13 +1473,17 @@ function setlabelOnClick(LabelAction,coordinate){
 	if (LabelAction == 'startLabel'){
 		sourceLabelX = LabelX;
 		sourceLabelY = LabelY;
+		myPoint.set('sfloor',ClickFloor);
 		RouteStartLayer.getSource().addFeature(myPoint);		
 		overmap.getLayers().extend([RouteStartLayer]);	
+		RouteSourceFloor = ClickFloor;
 	}else if (LabelAction == 'endLabel'){
 		targetLabelX = LabelX;
 		targetLabelY = LabelY;
+		myPoint.set('efloor',ClickFloor);
 		RouteDestLayer.getSource().addFeature(myPoint);	
 		overmap.getLayers().extend([RouteDestLayer]);	
+		RouteTargetFloor = ClickFloor;
 	}
 	StartPathPlanning();	
 	LabelX = null;
