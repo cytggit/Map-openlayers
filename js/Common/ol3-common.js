@@ -84,14 +84,6 @@ var geojsonstylefunction = function(feature){
 	return geojsonstyle[featureiiiid];
 };
 
-// 电子围栏样式设置
-var electronicFenceStyleFun = function(feature){
-	// var featureiiiid = feature.values_.type_id;
-	var featureiiiid = '1';
-	// 返回数据的style
-	return electronicFenceStyle[featureiiiid];
-};
-
 
 // 确认网址的Flag 当为true时可以定位，加载定位信息
 var checkFlag = false;
@@ -102,58 +94,10 @@ var locateStyleWarn = false;
 // 返回中心点的Flag 当为true时有定位信息，可以返回中心点
 var backcenterFlag = false;
 
-// 电子围栏
-var electronicLayerOff = true; // 显示电子围栏的FLAG 当为true时显示电子围栏图层
-var drawElectronicFlag = false;
-var addElectronicFlag = false; // 第一次add后，设为true 
-var updateElectronicFlag = false; // 第一次upd后，设为true 
-var rmElectronicFlag = false; // 第一次rm后，设为true 
-var drawtype = null;   // add or upd or rm
-var DrawElectronicFence; // 绘制的interaction  draw
-var ModifyElectronicFence; // 修改的interaction  select and modify
-var DeleteElectronicFence; // 删除的interaction  select
-// var electronicFeatureDummy = new ol.source.Vector(); // 电子围栏的feature 临时存储
-var electronicFeatureDummy =[]; // 电子围栏的feature 临时存储
 var OldWarnType = null; // 电子围栏预警的flag 对比前一次的变化去预警
 
-// 显示收藏的FLAG 当为true时显示收藏图层
-var collectionoff = true;
 
-// 检索Flag 记录检索类型 
-// 当和上一次检索类型不同时清除上一次结果并返回这次的poi；
-// 当和上一次检索类型相同时清除上一次的结果
-var selectinfo = null;
-var featureid; // 记录当前的检索类型对应的数据类型   
 
-// 热力图开关Flag
-var heatmapoff = true;
-var guideHeatmapTimeoutId;
-
-// 测距
-var lengthoff = true; // 当为FALSE时不执行加载测距图层  防止测距图层多次被加入图层组
-var lengthstop = true; // 当为FALSE时不执行测距功能  防止重复开启测距功能
-var formatLength; // 计算线的长度
-var wgs84Sphere = new ol.Sphere(6378137); // 计算线的长度所用常量
-var sketch; // 绘制的形状
-var drawend = true; // 绘制结束flag 判断执行停止或者清除时绘制的状态
-var helpTooltipElement; //  帮助信息
-var helpTooltip;  // 帮助的overlay
-var measureTooltipElement; // 显示长度
-var measureTooltips = [];//显示长度的overlay 
-var measureNum=0; // 长度的overlay 计数
-var drawlinestring,drawpoint; // 绘制的interaction
-
-// 路径规划
-var pathPlanningOFF = true; // 当为FALSE时不执行路径规划任何功能  防止路径规划功能被重复打开
-var myLocate,myPoint; // 选择中心点、地图选点作为起终点
-var RouteStartLayer,RouteDestLayer,RouteLayer; // 分别为起点图层、终点图层、路线图层
-var routeFeature = []; // 跨楼层路径规划时，存放规划出来的路线
-var RouteParam,sourceLabelX,sourceLabelY,targetLabelX,targetLabelY; // 取得路线的param及param下起终点的坐标值
-var RouteSourceFloor,RouteTargetFloor; // 路径规划起终点所在的楼层
-var LabelAction = null;  // 记录当前取点是起点或者终点
-var LabelX,LabelY; // 取起点或终点时临时存储坐标值
-var labelOnMap; // 点选起终点的interaction
-var LabelOnMapFlag = false; // 点选起终点的Flag 当为FALSE时启动点选
 
 // 修改记录
 function updateNewFeature(features,featureType,updType){
