@@ -10,8 +10,8 @@ var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
 var locateIp = 'http://114.215.83.3:8090';
-// var comIp = 'http://114.215.83.3:8090';
-var comIp = 'http://116.231.55.50:9088';//备用
+var comIp = 'http://114.215.83.3:8090';
+// var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
@@ -23,6 +23,7 @@ var motecenter = [121.4286933,31.1664993];
 var zhongbeicenter = [121.407241820159,31.2265797284321]; 
 var minhangcenter = [121.457171250547,31.0275850273072]; 
 var zhanlancenter = [121.452368605797,31.2253976215524]; 
+var lunchuancenter = [121.505282235984 31.408037933827]; 
 // 设置视图
 var view = new ol.View({
 	center: motecenter,

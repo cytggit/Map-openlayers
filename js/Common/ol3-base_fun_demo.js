@@ -122,6 +122,9 @@ function loadlocation(){
 				case '5':
 					view.setCenter(zhanlancenter);
 					break;
+				case '6':
+					view.setCenter(lunchuancenter);
+					break;
 			}
 		}
 	}
