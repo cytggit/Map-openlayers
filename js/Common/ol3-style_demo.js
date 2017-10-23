@@ -473,6 +473,16 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
+	'10030609' /*衣架*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,204,0.8]
+		}),
+		zIndex: 103
+	}),
 	'10030602' /*卫生间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
@@ -611,6 +621,11 @@ var geojsonstyle = {
 		}),
 		zIndex:330
 	}),	
-
+	'30052200' /*床*/: new ol.style.Style({  
+		image: new ol.style.Icon({
+			src: './icon/bed.png',
+		}),
+		zIndex:330
+	}),	
 	
 };
