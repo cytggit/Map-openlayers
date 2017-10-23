@@ -388,6 +388,16 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
+	'10030610' /*床*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [244,244,204,0.8]
+		}),
+		zIndex: 103
+	}),
 	'10030602' /*卫生间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
