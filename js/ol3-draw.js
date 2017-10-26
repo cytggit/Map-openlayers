@@ -27,6 +27,10 @@ function loadTable(){
 				placeid = '6';
 				view.setCenter(lunchuancenter);
 				break;
+			case 'fengpu':
+				placeid = '7';
+				view.setCenter(fengpucenter);
+				break;
 			case 'newplace':
 				tablecheck.value = 'polygon_background';
 				$("#tabel-key").html(place + feature + floor + Fname);

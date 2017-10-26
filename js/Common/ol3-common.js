@@ -24,6 +24,7 @@ var zhongbeicenter = [121.407241820159,31.2265797284321];
 var minhangcenter = [121.457171250547,31.0275850273072]; 
 var zhanlancenter = [121.452368605797,31.2253976215524]; 
 var lunchuancenter = [121.505282235984,31.408037933827]; 
+var fengpucenter = [121.433152478344,30.9342295206643];
 // 设置视图
 var view = new ol.View({
 	center: motecenter,

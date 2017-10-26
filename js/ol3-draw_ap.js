@@ -53,6 +53,16 @@ function loadTable(){
 				// 显示电子围栏
 				electronicFence();
 				break;
+			case '6':
+				view.setCenter(lunchuancenter);
+				// 显示电子围栏
+				electronicFence();
+				break;
+			case '7':
+				view.setCenter(fengpucenter);
+				// 显示电子围栏
+				electronicFence();
+				break;
 		}
 		// 当编辑打开时，判断之前的编辑操作是否需要保存
 		// if(drawFlag){
