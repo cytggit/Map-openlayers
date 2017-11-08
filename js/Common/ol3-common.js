@@ -9,8 +9,8 @@ var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
-var locateIp = 'http://114.215.83.3:8090';
-var comIp = 'http://114.215.83.3:8090';
+var locateIp = 'http://114.215.83.3:8086';
+var comIp = 'http://114.215.83.3:8086';
 // var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
