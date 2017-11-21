@@ -9,9 +9,9 @@ var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
-var locateIp = 'http://114.215.83.3:8086';
-var comIp = 'http://114.215.83.3:8086';
-// var comIp = 'http://116.231.55.50:9088';//备用
+var locateIp = 'http://114.215.83.3:8090';
+// var comIp = 'http://114.215.83.3:8090';
+var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
@@ -134,6 +134,42 @@ function featObjectSend(featString){
 	request.open('POST', wfsUrl + '?service=wfs');
 	request.setRequestHeader('Content-Type', 'text/xml');
 	request.send(featString);		
+}
+
+// 根据中心点判断最近的place
+function getPlace(center){
+	var centerPlace;
+	var mindistance = 200;
+	var getPlaceParam = {
+		service: 'WFS',
+		version: '1.1.0',
+		request: 'GetFeature',
+		typeName: DBs + ':polygon_background ', 
+		outputFormat: 'application/json',
+	};	
+	$.ajax({  
+		url: wfsUrl,
+		data: $.param(getPlaceParam), 
+		type: 'GET',
+		dataType: 'json',
+		success: function(response){
+			var features = new ol.format.GeoJSON().readFeatures(response);
+			var placeLength = features.length
+			for (var placeNum =0;placeNum < placeLength;placeNum++){
+				var dummyDis = distanceFromAToB(features[placeNum].getGeometry().getInteriorPoint().getCoordinates(),center) ;
+				if(dummyDis < mindistance ){
+					centerPlace = features[placeNum].get('place_id');
+					mindistance = dummyDis;
+				}
+			}
+			if(mindistance < 200 && centerPlace != placeid){
+				placeid = centerPlace;
+				// 加载楼层条
+				getFloorList();
+			}
+			
+		}
+	}); 		
 }
 
 

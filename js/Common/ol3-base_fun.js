@@ -43,53 +43,70 @@ function getlocation(){
 		jsonp: 'callback',
 		jsonpCallback: 'successCallBack',
 		success: function(response){
-			var features = new ol.format.GeoJSON().readFeatures(response);
-			
-			var featureOBJ = response.features;
-			// console.log(featureOBJ[0].properties.floor_id);
-			center_wfs.clear();
-			if(deviceId != 'all'){
-				if(locate == null){
-					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
-					locateFloor = featureOBJ[0].properties.floor_id;
-					// 切换到定位点所在的区域
-					placeid = featureOBJ[0].properties.place_id;
-					// 加载楼层条
-					getFloorList();
-				}else{
-					// 得到定位点的坐标，用于返回定位点&路径规划
-					locate = featureOBJ[0].geometry.coordinates; // 取得位置信息		
-					locateFloor = featureOBJ[0].properties.floor_id;					
-				}
-				
-				// 电子围栏预警
-				electronicFenceWarn();	
-				// 设置定位点style
-				if (locateStyleWarn){
-					LocationLayer.setStyle(locationWarnStyle);
-				}else{
-					LocationLayer.setStyle(locationStyle);
-				}
 
-				// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
-				if (locateFloor == floorid){
-					
-					// 判断是否正在路径规划，做路网吸附
-					// if(!pathPlanningOFF &&  ){
-					if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
-						var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
-						center_wfs.addFeatures(newcenterFearure);
-					}else{
-						center_wfs.addFeatures(features);
-					}
-				}
+			var features ;
+			if(JSON.stringify(response)!="{}"){
+				features = new ol.format.GeoJSON().readFeatures(response);
+				doWithLocate(features);
 			}else{
-				LocationLayer.setStyle(locationStyle);
-				center_wfs.addFeatures(features);
-			}
+				var gpsfeature = new ol.Feature();
+				
+				var gpsCoordinates = [] ;
+				// var gpsCoordinates = [121.4241816,31.16800616] ;
+
+				navigator.geolocation.getCurrentPosition(function(position) {
+					gpsCoordinates[0] = position.coords.longitude;
+					gpsCoordinates[1]  = position.coords.latitude;
+					var newgpsCoordinates = coordtransform.wgs84togcj02(gpsCoordinates[0] ,gpsCoordinates[1] );
+
+					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
+					gpsfeature.set('floor_id','01');
+					features = [gpsfeature];
+					
+					doWithLocate(features);
+				});
+			}		
 		}		
 	});
 }
+
+function doWithLocate(features){
+				
+	center_wfs.clear();
+	if(deviceId != 'all'){
+		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
+		locateFloor = features[0].get('floor_id');
+		// 切换到定位点所在的区域
+		getPlace(locate);
+	
+		// 电子围栏预警
+		electronicFenceWarn();	
+		// 设置定位点style
+		if (locateStyleWarn){
+			LocationLayer.setStyle(locationWarnStyle);
+		}else{
+			LocationLayer.setStyle(locationStyle);
+		}
+
+		// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
+		// if (locateFloor == floorid){
+			
+			// 判断是否正在路径规划，做路网吸附
+			// if(!pathPlanningOFF &&  ){
+			if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
+				var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
+				center_wfs.addFeatures(newcenterFearure);
+			}else{
+				center_wfs.addFeatures(features);
+			}
+		// }
+	}else{
+		//var features = new ol.format.GeoJSON().readFeatures(response);
+		LocationLayer.setStyle(locationStyle);
+		center_wfs.addFeatures(features);
+	}
+}
+
 
 // 获取实时定位信息
 function startlocation(){  
@@ -99,12 +116,10 @@ function startlocation(){
 
 // 加载定位信息
 function loadlocation(){	
-	checkName = 'deviceId';
-	deviceId = checkUrlParam(checkName);
-
+	deviceId = checkUrlParam('deviceId');
+	
 	if(deviceId == 'all'){
-		checkName = 'place_id';
-		placeid = checkUrlParam(checkName);
+		placeid = checkUrlParam('place_id');
 		if (checkFlag){
 			getFloorList();
 			startlocation();
@@ -146,7 +161,7 @@ function getFloorList(){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: DBs + ':polygon_background ', // 电子围栏图层
+		typeName: DBs + ':polygon_background ', 
 		outputFormat: 'application/json',
 		cql_filter: 'place_id=' + placeid
 	};	
