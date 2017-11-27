@@ -50,9 +50,10 @@ div.floor-select {
 .floor-wheel {
     height: 8.6em;
     overflow: scroll;
-	width: 6em;
+	width: 3em;
 	overflow-x: hidden;
 }
+::-webkit-scrollbar {display:none}
 .floor-wheel ul {
     position: absolute;
     top: 0em;
