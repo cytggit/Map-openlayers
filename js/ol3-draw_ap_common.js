@@ -7,10 +7,10 @@ var locateTimeout;
 var deviceId;//设备自动生成
 
 var DBs = 'mote'; //数据源
-var locateIp = 'http://114.215.83.3:8086';
+var locateIp = 'http://114.215.83.3:8090';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
-var comIp = 'http://114.215.83.3:8086';
+var comIp = 'http://114.215.83.3:8090';
 var APUrl = 'http://114.215.83.3:8091/ConfigServer/getBeacons.action';
 var UpdAPUrl = 'http://114.215.83.3:8091/ConfigServer/updateBeacon.action';
 var DltAPUrl = 'http://114.215.83.3:8091/ConfigServer/delBeacon.action';
