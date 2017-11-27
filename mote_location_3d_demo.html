@@ -141,22 +141,26 @@
             <!-- <li class="dropdown" onClick="electronicFence();"><a href="#"><i class="fa fa-ban"></i></a></li> -->
         </ul>
     </div>
-    <div class="floor-select">
+    <div class="floor-select" style="display:none">
         <div class="wheel">
             <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="up"><a href="#"><i class="glyphicon glyphicon-chevron-up"></i></a></li>
-                <li class="divider"></li>
-				<li class="floor-wheel " >
-					<!-- <div class="levels-select"> -->
-						<ul class="nav nav-pills nav-stacked " id="floorlist">
-						</ul>
-					<!-- </div> -->
-                </li>
-				<li class="divider"></li>
-                <li role="presentation" class="down"><a href="#"><i class="glyphicon glyphicon-chevron-down"></i></a></li>
+<!--                 <li role="presentation" class="up"><a href="#"><i class="glyphicon glyphicon-chevron-up"></i></a></li> -->
+				<li role="presentation" class="nav nav-pills nav-stacked floorshow active"  ><a style="padding: 10px 12px; ">F01</a></li>
+				<!-- <li class="divider"></li> -->
+				<li class="dropdown">
+					<a href="#"role="presentation" data-toggle="dropdown" class="down dropdown-toggle" style="padding: 2px 14px; "><i class="glyphicon glyphicon-chevron-down"></i></a>
+					 <ul class="dropdown-menu" style="width:3.1em;min-width:10px;">
+						<li class="floor-wheel" >
+						<!-- <div class="levels-select"> -->
+							<ul class="nav nav-pills nav-stacked " id="floorlist">
+							</ul>
+						<!-- </div> -->
+						</li>	
+					</ul>
+				</li>	
             </ul>
         </div>
-    </div>
+    </div>	
     <!--路径规划模态框-->
     <div class="modal fade" id="pathModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">

@@ -52,7 +52,8 @@ function getlocation(){
 				var gpsfeature = new ol.Feature();
 				
 				var gpsCoordinates = [] ;
-				// var gpsCoordinates = [121.4241816,31.16800616] ;
+				// var gpsCoordinates = [121.402541820159,31.2284797284321] ;
+				// var gpsCoordinates = [121.42308,31.16801] ;
 
 				navigator.geolocation.getCurrentPosition(function(position) {
 					gpsCoordinates[0] = position.coords.longitude;
@@ -173,25 +174,29 @@ function getFloorList(){
 		success: function(response){
 			var features = new ol.format.GeoJSON().readFeatures(response);
 			var floorLength = features.length
-			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorId[FloorNum] = features[FloorNum].values_.floor_id;
-			}
-			var floorDummy;
-			for (var Floori =0;Floori < floorLength;Floori++){
-				for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
-					if (FloorId[Floori] >= FloorId[Floorj]){
-						floorDummy = FloorId[Floori];
-						FloorId[Floori] = FloorId[Floorj];
-						FloorId[Floorj] = floorDummy;
-					}					
+
+			if(floorLength > 0){
+				for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+					FloorId[FloorNum] = features[FloorNum].values_.floor_id;
 				}
-			}
-			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
-			}
-			$("#floorlist").html(FloorTag);
-			if(deviceId != 'all'){
-				backcenter();
+				var floorDummy;
+				for (var Floori =0;Floori < floorLength;Floori++){
+					for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
+						if (FloorId[Floori] >= FloorId[Floorj]){
+							floorDummy = FloorId[Floori];
+							FloorId[Floori] = FloorId[Floorj];
+							FloorId[Floorj] = floorDummy;
+						}					
+					}
+				}
+				for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+					FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
+				}		
+				$("#floorlist").html(FloorTag);
+				$(".floor-select").show();
+				if(deviceId != 'all'){
+					backcenter();
+				}				
 			}
 		}
 	}); 	
@@ -221,6 +226,7 @@ function backcenter(){
 			// console.log(document.getElementsByClassName('floorS')[i]);
 		}
 		document.getElementsByClassName(locateFloor)[0].classList.add('active');
+		
 		// 切换楼层
 		floorUpdate(locateFloor);
 	}	
@@ -399,6 +405,7 @@ function floorSelect(e){
 function floorUpdate(newfloorId){
 	// 取点击的楼层 赋值给floor_id   第二个字符后两位
 	floorid = newfloorId;	
+	$(".floorshow a").text('F' + newfloorId);
 	// 刷新图层（背景，道路，poi 其他清空）
 	loadBasemap();	
 
