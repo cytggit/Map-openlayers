@@ -225,18 +225,24 @@ function setFloorAndCenter(floor,geomx,geomy){
 // 跨楼层路径规划设style
 function setRouteStyleWithFloor(){
 	if(RouteSourceFloor == floorid){
-		routeFeature[0].setStyle(routeStyle[1]);
-		routeFeature[1].setStyle(routeStyle[0]);
+		if(routeFeature.length > 0){
+			routeFeature[0].setStyle(routeStyle[1]);
+			routeFeature[1].setStyle(routeStyle[0]);
+		}
 		RouteStartLayer.setOpacity(1);
 		RouteDestLayer.setOpacity(0.4);		
 	}else if (RouteTargetFloor == floorid){
-		routeFeature[0].setStyle(routeStyle[0]);
-		routeFeature[1].setStyle(routeStyle[1]);
+		if(routeFeature.length > 0){
+			routeFeature[0].setStyle(routeStyle[0]);
+			routeFeature[1].setStyle(routeStyle[1]);		
+		}
 		RouteStartLayer.setOpacity(0.4);
 		RouteDestLayer.setOpacity(1);		
 	}else{
-		routeFeature[0].setStyle(routeStyle[0]);
-		routeFeature[1].setStyle(routeStyle[0]);
+		if(routeFeature.length > 0){
+			routeFeature[0].setStyle(routeStyle[0]);
+			routeFeature[1].setStyle(routeStyle[0]);		
+		}
 		RouteStartLayer.setOpacity(0.4);
 		RouteDestLayer.setOpacity(0.4);		
 	}
