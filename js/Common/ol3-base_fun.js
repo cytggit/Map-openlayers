@@ -53,11 +53,11 @@ function getlocation(){
 				
 				var gpsCoordinates = [] ;
 				// var gpsCoordinates = [121.402541820159,31.2284797284321] ;
-				// var gpsCoordinates = [121.42308,31.16801] ;
+				var gpsCoordinates = [121.42308,31.16801] ;
 
-				navigator.geolocation.getCurrentPosition(function(position) {
-					gpsCoordinates[0] = position.coords.longitude;
-					gpsCoordinates[1]  = position.coords.latitude;
+				// navigator.geolocation.getCurrentPosition(function(position) {
+					// gpsCoordinates[0] = position.coords.longitude;
+					// gpsCoordinates[1]  = position.coords.latitude;
 					var newgpsCoordinates = coordtransform.wgs84togcj02(gpsCoordinates[0] ,gpsCoordinates[1] );
 
 					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
@@ -65,7 +65,7 @@ function getlocation(){
 					features = [gpsfeature];
 					
 					doWithLocate(features);
-				});
+				// });
 			}		
 		}		
 	});
@@ -143,6 +143,9 @@ function loadlocation(){
 					break;
 				case '7':
 					view.setCenter(fengpucenter);
+					break;
+				case '8':
+					view.setCenter(yukaicenter);
 					break;
 			}
 		}

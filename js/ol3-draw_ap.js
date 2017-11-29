@@ -63,6 +63,11 @@ function loadTable(){
 				// 显示电子围栏
 				electronicFence();
 				break;
+			case '8':
+				view.setCenter(yukaicenter);
+				// 显示电子围栏
+				electronicFence();
+				break;
 		}
 		// 当编辑打开时，判断之前的编辑操作是否需要保存
 		// if(drawFlag){

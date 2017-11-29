@@ -144,6 +144,9 @@ function loadlocation(){
 				case '7':
 					view.setCenter(fengpucenter);
 					break;
+				case '8':
+					view.setCenter(yukaicenter);
+					break;
 			}
 		}
 	}
