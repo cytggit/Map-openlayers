@@ -30,7 +30,7 @@ function getselectLayerSource(featureid){
 		request: 'GetFeature',
 		typeName: DBs + ':select', // 定位点图层
 		outputFormat: 'application/json',
-		cql_filter: 'place_id=' + placeid + 'and floor_id=' + floorid + 'and feature_id=' + featureid
+		cql_filter: "place_id=" + placeid + " and floor_id='" + floorid + "' and feature_id=" + featureid
 	};		
 	$.ajax({  
 		url: wfsUrl,
