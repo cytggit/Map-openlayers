@@ -69,7 +69,7 @@ function loadTable(){
 				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded + angle);
 				break;
 			case 'polygon':
-				$("#tabel-key").html(feature + Fname);
+				$("#tabel-key").html(feature + Fname +penup);
 				break;
 			case 'polyline':
 				$("#tabel-key").html(feature + Fname);
@@ -372,6 +372,7 @@ function getcolumn(){
 					newFeature.set('floor_id', floorid);
 					newFeature.set('feature_id', document.getElementById('feature_value').value);
 					newFeature.set('name', document.getElementById('name_value').value);
+					newFeature.set('penup', document.getElementById('penup_value').value);
 					FeatureDummy[newdrawNum] = newFeature;	
 					newdrawNum++;
 					newFeature =  null;
@@ -482,6 +483,7 @@ function setcolumn(selectInfo){
 			case 'polygon':
 				document.getElementById('feature_value').value = selectInfo.feature_id;
 				document.getElementById('name_value').value = selectInfo.name;
+				document.getElementById('penup_value').value = selectInfo.penup;
 				break;
 			case 'polyline':
 				document.getElementById('feature_value').value = selectInfo.feature_id;
@@ -627,6 +629,7 @@ function clearAllcolumn(){
 		case 'polygon':
 			document.getElementById('feature_value').value = '';
 			document.getElementById('name_value').value = '';
+			document.getElementById('penup_value').value = '';
 			break;
 		case 'polyline':
 			document.getElementById('feature_value').value = '';
@@ -675,6 +678,9 @@ function clear_column(e){
 			break;
 		case 'clear_angle':
 			document.getElementById('angle_value').value = '';	
+			break;
+		case 'clear_penup':
+			document.getElementById('penup_value').value = '';	
 			break;
 	}		
 }

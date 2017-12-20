@@ -744,3 +744,10 @@ var angle = "<div class='input-group has-feedback' id='angle'>" +
 	"<input class='form-control' id='angle_value'>"+
 	"<a class='btn close form-control-feedback'  id='clear_angle' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>"+
 "</div>";		
+
+// polygon
+var penup = "<div class='input-group has-feedback' id='penup'>" +
+	"<span class='input-group-addon' id='penup_key'>PenUp</span>" +
+	"<input class='form-control' id='penup_value'>"+
+	"<a class='btn close form-control-feedback'  id='clear_penup' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>"+
+"</div>";	
