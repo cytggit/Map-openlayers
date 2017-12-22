@@ -36,6 +36,12 @@
 	<script type="text/javascript" src="http://map.intmote.com/map/js/Heatmap/Heatmap.js"></script>
 	<script type="text/javascript" src="http://map.intmote.com/map/js/Distance/Distance.js"></script>
 	<script type="text/javascript" src="http://map.intmote.com/map/js/RoutePlan/RoutePlan.js"></script>
+
+	<link rel="stylesheet" href="http://map.intmote.com/map/js/Cesium/Build/Cesium/Widgets/widgets.css" type="text/css">
+	<script type="text/javascript" src="http://map.intmote.com/map/js/Cesium/Build/Cesium/Cesium.js"></script>
+	<script type="text/javascript" src="http://map.intmote.com/map/js/3dmap/3d_load_h.js"></script>
+	<script type="text/javascript" src="http://map.intmote.com/map/js/3dmap/3d_index.js"></script>
+	<script type="text/javascript" src="http://map.intmote.com/map/js/3dmap/3d_load.js"></script>
 	
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script src="https://use.fontawesome.com/546fdd4a00.js"></script>
@@ -50,17 +56,26 @@
 </head>
 
 <body >
-    <div id="map" class="map" ></div>
+    <div id="map" class="map"  style="width:100%"></div>
+	<div id="cesiumContainer" class="map" style="width:0%; right: 0px; background-color: rgba(148,148,248,0.3)"></div>
     <button onclick="backcenter();" type="button" class="control-locate btn btn-default">
 		<img style="width:1em" src="./icon/locate.png" />
 		<!-- <i class="glyphicon glyphicon-map-marker"></i> -->
 	</button>
     <div class="feature-select">
         <ul class="nav nav-pills nav-stacked">
+            <li class="dropdown" id="changeMap-Act" onClick="changeMap('to3d');">
+				<a href="#">
+					<!-- 2,3D切换 -->
+					<img style="width:1.2em" id="changeMap-Img" src="./icon/3d.png" />
+					<!-- <i class="fa fa-star"></i> -->
+				</a>
+			</li>
+			<li class="divider"></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
 					<!-- 检索 -->
-                    <img style="width:1em" src="./icon/search.png" />
+                    <img style="width:1.2em" src="./icon/search.png" />
 					<!-- <i class="fa fa-search"></i> -->
                 </a>
                 <ul class="dropdown-menu feature-list">
@@ -75,7 +90,7 @@
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
 					<!-- 导览 -->
-                    <img style="width:1em" src="./icon/heatmap.png" />
+                    <img style="width:1.2em" src="./icon/heatmap.png" />
 					<!-- <i class="fa fa-picture-o"></i> -->
                 </a>
                 <ul class="dropdown-menu feature-list">
@@ -89,7 +104,7 @@
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
                     <!-- 测距 -->
-					<img style="width:1em" src="./icon/length.png" /> 
+					<img style="width:1.2em" src="./icon/length.png" /> 
 					<!-- <i class="fa fa-arrows-h"></i> -->
 				</a>
                 <ul class="dropdown-menu feature-list">
@@ -105,7 +120,7 @@
             <li class="dropdown" onClick="pathPlanningMain();">
                 <a href="#" data-toggle="modal" data-target="#pathModal">
 					<!-- 路径规划 -->
-                    <img style="width:1em" src="./icon/route-planning.png" />
+                    <img style="width:1.2em" src="./icon/route-planning.png" />
 					<!-- <i class="fa fa-level-up"></i> -->
 				</a>
             </li>
@@ -113,7 +128,7 @@
             <li class="dropdown" onClick="collectionPoi();">
 				<a href="#">
 					<!-- 收藏 -->
-					<img style="width:1em" src="./icon/collection.png" />
+					<img style="width:1.2em" src="./icon/collection.png" />
 					<!-- <i class="fa fa-star"></i> -->
 				</a>
 			</li>
@@ -121,7 +136,7 @@
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
 					<!-- 电子围栏 -->
-					<img style="width:1em" src="./icon/electronicFence.png" />
+					<img style="width:1.2em" src="./icon/electronicFence.png" />
 					<!-- <i class="fa fa-ban"></i> -->
 				</a>
                 <ul class="dropdown-menu feature-list">
@@ -161,6 +176,7 @@
             </ul>
         </div>
     </div>	
+	
     <!--路径规划模态框-->
     <div class="modal fade" id="pathModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
@@ -263,6 +279,9 @@
 
 	// 点选元素-高亮
 	loadselectSingleClick();
+	
+	load3dMap();
+	
 
 </script>
 
