@@ -66,7 +66,8 @@ function getlocation(){
 					
 					doWithLocate(features);
 				// });
-			}		
+			}
+			makeEntitiesLocate(features);
 		}		
 	});
 }
@@ -477,5 +478,12 @@ function loadBasemap(){
 	pointLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename)));
 	selectSingleClickLayter.getSource().clear();
 	selectSingleClickLayter.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename)));	
+
+	// 3Dmap
+	viewer.entities.removeAll();
+	setEntitiesBackground(shapeBackgrounds[floorid]);
+	setEntitiesPolygon(shapePolygons[floorid]);
+	setEntitiesPOI(shapePOIs[floorid]);
+
 }
 

@@ -167,6 +167,7 @@ function getPlace(center){
 				placeid = centerPlace;
 				// 加载楼层条
 				getFloorList();
+				load3dData();
 			}
 			
 		}

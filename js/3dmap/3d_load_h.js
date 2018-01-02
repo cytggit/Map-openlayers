@@ -2,6 +2,7 @@
 var shapeBackgrounds ={};
 var shapePolygons ={};
 var shapePOIs ={};
+var shapeLocates = {};
 /*Entities*/
 // Background
 var shapeBackground;
@@ -13,140 +14,214 @@ var shapePoiAll = [],shapePoiAllNum = 0;
 var shapeLabel = [],shapeLabelNum = 0;
 var shapeBillboard = [],shapeBillboardNum = 0;
 // Locate
-var shapeLocate;
+var shapeLocate = [];var gltfModel=[];
 
-function setEntitiesBackground(shapeBackground){
-	shapeBackground = viewer.entities.add({  
-		name : shapeBackground[3],  
-		polygon : {  
-			hierarchy : Cesium.Cartesian3.fromDegreesArray(shapeBackground[2]),
-			height: shapeBackground[1],// 拉伸高度！
-			extrudedHeight: shapeBackground[0], //高度！
-			//perPositionHeight : true,  //指定使用每个坐标自带的高度！
-			material : Cesium.Color.LIGHTSTEELBLUE,  
-			//outline : true,  
-			//outlineColor : Cesium.Color.BLACK  
-		}  
-	});
-	viewer.zoomTo(shapeBackground);
+function setEntitiesBackground(shapeData){
+	if(shapeData != undefined){
+		shapeBackground = viewer.entities.add({  
+			name : shapeData[3],  
+			polygon : {  
+				hierarchy : Cesium.Cartesian3.fromDegreesArray(shapeData[2]),
+				height: shapeData[1],// 拉伸高度！
+				extrudedHeight: shapeData[0], //高度！
+				//perPositionHeight : true,  //指定使用每个坐标自带的高度！
+				material : Cesium.Color.LIGHTSTEELBLUE,  
+				//outline : true,  
+				//outlineColor : Cesium.Color.BLACK  
+			}  
+		});
+		viewer.zoomTo(shapeBackground);
+	}
 }
-function setEntitiesPolygon(shapePolygon){
-	var allFeature = Object.keys(shapePolygon)
-
-	for (var i=0;i<allFeature.length;i++){
-		var featureID = allFeature[i];
-		for (var j=0;j<shapePolygon[featureID].length;j++){
-			switch (shapeFeature[featureID]){
-			case 'wall':
-			   shapeWall[shapeWallNum++] = viewer.entities.add({  
-			        name : shapePolygon[featureID][j][3],  
-			        wall : {
-						 positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
-								 shapePolygon[featureID][j][2]),  
-						 fill: true,
-			             material : Cesium.Color.WHITE,  
-						 minimumHeights : shapePolygon[featureID][j][1], //  下高
-						 //maximumHeights : shapePolygon[featureID][j][1], //  上高
-			         }  
-			     });
-			   break;
-			case 'desk':
-				shapeDesk[shapeDeskNum++] = viewer.entities.add({  
-					name : shapePolygon[featureID][j][3],  
-					polygon : {  
-						hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(
-								shapePolygon[featureID][j][2]),
-						//height: shapePolygon[featureID][j][0],// 拉伸高度！
-						extrudedHeight: shapePolygon[featureID][j][0], //基础高度！
-						perPositionHeight : true,  //指定使用每个坐标自带的高度！
-						material : Cesium.Color.CORNSILK, //Cesium.Color.CORNSILK.withAlpha(0.5)
-					}  
-				});
-				break;
-/*			case 'wall':
-			*/	
-			default:
-				break;
+function setEntitiesPolygon(shapeData){
+	if(shapeData != undefined){
+		var allFeature = Object.keys(shapeData)
+		shapeWall = [];shapeWallNum = 0;
+		shapeDesk = [];shapeDeskNum = 0;
+		for (var i=0;i<allFeature.length;i++){
+			var featureID = allFeature[i];
+			for (var j=0;j<shapeData[featureID].length;j++){
+				switch (shapeFeature[featureID]){
+				case 'wall':
+				   shapeWall[shapeWallNum++] = viewer.entities.add({ 
+				        name : shapeData[featureID][j][3],  
+				        wall : {
+							 positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
+									 shapeData[featureID][j][2]),  
+							 fill: true,
+				             material : Cesium.Color.WHITE,  
+							 minimumHeights : shapeData[featureID][j][1], //  下高
+							 //maximumHeights : shapePolygon[featureID][j][1], //  上高
+				         }  
+				     });
+				   break;
+				case 'desk':
+					shapeDesk[shapeDeskNum++] = viewer.entities.add({  
+						name : shapeData[featureID][j][3],  
+						polygon : {  
+							hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(
+									shapeData[featureID][j][2]),
+							//height: shapePolygon[featureID][j][0],// 拉伸高度！
+							extrudedHeight: shapeData[featureID][j][0], //基础高度！
+							perPositionHeight : true,  //指定使用每个坐标自带的高度！
+							material : Cesium.Color.CORNSILK, //Cesium.Color.CORNSILK.withAlpha(0.5)
+						}  
+					});
+					break;
+	/*			case 'wall':
+				*/	
+				default:
+					break;
+				}
 			}
-		}
-	}	
+		}	
+	}
+	
 }
-function setEntitiesPOI(shapePOI){
-	var allFeature = Object.keys(shapePOI)
-
-	for (var i=0;i<allFeature.length;i++){
-		var featureID = allFeature[i];
-		for (var j=0;j<shapePOI[featureID].length;j++){
-			switch (shapeFeature[featureID]){
-			case 'POIall':
-				shapePoiAll[shapePoiAllNum++] = viewer.entities.add( {  
-				    name : shapePOI[featureID][j][1],  
-				    position : Cesium.Cartesian3.fromDegrees(shapePOI[featureID][j][0][0],shapePOI[featureID][j][0][1],shapePOI[featureID][j][0][2]),   
-				    label : { //文字标签  
-				        text : shapePOI[featureID][j][1],  
-				        font : '16pt sans-serif',  
-				        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
-				        fillColor : Cesium.Color.BLACK,
-				        outlineColor : Cesium.Color.TRANSPARENT,
-				        outlineWidth : 1,  
-				        //horizontalOrigin : ,
-				        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
-				        pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
-				        
-				    },  
-				    billboard : { //图标  
-				        image : './icon/' + shapeIcon[featureID]+ '.png',  
-				        width : 26,  
-				        height : 26  
-				    },  
-				} );  
-			   break;
-			case 'label':
-				shapeLabel[shapeLabelNum++] = viewer.entities.add( {  
-				    name : shapePOI[featureID][j][1],  
-				    position : Cesium.Cartesian3.fromDegrees(shapePOI[featureID][j][0][0],shapePOI[featureID][j][0][1],shapePOI[featureID][j][0][2]),   
-				    label : { //文字标签  
-				        text : shapePOI[featureID][j][1],  
-				        font : '12pt sans-serif',  
-				        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
-				        fillColor : Cesium.Color.BLACK,
-				        outlineColor : Cesium.Color.TRANSPARENT,
-				        outlineWidth : 1,  
-				        //horizontalOrigin : ,
-				        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
-				        //pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
-				        
-				    },   
-				} ); 
-				break;
-			case 'billboard':
-				shapeBillboard[shapeBillboardNum++] = viewer.entities.add( {  
-				    name : shapePOI[featureID][j][1],  
-				    position : Cesium.Cartesian3.fromDegrees(shapePOI[featureID][j][0][0],shapePOI[featureID][j][0][1],shapePOI[featureID][j][0][2]),   
-				    billboard : { //图标  
-				        image : './icon/' + shapeIcon[featureID]+ '.png',  
-				        width : 26,  
-				        height : 26  
-				    },  
-				} );  	
-			default:
-				break;
+function setEntitiesPOI(shapeData){
+	if(shapeData != undefined){
+		var allFeature = Object.keys(shapeData)
+		shapePoiAll = [];shapePoiAllNum = 0;
+		shapeLabel = [];shapeLabelNum = 0;
+		shapeBillboard = [];shapeBillboardNum = 0;
+		for (var i=0;i<allFeature.length;i++){
+			var featureID = allFeature[i];
+			for (var j=0;j<shapeData[featureID].length;j++){
+				switch (shapeFeature[featureID]){
+				case 'POIall':
+					shapePoiAll[shapePoiAllNum++] = viewer.entities.add( {  
+					    name : shapeData[featureID][j][1],  
+					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
+					    label : { //文字标签  
+					        text : shapeData[featureID][j][1],  
+					        font : '16pt sans-serif',  
+					        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
+					        fillColor : Cesium.Color.BLACK,
+					        outlineColor : Cesium.Color.TRANSPARENT,
+					        outlineWidth : 1,  
+					        //horizontalOrigin : ,
+					        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
+					        pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
+					        
+					    },  
+					    billboard : { //图标  
+					        image : './icon/' + shapeIcon[featureID]+ '.png',  
+					        width : 26,  
+					        height : 26  
+					    },  
+					} );  
+				   break;
+				case 'label':
+					shapeLabel[shapeLabelNum++] = viewer.entities.add( {  
+					    name : shapeData[featureID][j][1],  
+					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
+					    label : { //文字标签  
+					        text : shapeData[featureID][j][1],  
+					        font : '12pt sans-serif',  
+					        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
+					        fillColor : Cesium.Color.BLACK,
+					        outlineColor : Cesium.Color.TRANSPARENT,
+					        outlineWidth : 1,  
+					        //horizontalOrigin : ,
+					        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
+					        //pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
+					        
+					    },   
+					} ); 
+					break;
+				case 'billboard':
+					shapeBillboard[shapeBillboardNum++] = viewer.entities.add( {  
+					    name : shapeData[featureID][j][1],  
+					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
+					    billboard : { //图标  
+					        image : './icon/' + shapeIcon[featureID]+ '.png',  
+					        width : 26,  
+					        height : 26  
+					    },  
+					} );  	
+				default:
+					break;
+				}
 			}
-		}
-	}	
+		}	
+	}
+	
 }
 
-function setEntitiesLocate(){
-	shapeBackground = viewer.entities.add({  
-		name : 'locate',  
-		position : Cesium.Cartesian3.fromDegrees(locate),
-	    point : { 
-	        pixelSize : 5,  
-	        color : Cesium.Color.BLUE,  
-	        outlineColor : Cesium.Color.WHITE,  
-	        outlineWidth : 2  
-	    },   
-	});
+var locateFlag = false;var model;
+//小车旋转角度
+var radian = Cesium.Math.toRadians(3.0);
+// 小车的速度
+var speed = 60;
+//速度矢量
+var speedVector = new Cesium.Cartesian3();
+var scene = view.scene;
+// 起始位置
+var position = Cesium.Cartesian3.fromDegrees(121.42873954447407, 31.16648458225109,0);
+//用于设置小车方向
+var hpRoll = new Cesium.HeadingPitchRoll();
+var fixedFrameTransforms =  Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west');
+
+//TODO locate model 删除再加载，改为只改变坐标，顺滑移动
+function setEntitiesLocate(shapeData){
+	/*viewer.entities.removeById('locate');*/
+	if(gltfModel.length > 0){
+		for (var j=0;j<gltfModel.length;j++){
+			scene.primitives.remove(gltfModel[j]);
+			gltfModel=[];
+		}
+	}
+
+	if(shapeData != undefined && !locateFlag){
+		console.log(locateFlag);
+		locateFlag = true;
+		for (var j=0;j<shapeData.length;j++){
+		    //创建坐标  
+			shapeLocate[j] = Cesium.Cartesian3.fromDegrees( shapeData[j][0],shapeData[j][1],shapeData[j][2] );  
+		    //创建一个东（X，红色）北（Y，绿色）上（Z，蓝色）的本地坐标系统  
+		    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame( shapeLocate[j] );  
+		    // 改变3D模型的模型矩阵，可以用于移动物体  
+		    // 物体的世界坐标 = 物体的模型坐标 * 世界矩阵  
+		    gltfModel[j] = Cesium.Model.fromGltf( {//异步的加载模型  
+				name : 'locate',  
+		        url : 'http://map.intmote.com/map/js/Cesium/Apps/SampleData/models/CesiumMan/Cesium_Man.gltf',  
+		        modelMatrix : modelMatrix, //模型矩阵  
+		        scale : 1.0 //缩放  
+		    } );
+		    model = scene.primitives.add( gltfModel[j] );
+		    Cesium.when( model.readyPromise ).then( function( model )  
+		    		{  
+		    		    model.activeAnimations.addAll( {//播放模型中全部动画，如果需要播放单个动画，可以调用add，传入动画id  
+		    		        loop : Cesium.ModelAnimationLoop.REPEAT, //直到被移出activeAnimations，一直播放  
+		    		         speedup : 1,  //加速播放  
+		    		         //reverse : true  //逆序播放  
+		    		    } );  
+		    		} );  
+	/*		shapeLocate[shapeLocateNum++] = viewer.entities.add({  
+				id : 'locate',
+				name : 'locate',  
+				position : Cesium.Cartesian3.fromDegrees(shapeData[j][0],shapeData[j][1],shapeData[j][2]),
+			    point : { 
+			        pixelSize : 5,  
+			        color : Cesium.Color.BLUE,  
+			        outlineColor : Cesium.Color.WHITE,  
+			        outlineWidth : 2  
+			    },   
+			    billboard : { //图标  
+			        image : './icon/3d_locate.png',  
+			        verticalOrigin : Cesium.VerticalOrigin.TOP,
+			        //eyeOffset : Cesium.Cartesian3.UNIT_Z,
+			        //alignedAxis: Cesium.Cartesian3.UNIT_X,
+			        width : 30,  
+			        height : 30  
+			    },  
+			});*/
+		}
+	}else if (shapeData != undefined && locateFlag){
+		console.log(locateFlag);
+		
+	}
+	
 }
 
 /*// polygon填充色
@@ -179,6 +254,9 @@ var shapeHeight = {
 	'30060100' /*billboard*/: 0.5,
 	'30060200' /*billboard*/: 0.5,
 	'30060300' /*label*/: 2,
+	
+		// locate
+	'locate' /*locate*/: 0,
 };
 // feature ==>> shape feature
 var shapeFeature = {

@@ -1,11 +1,11 @@
-	var cesiumAmap = new Cesium.UrlTemplateImageryProvider({
+/*	var cesiumAmap = new Cesium.UrlTemplateImageryProvider({
         url: 'http://webst{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}',
         credit: new Cesium.Credit('高德地图服务-瓦片地图'),
         subdomains: ['01', '02', '03', '04'],
         tilingScheme: new Cesium.WebMercatorTilingScheme(),
         maximumLevel: 18,
         show: false
-    });
+    });*/
 	
 	// WMTS
 /*	viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({  
@@ -35,29 +35,8 @@
         maximumLevel: 18,
         show: false
     }));*/
-	function loaddata(){
-		getEntitiesData();
-		
-	// // 走廊
-	// var blueCorridor = viewer.entities.add({
-		// name : 'Blue extruded corridor with beveled corners and outline',
-		// corridor : {
-			// positions : Cesium.Cartesian3.fromDegreesArray(
-			// [   -70.0, 50.0,
-				// -80.0, 50.0,
-				// -80.0, 40.0,
-				// -85.0, 40.0,
-				// -85.0, 35.0
-			// ]),
-			// height : 200000.0,//浮空高度,不带高度时不用设置
-			// extrudedHeight : 210000.00,//拉伸高度,不带高度时不用设置
-			// width : 100000.0,
-			// // cornerType: Cesium.CornerType.BEVELED,// 控制端点形状
-			// material : Cesium.Color.YELLOW.withAlpha(0.5),
-			// // outline : true,
-			// // outlineColor : Cesium.Color.BLUE
-		// }
-	// });		
+	function load3dData(){
+		getEntitiesData();	
 
     }	
 	/*获取数据*/
@@ -91,6 +70,7 @@
 			})
 	}
 	function makeEntitiesBackgrounds(features){
+		shapeBackgrounds = {};
 		for(var i=0;i<features.length;i++){
 			// background所在楼层
 			var featuresFloor = features[i].get('floor_id');
@@ -108,7 +88,7 @@
 			}
 			shapeBackgrounds[featuresFloor] = [featuresExtrudedHeight,featuresHeight,featuresGeom,featuresName];
 		}	
-		setEntitiesBackground(shapeBackgrounds['22']);
+		setEntitiesBackground(shapeBackgrounds[floorid]);
 	}
 	/*获取polygon数据*/
 	function getEntitiesPolygon(){
@@ -135,6 +115,7 @@
 			})
 	}
 	function makeEntitiesPolygons(features){
+		shapePolygons ={};
 		var FloorNum = 0,FeatureIdNum = 0;
 		for(var i=0;i<features.length;i++){
 			// polygon所在楼层
@@ -210,7 +191,7 @@
 			}
 			shapePolygons[featuresFloor][featuresFeatureId].push([featuresExtrudedHeightBase,featuresExtrudedHeight,featuresGeom,featuresName]);
 		}	
-		setEntitiesPolygon(shapePolygons['22']);
+		setEntitiesPolygon(shapePolygons[floorid]);
 	}
 	/*获取POI数据*/
 	function getEntitiesPOI(){
@@ -237,6 +218,7 @@
 			})	
 	}
 	function makeEntitiesPOIs(features){
+		shapePOIs ={};
 		var FloorNum = 0,FeatureIdNum = 0;
 		for(var i=0;i<features.length;i++){
 			// POI所在楼层
@@ -261,5 +243,28 @@
 			shapePOIs[featuresFloor][featuresFeatureId].push([featuresGeom,featuresName]);
 		}	
 		// console.log(shapePolygons);
-		setEntitiesPOI(shapePOIs['22']);
+		setEntitiesPOI(shapePOIs[floorid]);
+	}
+	/*作成Locate数据*/
+	function makeEntitiesLocate(features){
+		shapeLocates = {};
+		var FloorNum = 0,FeatureIdNum = 0;
+		for(var i=0;i<features.length;i++){
+			// Locate所在楼层
+			var featuresFloor = features[i].get('floor_id');
+			// Locate所在高度
+			var featuresExtrudedHeightBase = (featuresFloor-1) * 3 + shapeHeight['999999'];
+			var featuresHeightBase = featuresExtrudedHeightBase + shapeHeight['locate'];
+			// Locate所在形状
+			var geom = features[i].getGeometry().getCoordinates();
+			var featuresGeom = [geom[0],geom[1],featuresHeightBase];
+			
+			if(shapeLocates[featuresFloor] == undefined){
+				shapeLocates[featuresFloor] = [];
+			}
+
+			shapeLocates[featuresFloor].push(featuresGeom);
+		}	
+		// console.log(shapePolygons);
+		setEntitiesLocate(shapeLocates[floorid]);
 	}

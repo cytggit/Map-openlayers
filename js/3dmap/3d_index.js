@@ -1,5 +1,5 @@
 var viewer;
-
+var scene;  
 function load3dMap (){	
 	viewer = new Cesium.Viewer('cesiumContainer',{
 		animation: false,										//控制视图动画的播放(左下角)。 默认true
@@ -51,31 +51,36 @@ function load3dMap (){
 		// projectionPicker:true,									//控制投影。默认false
 
 	});
-		
-/*    var scene = viewer.scene;  
-    //创建坐标  
-    var coord = Cesium.Cartesian3.fromDegrees( 121.4280933,31.1680993, 0.0 );  
-    //创建一个东（X，红色）北（Y，绿色）上（Z，蓝色）的本地坐标系统  
-    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame( coord );  
-    // 改变3D模型的模型矩阵，可以用于移动物体  
-    // 物体的世界坐标 = 物体的模型坐标 * 世界矩阵  
-    var model = scene.primitives.add( Cesium.Model.fromGltf( {//异步的加载模型  
-        url : 'http://192.168.1.121:8080/webgis/cyt_test/3d_test/Cesium-1.38/Apps/SampleData/models/CesiumGround/Cesium_Ground.gltf',  
-        modelMatrix : modelMatrix, //模型矩阵  
-        scale : 2.0 //缩放  
-    } ) );*/
 	
+	scene = viewer.scene;
 	// TODO 可以设置成公司logo
     viewer._cesiumWidget._creditContainer.style.display="none";  
 	//viewer._cesiumWidget._creditContainer.innerHTML = 
     
     // 去除toolbar的图层切换button
-    console.log(viewer._toolbar);
+    //console.log(viewer._toolbar);
     $('.cesium-viewer-toolbar button').remove(); 
     
-    loaddata();
-	
-	//viewer.zoomTo(yellowEllipsoid);//缩放、平移视图使实体可见,放在加载background后 
+    // 修改自带图标样式
+    $('.cesium-geocoder-searchButton').css("background-color", "#ffffff");
+    $('.cesium-geocoder-searchButton').css("fill", "#339aff");
+    $('.cesium-geocoder-searchButton').css("filter", "drop-shadow(0 1px 3px rgba(0,0,0,0.2))");
+    $('.cesium-geocoder-input').css("border", "solid 1px #fcfafa");
+    
+    
+    // 加载底图白色底
+    scene.primitives.add(new Cesium.Primitive({  
+      geometryInstances : new Cesium.GeometryInstance({  
+          geometry : new Cesium.RectangleGeometry({  
+              rectangle : Cesium.Rectangle.fromDegrees(-180.0, -90.0, 180.0, 90.0),  
+              vertexFormat : Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+            })  ,
+            attributes : {
+                color : new Cesium.ColorGeometryInstanceAttribute(1,0.98,0.98,1)
+              }
+          }),  
+          appearance : new Cesium.PerInstanceColorAppearance()
+    }));  
 }
 
 function changeMap(mapType){
