@@ -148,7 +148,7 @@ function setEntitiesPOI(shapeData){
 	
 }
 
-var locateFlag = false;var model;
+/*var locateFlag = false;var model;
 //小车旋转角度
 var radian = Cesium.Math.toRadians(3.0);
 // 小车的速度
@@ -160,7 +160,7 @@ var scene = view.scene;
 var position = Cesium.Cartesian3.fromDegrees(121.42873954447407, 31.16648458225109,0);
 //用于设置小车方向
 var hpRoll = new Cesium.HeadingPitchRoll();
-var fixedFrameTransforms =  Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west');
+var fixedFrameTransforms =  Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west');*/
 
 //TODO locate model 删除再加载，改为只改变坐标，顺滑移动
 function setEntitiesLocate(shapeData){
@@ -172,9 +172,9 @@ function setEntitiesLocate(shapeData){
 		}
 	}
 
-	if(shapeData != undefined && !locateFlag){
-		console.log(locateFlag);
-		locateFlag = true;
+	if(shapeData != undefined /*&& !locateFlag*/){
+		/*console.log(locateFlag);*/
+		/*locateFlag = true;*/
 		for (var j=0;j<shapeData.length;j++){
 		    //创建坐标  
 			shapeLocate[j] = Cesium.Cartesian3.fromDegrees( shapeData[j][0],shapeData[j][1],shapeData[j][2] );  
@@ -217,10 +217,10 @@ function setEntitiesLocate(shapeData){
 			    },  
 			});*/
 		}
-	}else if (shapeData != undefined && locateFlag){
+	}/*else if (shapeData != undefined && locateFlag){
 		console.log(locateFlag);
 		
-	}
+	}*/
 	
 }
 
