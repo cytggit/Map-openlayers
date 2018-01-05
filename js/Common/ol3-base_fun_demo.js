@@ -66,7 +66,8 @@ function getlocation(){
 					
 					doWithLocate(features);
 				// });
-			}		
+			}
+			makeEntitiesLocate(features);		
 		}		
 	});
 }
@@ -122,32 +123,16 @@ function loadlocation(){
 	if(deviceId == 'all'){
 		placeid = checkUrlParam('place_id');
 		if (checkFlag){
+			floorid = checkUrlParam('floor_id');
+		}
+		if (checkFlag){
+			getGeomData();
 			getFloorList();
+			changeFloor(floorid);
+			load3dData();
 			startlocation();
-			LocationLayer.setSource(center_wfs);			
-			switch(placeid){
-				case '2':
-					view.setCenter(motecenter);
-					break;
-				case '3':
-					view.setCenter(zhongbeicenter);
-					break;
-				case '4':
-					view.setCenter(minhangcenter);
-					break;
-				case '5':
-					view.setCenter(zhanlancenter);
-					break;
-				case '6':
-					view.setCenter(lunchuancenter);
-					break;
-				case '7':
-					view.setCenter(fengpucenter);
-					break;
-				case '8':
-					view.setCenter(yukaicenter);
-					break;
-			}
+			LocationLayer.setSource(center_wfs);
+			view.setCenter(mapCenter(placeid));
 		}
 	}
 	if (deviceId != 'all' && checkFlag) {
@@ -160,49 +145,26 @@ function loadlocation(){
 // 加载楼层条
 function getFloorList(){
 	var FloorTag = [];
-	var FloorId = [];
-	var GetFloorParam = {
-		service: 'WFS',
-		version: '1.1.0',
-		request: 'GetFeature',
-		typeName: DBs + ':polygon_background ', 
-		outputFormat: 'application/json',
-		cql_filter: 'place_id=' + placeid
-	};	
-	$.ajax({  
-		url: wfsUrl,
-		data: $.param(GetFloorParam), 
-		type: 'GET',
-		dataType: 'json',
-		success: function(response){
-			var features = new ol.format.GeoJSON().readFeatures(response);
-			var floorLength = features.length
-
-			if(floorLength > 0){
-				for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-					FloorId[FloorNum] = features[FloorNum].values_.floor_id;
-				}
-				var floorDummy;
-				for (var Floori =0;Floori < floorLength;Floori++){
-					for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
-						if (FloorId[Floori] >= FloorId[Floorj]){
-							floorDummy = FloorId[Floori];
-							FloorId[Floori] = FloorId[Floorj];
-							FloorId[Floorj] = floorDummy;
-						}					
-					}
-				}
-				for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-					FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
-				}		
-				$("#floorlist").html(FloorTag);
-				$(".floor-select").show();
-				if(deviceId != 'all'){
-					backcenter();
-				}				
-			}
+	var FloorId = geomBackgrounds != undefined ? Object.keys(geomBackgrounds): [];
+	var floorLength = FloorId.length;
+	
+	for (var Floori =0;Floori < floorLength;Floori++){
+		for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
+			if (FloorId[Floori] >= FloorId[Floorj]){
+				var floorDummy = FloorId[Floori];
+				FloorId[Floori] = FloorId[Floorj];
+				FloorId[Floorj] = floorDummy;
+			}					
 		}
-	}); 	
+	}
+	for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+		FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
+	}		
+	$("#floorlist").html(FloorTag);
+	$(".floor-select").show();
+	if(deviceId != 'all'){
+		backcenter();
+	}		
 }
 
 // 回到定位点
@@ -223,15 +185,7 @@ function backcenter(){
 	// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
 	if (locateFloor != floorid){
 		// 定位点楼层的图标高亮
-		var floorLength = document.getElementsByClassName('floorS').length;
-		for (var i =0; i< floorLength; i++){
-			document.getElementsByClassName('floorS')[i].classList.remove('active');
-			// console.log(document.getElementsByClassName('floorS')[i]);
-		}
-		document.getElementsByClassName(locateFloor)[0].classList.add('active');
-		
-		// 切换楼层
-		floorUpdate(locateFloor);
+		changeFloor(locateFloor);
 	}	
 }
 
@@ -389,20 +343,22 @@ function removeSelectSingleClick(){
 
 // 楼层选择
 function floorSelect(e){
-	// console.log(e);
+	// 切换楼层
+	var floorSelectId = e.innerText.substr(1,2);
+
+	if ( floorSelectId != floorid){
+		changeFloor(floorSelectId);
+	}
+}
+function changeFloor(newFloor){
 	var floorLength = document.getElementsByClassName('floorS').length;
 	for (var i =0; i< floorLength; i++){
 		document.getElementsByClassName('floorS')[i].classList.remove('active');
 		// console.log(document.getElementsByClassName('floorS')[i]);
 	}
-	e.classList.add('active');
+	document.getElementsByClassName(newFloor)[0].classList.add('active');
 	// 切换楼层
-	var floorSelectId = e.innerText.substr(1,2);
-	// console.log(floorSelectId);
-	if ( floorSelectId != floorid){
-		floorUpdate(floorSelectId);
-	}
-
+	floorUpdate(newFloor);
 }
 // 切换楼层
 function floorUpdate(newfloorId){
@@ -464,18 +420,21 @@ function floorUpdate(newfloorId){
 // 刷新图层 背景，道路，poi
 function loadBasemap(){
 	// 默认楼层
-	// console.log(backgroundLayer.getSource().getParams());
-	viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
-	// WMS
-	backgroundLayer.getSource().updateParams({viewparams:viewParam});
-	// polygonLayer.getSource().updateParams({viewparams:viewParam}); //3d
-	
 	// WFS
+	backgroundLayer.getSource().clear();
+	backgroundLayer.getSource().addFeatures(geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]);
 	polygonLayer.getSource().clear();
-	polygonLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,polygonTypename)));
+	polygonLayer.getSource().addFeatures(geomPolygons[floorid] != null ? geomPolygons[floorid]:[]);
 	pointLayer.getSource().clear();
-	pointLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename)));
+	pointLayer.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);
 	selectSingleClickLayter.getSource().clear();
-	selectSingleClickLayter.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename)));	
+	selectSingleClickLayter.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);	
+
+	// 3Dmap
+	viewer.entities.removeAll();
+	setEntitiesBackground(shapeBackgrounds[floorid]);
+	setEntitiesPolygon(shapePolygons[floorid]);
+	setEntitiesPOI(shapePOIs[floorid]);
+
 }
 
