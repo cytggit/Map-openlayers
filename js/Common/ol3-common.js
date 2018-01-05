@@ -18,44 +18,57 @@ var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 
-// 设置中心点
-var motecenter = [121.4286933,31.1664993]; 
-var zhongbeicenter = [121.407241820159,31.2265797284321]; 
-var minhangcenter = [121.457171250547,31.0275850273072]; 
-var zhanlancenter = [121.452368605797,31.2253976215524]; 
-var lunchuancenter = [121.505282235984,31.408037933827]; 
-var fengpucenter = [121.433152478344,30.9342295206643];
-var yukaicenter = [121.353859274294,31.1264078852129];
-// 设置视图
+var geomPlaces;
+var geomBackgrounds = {};
+var geomPolygons = {};
+var geomPOIs = {};
+
+//设置视图
 var view = new ol.View({
-	center: motecenter,
+	center: [121.4286933,31.1664993],
 	projection: 'EPSG:4326',
 	zoom: 19
 });
-
 // 室内图数据获取 	
-var geojsonObject = function(viewParams,Typename){
-	var geojson;
+var geojsonObject = function(filter,Typename){
+	var geojson = {};
 	$.ajax({
 		url: wfsUrl,
 		data: {
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typename: Typename,
+			typename: DBs + Typename,
 			outputFormat: 'application/json',
-			viewparams: viewParams
+			cql_filter: filter
 		},
 		type: 'GET',
 		dataType: 'json',	
 		async: false,
 		success: function(response){
-			geojson = response;
+			var features = new ol.format.GeoJSON().readFeatures(response);
+			var floorLength = features.length;
+			if(floorLength > 0){
+				for(var i=0;i<features.length;i++){
+					var featuresFloor = features[i].get('floor_id');
+					if(geojson[featuresFloor] == undefined){
+						geojson[featuresFloor] = [];
+					}
+					geojson[featuresFloor].push(features[i]);
+				}	
+			}
 		}
 	});
 	// 返回经过条件筛选后的数据
 	return geojson; 
 };
+/* get 室内图 */
+function getGeomData(){
+	geomBackgrounds = geojsonObject('place_id='+placeid,':polygon_background');
+	geomPolygons = geojsonObject('place_id='+placeid,':polygon');
+	geomPOIs = geojsonObject('place_id='+placeid,':point');
+}
+
 // 室内图样式设置
 var geojsonstylefunction = function(feature){
 	// console.log(feature);
@@ -89,6 +102,64 @@ var geojsonstylefunction = function(feature){
 
 
 // 确认网址的Flag 当为true时可以定位，加载定位信息
+
+//获取所有place
+var getGeomPlaces = function(Typename){
+	var geojson = [];
+	$.ajax({
+		url: wfsUrl,
+		data: {
+			service: 'WFS',
+			version: '1.1.0',
+			request: 'GetFeature',
+			typename: DBs + Typename,
+			outputFormat: 'application/json',
+		},
+		type: 'GET',
+		dataType: 'json',	
+		async: false,
+		success: function(response){
+			geojson = new ol.format.GeoJSON().readFeatures(response);
+		}
+	});
+	return geojson; 
+};
+geomPlaces = getGeomPlaces(':polygon_background');
+//获取中心点
+var mapCenter = function(placeId){
+	var placeLength = geomPlaces.length;
+	var places = 0,placeLonSum = 0,placeLatSum = 0;
+	for (var placeNum =0;placeNum < placeLength;placeNum++){
+		if (geomPlaces[placeNum].get('place_id') == placeId){
+			placeLonSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[0];
+			placeLatSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[01];
+			places ++;
+		}
+	}
+	return [placeLonSum/places,placeLatSum/places];
+}
+
+// 根据中心点判断最近的place
+function getPlace(center){
+	var centerPlace;
+	var mindistance = 200;
+	var placeLength = geomPlaces.length;
+	for (var placeNum =0;placeNum < placeLength;placeNum++){
+		var dummyDis = distanceFromAToB(geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates(),center) ;
+		if(dummyDis < mindistance ){
+			centerPlace = geomPlaces[placeNum].get('place_id');
+			mindistance = dummyDis;
+		}
+	}
+	if(mindistance < 200 && centerPlace != placeid){
+		placeid = centerPlace;
+		getGeomData();
+		// 加载楼层条
+		getFloorList();
+		load3dData();
+	}		
+}
+
 var checkFlag = false;
 
 // 当为TRUE时 定位点在电子围栏内，定位点的style为特殊式样
@@ -98,8 +169,6 @@ var locateStyleWarn = false;
 var backcenterFlag = false;
 
 var OldWarnType = null; // 电子围栏预警的flag 对比前一次的变化去预警
-
-
 
 
 // 修改记录
@@ -135,43 +204,6 @@ function featObjectSend(featString){
 	request.open('POST', wfsUrl + '?service=wfs');
 	request.setRequestHeader('Content-Type', 'text/xml');
 	request.send(featString);		
-}
-
-// 根据中心点判断最近的place
-function getPlace(center){
-	var centerPlace;
-	var mindistance = 200;
-	var getPlaceParam = {
-		service: 'WFS',
-		version: '1.1.0',
-		request: 'GetFeature',
-		typeName: DBs + ':polygon_background ', 
-		outputFormat: 'application/json',
-	};	
-	$.ajax({  
-		url: wfsUrl,
-		data: $.param(getPlaceParam), 
-		type: 'GET',
-		dataType: 'json',
-		success: function(response){
-			var features = new ol.format.GeoJSON().readFeatures(response);
-			var placeLength = features.length
-			for (var placeNum =0;placeNum < placeLength;placeNum++){
-				var dummyDis = distanceFromAToB(features[placeNum].getGeometry().getInteriorPoint().getCoordinates(),center) ;
-				if(dummyDis < mindistance ){
-					centerPlace = features[placeNum].get('place_id');
-					mindistance = dummyDis;
-				}
-			}
-			if(mindistance < 200 && centerPlace != placeid){
-				placeid = centerPlace;
-				// 加载楼层条
-				getFloorList();
-				load3dData();
-			}
-			
-		}
-	}); 		
 }
 
 

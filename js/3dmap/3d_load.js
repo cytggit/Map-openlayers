@@ -53,7 +53,7 @@
 				request: 'GetFeature',
 				typeName: DBs + ':polygon_background', 
 				outputFormat: 'application/json',
-				cql_filter: 'place_id=2'// + placeid
+				cql_filter: 'place_id=' + placeid
 		};	
 			$.ajax({  
 				url: wfsUrl,
@@ -98,7 +98,7 @@
 				request: 'GetFeature',
 				typeName: DBs + ':polygon', 
 				outputFormat: 'application/json',
-				cql_filter: 'place_id=2'// + placeid
+				cql_filter: 'place_id=' + placeid
 		};	
 			$.ajax({  
 				url: wfsUrl,
@@ -201,7 +201,7 @@
 				request: 'GetFeature',
 				typeName: DBs + ':point', 
 				outputFormat: 'application/json',
-				cql_filter: 'place_id=2'// + placeid
+				cql_filter: 'place_id=' + placeid
 		};	
 			$.ajax({  
 				url: wfsUrl,

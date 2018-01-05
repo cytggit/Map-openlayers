@@ -8,61 +8,34 @@
 		zIndex: 0
 	});
 	
-	var viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
 	// 2D
-	// var backgroundFilter = 'place_id=2 and floor_id=22 and feature_id=999999';
-	// var backgroundTypename = 'wanhuayuan:mote_background';
-	// var backgroundLayer = new ol.layer.Vector({
-		// title: 'background map',
-		// visible: true,
-		// source: new ol.source.Vector({
-			// features:  new ol.format.GeoJSON().readFeatures(geojsonObject(backgroundFilter,backgroundTypename))
-		// }),
-		// style: geojsonstylefunction,
-		// maxResolution: 0.00001
-	// });
-	// 3D
-	var backgroundLayer = new ol.layer.Tile({
+	var backgroundLayer = new ol.layer.Vector({
 		title: 'background map',
 		visible: true,
-		source: new ol.source.TileWMS({
-			url: wmsUrl,
-			params: {LAYERS: DBs + ':mote_background',VERSION:'1.1.0',viewparams:viewParam}
+		source: new ol.source.Vector({
+			features:  geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]
 		}),
-		zIndex: 1
-	});	
+		style: geojsonstylefunction,
+		maxResolution: 0.00001
+	});
 	
 	// 2D
-	// var polygonFilter =  'place_id='+ placeid + 'and floor_id='+ floorid ;
-	var polygonTypename = DBs + ':mote_polygon';
 	var polygonLayer = new ol.layer.Vector({
 		title: 'polygon map',
 		visible: true,
 		source: new ol.source.Vector({
-			features:  new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,polygonTypename))
+			features:  geomPolygons[floorid] != null ? geomPolygons[floorid]:[]
 		}),
 		style: geojsonstylefunction,
 		maxResolution: 0.00001,
 		zIndex: 10
 	});
-	// 3D
-	// var polygonLayer = new ol.layer.Tile({
-		// title: 'detail map',
-		// visible: true,
-		// source: new ol.source.TileWMS({
-			// url: 'http://192.168.1.126:8088/geoserver/wanhuayuan/wms',
-			// params: {LAYERS:polygonTypename,VERSION:'1.1.0',viewparams:viewParam}
-		// }),
-		// zIndex: 10
-	// });
-	
-	// var pointFilter =  'place_id='+ placeid + 'and floor_id='+ floorid ;
-	var pointTypename = DBs + ':mote_point';
+
 	var pointLayer = new ol.layer.Vector({
 		title: 'point map',
 		visible: true,
 		source: new ol.source.Vector({
-			features:  new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename))
+			features:  geomPOIs[floorid] != null ? geomPOIs[floorid]:[]
 		}),
 		style: geojsonstylefunction,
 		maxResolution: 0.000003,
@@ -72,7 +45,7 @@
 		title: 'point map',
 		visible: true,
 		source: new ol.source.Vector({
-			features:  new ol.format.GeoJSON().readFeatures(geojsonObject(viewParam,pointTypename))
+			features:  geomPOIs[floorid] != null ? geomPOIs[floorid]:[]
 		}),
 		style: selectSingleClickStyle,
 		maxResolution: 0.000003,
