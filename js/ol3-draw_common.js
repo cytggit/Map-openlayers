@@ -9,44 +9,110 @@ var DBs = 'mote'; //数据源
 var comIp = 'http://114.215.83.3:8090';
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
-// 设置中心点
-var motecenter = [121.4287933,31.1664993]; 
-var zhongbeicenter = [121.407121820159,31.2265797284321]; 
-var minhangcenter = [121.457171250547,31.0275850273072]; 
-var zhanlancenter = [121.452368605797,31.2253976215524]; 
-var lunchuancenter = [121.505282235984,31.408037933827]; 
-var fengpucenter = [121.433152478344,30.9342295206643];
-var yukaicenter = [121.353859274294,31.1264078852129];
+
+var geomPlaces;
+var geomBackgrounds = {};
+var geomPolygons = {};
+var geomPolylines = {};
+var geomPOIs = {};
+
 // 设置视图
 var view = new ol.View({
-	center: motecenter,
+	center: [121.4286933,31.1664993],
 	projection: 'EPSG:4326',
 	zoom: 19
 });
 
 // 室内图数据获取 	
-var geojsonObject = function(viewParams,Typename){
-	var geojson;
+var geojsonObject = function(filter,Typename){
+	var geojson = {};
 	$.ajax({
 		url: wfsUrl,
 		data: {
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typename: Typename,
+			typename: DBs + Typename,
 			outputFormat: 'application/json',
-			viewparams: viewParams
+			cql_filter: filter
 		},
 		type: 'GET',
 		dataType: 'json',	
 		async: false,
 		success: function(response){
-			geojson = response;
+			var features = new ol.format.GeoJSON().readFeatures(response);
+			var floorLength = features.length;
+			if(floorLength > 0){
+				for(var i=0;i<features.length;i++){
+					var featuresFloor = features[i].get('floor_id');
+					if(geojson[featuresFloor] == undefined){
+						geojson[featuresFloor] = [];
+					}
+					geojson[featuresFloor].push(features[i]);
+				}	
+			}
 		}
 	});
 	// 返回经过条件筛选后的数据
 	return geojson; 
 };
+/* get 室内图 */
+function getGeomData(){
+	geomBackgrounds = geojsonObject('place_id='+placeid,':polygon_background');
+	geomPolygons = geojsonObject('place_id='+placeid,':polygon');
+	geomPolylines = geojsonObject('place_id='+placeid,':polyline');
+	geomPOIs = geojsonObject('place_id='+placeid,':point');
+}
+
+//获取所有place
+var getGeomPlaces = function(Typename){
+	var geojson = [];
+	$.ajax({
+		url: wfsUrl,
+		data: {
+			service: 'WFS',
+			version: '1.1.0',
+			request: 'GetFeature',
+			typename: DBs + Typename,
+			outputFormat: 'application/json',
+		},
+		type: 'GET',
+		dataType: 'json',	
+		async: false,
+		success: function(response){
+			geojson = new ol.format.GeoJSON().readFeatures(response);
+		}
+	});
+	return geojson; 
+};
+geomPlaces = getGeomPlaces(':polygon_background');
+
+function loadDBplace(){
+	var palceTag = [];
+	var placeLength = geomPlaces.length;
+
+	palceTag[0] = '<option value="null">请选择区域</option>';
+	for (var Num =0;Num < placeLength;Num++){
+		palceTag[Num+1] = '<option value="'+geomPlaces[Num].get('place_id')+'">'+geomPlaces[Num].get('name')+'</option>';
+	}
+	palceTag[placeLength+1] = '<option value="newplace">新增区域</option>';
+
+	$("#db-place").append(palceTag);
+}
+//获取中心点
+var mapCenter = function(placeId){
+	var placeLength = geomPlaces.length;
+	var places = 0,placeLonSum = 0,placeLatSum = 0;
+	for (var placeNum =0;placeNum < placeLength;placeNum++){
+		if (geomPlaces[placeNum].get('place_id') == placeId){
+			placeLonSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[0];
+			placeLatSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[01];
+			places ++;
+		}
+	}
+	return [placeLonSum/places,placeLatSum/places];
+}
+
 // 室内图样式设置
 var geojsonstylefunction = function(feature){
 	// var featureiiiid = feature.I.feature_id;

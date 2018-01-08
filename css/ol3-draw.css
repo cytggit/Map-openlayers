@@ -17,7 +17,7 @@
 /* 楼层条 */
 div.floor-select {
     position: absolute;
-    height: 11.88em;
+    /* height: 11.88em; */
 	width: 3em;
     top: 30%;
     right: 2%;
@@ -25,14 +25,22 @@ div.floor-select {
 	-webkit-filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
 	filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
 }
-.wheel ul li a{
-	padding: 2px 14px;
+/* .floorshow {
+	height: 3em;
+} */
+.floorshow a{
+/* 	padding: 10px 12px;  */
+	font-size: 12px;
 }
 .up{
 	background-color: rgb(240,240,240);
 }
-.down{
-	background-color: rgb(240,240,240);
+/* .wheel ul li a{
+	padding: 2px 14px; 
+} */
+.down,.dropdown-toggle{
+	/* background-color: rgb(240,240,240); */
+	padding: 2px 14px; 
 }
 
 .up>a {
@@ -48,7 +56,9 @@ div.floor-select {
 }
 
 .floor-wheel {
-    height: 8.6em;
+	position: relative;
+    height: 8.6em; 
+	/* min-height: 2em; */
     overflow: scroll;
 	width: 3em;
 	overflow-x: hidden;
@@ -63,7 +73,7 @@ div.floor-select {
 .floor-wheel ul li {
 	margin: 0px 0px -4px 0px;
 	width: 3em;
-	height: 3em;
+	height: 2.5em;
 	
 }
 .floor-wheel ul li a{

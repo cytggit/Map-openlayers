@@ -1,45 +1,25 @@
 function loadTable(){
 	placecheck.onchange = function(){
 		placeType = placecheck.value;
-		switch(placeType){
-			case 'null':
-				placeid = '0';
-				tablecheck.value = 'null';
-				$("#tabel-key").html("");
-				break;
-			case 'mote':
-				placeid = '2';
-				view.setCenter(motecenter);
-				break;
-			case 'zhongbei':
-				placeid = '3';
-				view.setCenter(zhongbeicenter);
-				break;
-			case 'minhang':
-				placeid = '4';
-				view.setCenter(minhangcenter);
-				break;
-			case 'zhanlan':
-				placeid = '5';
-				view.setCenter(zhanlancenter);
-				break;
-			case 'lunchuan':
-				placeid = '6';
-				view.setCenter(lunchuancenter);
-				break;
-			case 'fengpu':
-				placeid = '7';
-				view.setCenter(fengpucenter);
-				break;
-			case 'yukai':
-				placeid = '8';
-				view.setCenter(yukaicenter);
-				break;
-			case 'newplace':
-				tablecheck.value = 'polygon_background';
-				$("#tabel-key").html(place + feature + floor + Fname);
-				break;
+		if(placeType == 'null'){
+			placeid = '0';
+			tablecheck.value = 'null';
+			$("#tabel-key").html("");
+		}else if(placeType == 'newplace'){
+			tablecheck.value = 'polygon_background';
+			$("#tabel-key").html(place + feature + floor + Fname);
+		}else{
+			if(placeid != placeType){
+				placeid = placeType;
+				view.setCenter(mapCenter(placeid));
+				getGeomData();
+				// 刷新图层
+				Refreshlayer();
+				getFloorList();
+			}
+
 		}
+		
 		// 当编辑打开时，判断之前的编辑操作是否需要保存
 		if(drawFlag){
 			checkDrawData();
@@ -47,8 +27,6 @@ function loadTable(){
 		}
 		// 根据background的floor动态生成楼层选择框
 		// changeFloor();
-		// 刷新图层
-		Refreshlayer();
 	}
 	
 	tablecheck.onchange = function(){
@@ -81,6 +59,27 @@ function loadTable(){
 				break;
 		}
 	}		
+}
+// 加载楼层条
+function getFloorList(){
+	var FloorTag = [];
+	var FloorId = geomBackgrounds != undefined ? Object.keys(geomBackgrounds): [];
+	var floorLength = FloorId.length;
+	
+	for (var Floori =0;Floori < floorLength;Floori++){
+		for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
+			if (FloorId[Floori] >= FloorId[Floorj]){
+				var floorDummy = FloorId[Floori];
+				FloorId[Floori] = FloorId[Floorj];
+				FloorId[Floorj] = floorDummy;
+			}					
+		}
+	}
+	for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+		FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
+	}		
+	$("#floorlist").html(FloorTag);
+	$(".floor-select").show();	
 }
 
 function initdraw(){
@@ -591,18 +590,6 @@ function getdrawLayer(dbtype){
 			success: function(response){
 				var features = new ol.format.GeoJSON().readFeatures(response);
 				switch(dbtype){
-					case ':polygon_background':
-						backgroundLayer.getSource().addFeatures(features);
-						break;
-					case ':polygon':
-						polygonLayer.getSource().addFeatures(features);
-						break;
-					case ':polyline':
-						roadLayer.getSource().addFeatures(features);
-						break;
-					case ':point':
-						pointLayer.getSource().addFeatures(features);
-						break;
 					case ':electronic_fence':
 						electronicLayer.getSource().addFeatures(features);
 						break;
@@ -690,13 +677,13 @@ function Refreshlayer(){
 	// viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
 	// WFS
 	backgroundLayer.getSource().clear();
-	getdrawLayer(':polygon_background');
+	backgroundLayer.getSource().addFeatures(geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]);
 	polygonLayer.getSource().clear();
-	getdrawLayer(':polygon');
+	polygonLayer.getSource().addFeatures(geomPolygons[floorid] != null ? geomPolygons[floorid]:[]);
 	roadLayer.getSource().clear();
-	getdrawLayer(':polyline');
+	roadLayer.getSource().addFeatures(geomPolylines[floorid] != null ? geomPolylines[floorid]:[]);
 	pointLayer.getSource().clear();
-	getdrawLayer(':point');
+	pointLayer.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);
 }
 
 // 楼层选择
@@ -719,6 +706,7 @@ function floorSelect(e){
 function floorUpdate(newfloorId){
 	// 取点击的楼层 赋值给floor_id   第二个字符后两位
 	floorid = newfloorId;	
+	$(".floorshow a").text('F' + newfloorId);
 	// 刷新图层（背景，道路，poi 其他清空）
 	Refreshlayer();	
 
