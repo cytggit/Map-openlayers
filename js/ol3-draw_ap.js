@@ -29,46 +29,14 @@ function checkUrlParam(checkName){
 }
 
 function loadTable(){
-		switch(placeid){
-			case '0':
-				$("#tabel-key").html("");
-				break;
-			case '2':
-				view.setCenter(motecenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '3':
-				view.setCenter(zhongbeicenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '4':
-				view.setCenter(minhangcenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '5':
-				view.setCenter(zhanlancenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '6':
-				view.setCenter(lunchuancenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '7':
-				view.setCenter(fengpucenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-			case '8':
-				view.setCenter(yukaicenter);
-				// 显示电子围栏
-				electronicFence();
-				break;
-		}
+	if(placeid == 0){
+		$("#tabel-key").html("");
+	}else{
+		view.setCenter(mapCenter(placeid));
+		getGeomData();
+		// 显示电子围栏
+		electronicFence();
+	}
 		// 当编辑打开时，判断之前的编辑操作是否需要保存
 		// if(drawFlag){
 			// checkDrawData();
@@ -412,40 +380,7 @@ function getdrawLayer(dbtype){
 	
 			}
 		})
-	}else{
-		var drawParam = {
-			service: 'WFS',
-			version: '1.1.0',
-			request: 'GetFeature',
-			typeName: DBs + dbtype, // 电子围栏图层
-			outputFormat: 'application/json',
-			cql_filter: 'place_id=' + placeid + ' and floor_id=\'' + floorid + '\''
-		};	
-		$.ajax({  
-			url: wfsUrl,
-			data: $.param(drawParam), 
-			type: 'GET',
-			dataType: 'json',
-			success: function(response){
-				var features = new ol.format.GeoJSON().readFeatures(response);
-				switch(dbtype){
-					case ':polygon_background':
-						backgroundLayer.getSource().addFeatures(features);
-						break;
-					case ':polygon':
-						polygonLayer.getSource().addFeatures(features);
-						break;
-					case ':polyline':
-						roadLayer.getSource().addFeatures(features);
-						break;
-					case ':point':
-						pointLayer.getSource().addFeatures(features);
-						break;
-				}
-			}
-		}); 	
 	}
-	
 }
 
 // 刷新图层 背景，道路，poi
@@ -453,13 +388,13 @@ function Refreshlayer(){
 	// viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
 	// WFS
 	backgroundLayer.getSource().clear();
-	getdrawLayer(':polygon_background');
+	backgroundLayer.getSource().addFeatures(geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]);
 	polygonLayer.getSource().clear();
-	getdrawLayer(':polygon');
+	polygonLayer.getSource().addFeatures(geomPolygons[floorid] != null ? geomPolygons[floorid]:[]);
 	roadLayer.getSource().clear();
-	getdrawLayer(':polyline');
+	roadLayer.getSource().addFeatures(geomPolylines[floorid] != null ? geomPolylines[floorid]:[]);
 	pointLayer.getSource().clear();
-	getdrawLayer(':point');
+	pointLayer.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);
 	RefreshAPlayer();
 }
 
@@ -471,46 +406,26 @@ function RefreshAPlayer(){
 // 加载楼层条
 function getFloorList(){
 	var FloorTag = [];
-	var FloorId = [];
-	var GetFloorParam = {
-		service: 'WFS',
-		version: '1.1.0',
-		request: 'GetFeature',
-		typeName: DBs + ':polygon_background ', // 
-		outputFormat: 'application/json',
-		cql_filter: 'place_id=' + placeid
-	};	
-	$.ajax({  
-		url: wfsUrl,
-		data: $.param(GetFloorParam), 
-		type: 'GET',
-		dataType: 'json',
-		success: function(response){
-			
-			var features = new ol.format.GeoJSON().readFeatures(response);
-			var floorLength = features.length
-			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorId[FloorNum] = features[FloorNum].values_.floor_id;
-			}
-			var floorDummy;
-			for (var Floori =0;Floori < floorLength;Floori++){
-				for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
-					if (FloorId[Floori] >= FloorId[Floorj]){
-						floorDummy = FloorId[Floori];
-						FloorId[Floori] = FloorId[Floorj];
-						FloorId[Floorj] = floorDummy;
-					}					
-				}
-			}
-
-			for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
-				FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
-			}
-
-			$("#floorlist").html(FloorTag);
-			changeFloorAction();
+	var FloorId = geomBackgrounds != undefined ? Object.keys(geomBackgrounds): [];
+	var floorLength = FloorId.length;
+	
+	for (var Floori =0;Floori < floorLength;Floori++){
+		for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
+			if (FloorId[Floori] >= FloorId[Floorj]){
+				var floorDummy = FloorId[Floori];
+				FloorId[Floori] = FloorId[Floorj];
+				FloorId[Floorj] = floorDummy;
+			}					
 		}
-	}); 	
+	}
+
+	for (var FloorNum =0;FloorNum < floorLength;FloorNum++){
+		FloorTag[FloorNum] = '<li role="presentation" class="floorS ' + FloorId[FloorNum] + '" onClick="floorSelect(this);"><a>F' + FloorId[FloorNum] + '</a></li>';
+	}		
+	$("#floorlist").html(FloorTag);
+
+
+	changeFloorAction();
 }
 
 // 更改楼层条高亮
