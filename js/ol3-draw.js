@@ -526,6 +526,7 @@ function deletedata(){
 					updateNewFeature([newFeature],tableType,'remove');
 					alert('删除要素成功！');	
 					newFeature =  null;
+
 					Refreshlayer();
 					
 				}else{
@@ -550,6 +551,7 @@ function SaveData(){
 			break;
 	}	
 	FeatureDummy = [];
+	
 	Refreshlayer();
 }
 // 关闭编辑
@@ -674,7 +676,20 @@ function clear_column(e){
 
 // 刷新图层 背景，道路，poi
 function Refreshlayer(){
-	// viewParam = 'place_id:' + placeid + ';floor_id:' + floorid;
+	switch (tableType){
+		case 'polygon_background':
+			geomBackgrounds = geojsonObject('place_id='+placeid,':polygon_background');
+			break;
+		case 'point':
+			geomPOIs = geojsonObject('place_id='+placeid,':point');
+			break;
+		case 'polygon':
+			geomPolygons = geojsonObject('place_id='+placeid,':polygon');
+			break;
+		case 'polyline':
+			geomPolylines = geojsonObject('place_id='+placeid,':polyline');
+			break;
+	}	
 	// WFS
 	backgroundLayer.getSource().clear();
 	backgroundLayer.getSource().addFeatures(geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]);

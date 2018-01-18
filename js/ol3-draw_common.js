@@ -407,7 +407,7 @@ var geojsonstyle = {
 		}),
 		zIndex:101
 	}),
-	'10030501'/*总经理室*/: new ol.style.Style({ 
+	'10030501'/*总裁*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
 			width: 0.8
@@ -423,7 +423,17 @@ var geojsonstyle = {
 			width: 0.8
 		}),
 		fill: new ol.style.Fill({
-			color: [255,255,204,0.5]
+			color: [233,242,239,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030503' /*涉密机房*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,153,0,0.5]
 		}),
 		zIndex:102
 	}),
@@ -447,15 +457,185 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
-	'10030101' /*看板*/: new ol.style.Style({  
+	'10030506' /*技术总监*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
 			width: 1
 		}),
 		fill: new ol.style.Fill({
-			color: [255,153,204,0.8]
+			color: [220,220,255,0.5]
 		}),
 		zIndex: 103
+	}),
+	'10030507' /*市场部*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030508' /*综合部*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030509' /*质量部*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030510' /*商务部*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030511' /*人力资源*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030512' /*项目管理*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030513' /*地图办公室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [233,242,239,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030514' /*总经理室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [220,220,255,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030515' /*副总经理室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [220,220,255,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030516' /*经理*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [220,220,255,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030517' /*资料室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [252,231,212,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030518' /*技术服务*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [252,231,212,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030519' /*打印室*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [252,231,212,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030520' /*设备间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [252,231,212,0.5]
+		}),
+		zIndex: 103
+	}),
+	'10030599' /*其他*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [252,231,212,0.5]
+		}),
+		zIndex: 103
+	}),
+	// '10030101' /*看板*/: new ol.style.Style({  
+		// stroke: new ol.style.Stroke({
+			// color: [128,128,128,0.6],
+			// width: 1
+		// }),
+		// fill: new ol.style.Fill({
+			// color: [255,153,204,0.8]
+		// }),
+		// zIndex: 103
+	// }),
+	'10030602' /*卫生间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,153,204,0.5]
+		}),
+		zIndex:102
 	}),
 	'10030603' /*沙发*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -466,6 +646,26 @@ var geojsonstyle = {
 			color: [204,204,104,0.8]
 		}),
 		zIndex: 103
+	}),
+	'10030604' /*电梯间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [180,180,180,0.5]
+		}),
+		zIndex:102
+	}),
+	'10030605' /*楼梯间*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [128,128,128,0.6],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [180,180,180,0.5]
+		}),
+		zIndex:102
 	}),
 	'10030606' /*书架*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -493,11 +693,11 @@ var geojsonstyle = {
 			width: 1
 		}),
 		fill: new ol.style.Fill({
-			color: [204,204,254,0.8]
+			color: [224,224,224,0.8]
 		}),
 		zIndex: 103
 	}),
-	'10030609' /*衣架*/: new ol.style.Style({  
+	'10030609' /*衣柜*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
 			width: 1
@@ -517,36 +717,8 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
-	'10030602' /*卫生间*/: new ol.style.Style({  
-		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
-			width: 0.8
-		}),
-		fill: new ol.style.Fill({
-			color: [255,153,204,0.5]
-		}),
-		zIndex:102
-	}),
-	'10030604' /*电梯间*/: new ol.style.Style({  
-		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
-			width: 0.8
-		}),
-		fill: new ol.style.Fill({
-			color: [180,180,180,0.5]
-		}),
-		zIndex:102
-	}),
-	'10030605' /*楼梯间*/: new ol.style.Style({  
-		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
-			width: 0.8
-		}),
-		fill: new ol.style.Fill({
-			color: [204,153,255,0.5]
-		}),
-		zIndex:102
-	}),
+
+
 	/************
 	*
 	*polyline
