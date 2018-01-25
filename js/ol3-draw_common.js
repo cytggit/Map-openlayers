@@ -166,6 +166,14 @@ var electronicFenceStyleFun = function(feature){
 	return electronicFenceStyle[featureiiiid];
 };
 
+// 测距
+var formatLength; // 计算线的长度
+var wgs84Sphere = new ol.Sphere(6378137); // 计算线的长度所用常量
+var sketch; // 绘制的形状
+var measureTooltipElement; // 显示长度
+var measureTooltips = [];//显示长度的overlay 
+var measureNum=0; // 长度的overlay 计数
+
 // 编辑
 var newFeature = null;
 var newdrawNum;

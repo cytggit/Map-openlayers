@@ -285,6 +285,28 @@ function checkDrawData(){
 // 新增
 function addData(){
 	DrawFeature.setActive(true);
+	
+	// 测算长度
+	if(tableType == 'polyline' || tableType == 'polygon'){
+		var listener;
+		DrawFeature[tableType].on('drawstart',
+			function(evt) {
+				measureTooltipElement = null;
+				createMeasureTooltip();
+				// set sketch
+				sketch = evt.feature;
+				tooltipCoord = evt.coordinate;
+				listener = sketch.getGeometry().on('change', function(evt) {
+					var target = evt.target;
+					var geom = tableType == 'polyline' ? evt.target.getCoordinates(): evt.target.getCoordinates()[0];
+					var output = formatLength(geom);
+					var tooltipCoord = target.getLastCoordinate();
+					measureTooltipElement.innerHTML = output;
+					measureTooltips[measureNum].setPosition(tooltipCoord);
+				});
+			}, this);
+	}
+
 	// 判断编辑的表
 	newdrawNum=0;
 	DrawFeature[tableType].on('drawend',
@@ -302,6 +324,7 @@ function addData(){
 				var Coordinates = [oldCoordinates[1],oldCoordinates[0]];
 				newFeature.setGeometry(new ol.geom.Point(Coordinates));
 			}else if (tableType == 'polyline'){
+				removeLength();
 				var Coordinates = evt.feature.values_.geom.getCoordinates();
 				var CoordinatesLength = Coordinates.length;
 				for (var i=0;i<CoordinatesLength;i++){
@@ -310,6 +333,7 @@ function addData(){
 				}
 				newFeature.setGeometry(new ol.geom.LineString(newCoordinates));							
 			}else{
+				removeLength();
 				var Coordinates = evt.feature.values_.geom.getCoordinates()[0];
 				var CoordinatesLength = Coordinates.length;
 				for (var i=0;i<CoordinatesLength;i++){
@@ -730,4 +754,50 @@ function floorUpdate(newfloorId){
 		electronicLayerOff = true;
 		electronicFence();
 	}		
+}
+
+
+ //显示长度的overlay  
+function createMeasureTooltip() {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement('div');
+  measureTooltipElement.className = 'tooltiptip tooltip-measure';
+  measureTooltips[measureNum] = new ol.Overlay({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  map.addOverlay(measureTooltips[measureNum]);
+}
+
+// 获取长度
+formatLength = function(line) {
+	var coordinates = line;
+	var length = 0;
+	var sourceProj = map.getView().getProjection();
+	for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+		var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
+		var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
+		length += wgs84Sphere.haversineDistance(c1, c2);
+	}
+	var output;
+	if (length > 100) {
+		output = (Math.round(length / 1000 * 100) / 100) +
+			' ' + 'km';
+	} else {
+		output = (Math.round(length * 100) / 100) +
+			' ' + 'm';
+	}
+	return output;
+};
+
+// 清除测距
+function removeLength(){
+	if (measureTooltips.length > 0){
+		for ( var j=0 ; j < measureTooltips.length;j++){
+			map.removeOverlay(measureTooltips[j]);
+		}
+	}
 }
