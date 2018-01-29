@@ -274,7 +274,7 @@ var shapeHeight = {
 		// point
 	'30050100' /*billboard*/: 2,
 	'30050200' /*billboard*/: 1.5,
-	'30050300' /*billboard*/: 0.5,
+	'30050300' /*billboard*/: 2,
 	//'30050800' /*billboard*/: 1,
 	'30060000' /*POIall*/: 2.5,
 	'30060100' /*billboard*/: 0.5,
