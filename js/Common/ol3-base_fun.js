@@ -69,7 +69,7 @@ function getlocation(){
 			
 			if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 2){
 				doWithLocate(features);
-				//makeEntitiesLocate(features);
+				makeEntitiesLocate(features);
 			}
 
 		}		
