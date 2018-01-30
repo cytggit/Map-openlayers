@@ -47,7 +47,7 @@ function getlocation(){
 			var features ;
 			if(JSON.stringify(response)!="{}"){
 				features = new ol.format.GeoJSON().readFeatures(response);
-				doWithLocate(features);
+				
 			}else{
 				var gpsfeature = new ol.Feature();
 				
@@ -64,18 +64,22 @@ function getlocation(){
 					gpsfeature.set('floor_id','01');
 					features = [gpsfeature];
 					
-					doWithLocate(features);
 				// });
 			}
-			makeEntitiesLocate(features);
+			
+			if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 2){
+				doWithLocate(features);
+				//makeEntitiesLocate(features);
+			}
+
 		}		
 	});
 }
 
 function doWithLocate(features){
-				
-	center_wfs.clear();
+
 	if(deviceId != 'all'){
+		var beforeLocate = locate;
 		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
 		locateFloor = features[0].get('floor_id');
 		// 切换到定位点所在的区域
@@ -93,22 +97,29 @@ function doWithLocate(features){
 		// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
 		// if (locateFloor == floorid){
 			
-			// 判断是否正在路径规划，做路网吸附
-			// if(!pathPlanningOFF &&  ){
-			if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
-				var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
-				center_wfs.addFeatures(newcenterFearure);
-			}else{
-				center_wfs.addFeatures(features);
-			}
+		// 判断是否正在路径规划，做路网吸附
+		// if(!pathPlanningOFF &&  ){
+		if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
+			var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
+			features = newcenterFearure;
+		}
+		
+		// 定位点顺滑平移-伪实现
+		if( beforeLocate != null && distanceFromAToB(beforeLocate,locate) < 10){
+			moveAnimation(beforeLocate,features);
+		}else{			
+			center_wfs.clear();
+			center_wfs.addFeatures(features);
+		}
+		
 		// }
 	}else{
 		//var features = new ol.format.GeoJSON().readFeatures(response);
+		center_wfs.clear();
 		LocationLayer.setStyle(locationStyle);
 		center_wfs.addFeatures(features);
 	}
 }
-
 
 // 获取实时定位信息
 function startlocation(){  

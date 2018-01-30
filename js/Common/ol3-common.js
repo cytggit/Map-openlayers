@@ -276,12 +276,35 @@ function distanceFromAToB(A,B){
 }
 
 
+// 定位点顺滑平移-伪实现
+function moveAnimation(beforePoint,features){
+	var futurePoint = locate;
+    var progress = 0;  
+    var speed = 100;  
 
-
-
-
-
-
+	var intervalX = (futurePoint[0] - beforePoint[0])/speed;
+	var intervalY = (futurePoint[1] - beforePoint[1])/speed;
+    //cancelAnimationFrame(timer);
+	
+	var newpoint = beforePoint;
+    var timer = requestAnimationFrame(function moveFeature(){
+		progress += 1;  
+        if(progress%speed != 0){
+			newpoint[0] += intervalX;
+			newpoint[1] += intervalY;
+			features[0].setGeometry(new ol.geom.Point(newpoint));
+			center_wfs.clear();
+			center_wfs.addFeatures(features);
+            timer = requestAnimationFrame(moveFeature);
+        }else{
+			newpoint = futurePoint;
+			features[0].setGeometry(new ol.geom.Point(newpoint));
+			center_wfs.clear();
+			center_wfs.addFeatures(features);			
+            cancelAnimationFrame(timer);
+        }    
+    });
+}
 
 
 
