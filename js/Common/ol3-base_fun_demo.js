@@ -67,7 +67,7 @@ function getlocation(){
 				// });
 			}
 			
-			if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 2){
+			if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 1){
 				doWithLocate(features);
 				makeEntitiesLocate(features);
 			}
