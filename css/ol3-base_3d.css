@@ -23,6 +23,61 @@ button.control-locate:hover {
     color: deepskyblue;
 }
 
+/* 搜索框 */
+.control-entry {
+	position: absolute;
+	width: 96%;
+	height: 50px;
+	left: 2%;
+	border: 1px solid #F0F1F1;
+	border-radius: 0px;
+	margin: 20px 0px 0px 0px;
+	-webkit-box-shadow:0px 1px 3px #c8c8c8 ;
+	-moz-box-shadow:0px 1px 3px #c8c8c8 ;
+	box-shadow:0px 1px 3px #c8c8c8 ;
+	background-color: rgba(255,255,255,1);
+}
+.control-input{
+	float: left;
+	border: none;
+	margin-left: 5px;
+	width: 80%;
+	height: 100%;
+	font-size: 14px;
+	background-color: rgba(255,255,255,0);
+}
+.control-search {
+	float: right;
+	width: 20px;
+	height: 20px;
+	margin: 15px 10px 5px 10px;
+}
+#search_result {
+	width: 96%;
+	position: absolute;
+	left: 2%;
+	top: 70px;
+	z-index: 1;
+	overflow: hidden;
+	background: #dcf6f8;
+	border: #c5dadb 1px solid;
+	border-top: none;
+}
+.line {
+	font-size: 14px;
+	color: #000;
+	background: #ffffff;
+	width: 1%;
+	padding: 6px;
+	line-height:40px;
+	border-bottom:1px   solid   #f2f2f2;
+}
+.hover {
+	background: #007ab8;
+	color: #fff;
+}
+
+
 /* 搜索条 */
 .feature-select {
     position: absolute;
