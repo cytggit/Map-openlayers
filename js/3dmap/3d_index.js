@@ -107,6 +107,7 @@ function changeMap(mapType){
 		$("#changeMap-Act").attr("onClick","changeMap('to3d');")
 		//更改图标
 		$("#changeMap-Img").attr("src","./icon/3d.png");
+		map.updateSize();
 		break;
 	default: 
 		break;
