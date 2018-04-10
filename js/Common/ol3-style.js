@@ -611,7 +611,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [255,153,204,0.5]
 		}),
-		zIndex:102
+		zIndex:103
 	}),
 	'10030603' /*沙发*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -691,7 +691,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [244,244,204,0.8]
 		}),
-		zIndex: 103
+		zIndex: 105
 	}),
 
 
