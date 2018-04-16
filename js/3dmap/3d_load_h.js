@@ -168,8 +168,8 @@ function setEntitiesLocate(shapeData){
 	if(gltfModel.length > 0){
 		for (var j=0;j<gltfModel.length;j++){
 			scene.primitives.remove(gltfModel[j]);
-			gltfModel=[];
 		}
+		gltfModel=[];
 	}
 
 	if(shapeData != undefined /*&& !locateFlag*/){
