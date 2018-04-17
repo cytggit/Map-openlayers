@@ -179,13 +179,19 @@ function getFloorList(){
 }
 
 // 回到定位点
+function moveToCenter(){
+	backcenterFlag = true;
+	backcenter();
+}
 function backcenter(){
 	// if (self.fetch){
 		// alert('fetch is ok!');
 	// }else {
 		// alert('fetch can not use!');
 	// }
-
+	map.on('pointerdrag', function() {
+		backcenterFlag = false;
+	});
 	// 平移动画
 	if (backcenterFlag){
 		view.animate({

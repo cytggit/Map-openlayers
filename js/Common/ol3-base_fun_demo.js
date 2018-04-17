@@ -47,7 +47,7 @@ function getlocation(){
 			var features ;
 			if(JSON.stringify(response)!="{}"){
 				features = new ol.format.GeoJSON().readFeatures(response);
-
+				
 			}else{
 				var gpsfeature = new ol.Feature();
 				
@@ -63,7 +63,7 @@ function getlocation(){
 					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
 					gpsfeature.set('floor_id','01');
 					features = [gpsfeature];
-
+					
 				// });
 			}
 			
@@ -71,13 +71,13 @@ function getlocation(){
 				doWithLocate(features);
 				makeEntitiesLocate(features);
 			}
-	
+
 		}		
 	});
 }
 
 function doWithLocate(features){
-				
+
 	if(deviceId != 'all'){
 		var beforeLocate = locate;
 		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
@@ -120,7 +120,6 @@ function doWithLocate(features){
 		center_wfs.addFeatures(features);
 	}
 }
-
 
 // 获取实时定位信息
 function startlocation(){  
@@ -180,13 +179,19 @@ function getFloorList(){
 }
 
 // 回到定位点
+function moveToCenter(){
+	backcenterFlag = true;
+	backcenter();
+}
 function backcenter(){
 	// if (self.fetch){
 		// alert('fetch is ok!');
 	// }else {
 		// alert('fetch can not use!');
 	// }
-
+	map.on('pointerdrag', function() {
+		backcenterFlag = false;
+	});
 	// 平移动画
 	if (backcenterFlag){
 		view.animate({

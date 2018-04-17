@@ -157,6 +157,9 @@ function getPlace(center){
 		// 加载楼层条
 		getFloorList();
 		load3dData();
+	}else{
+		// 地图随定位点移动（保持定位点在地图中心）
+		backcenter();
 	}		
 }
 
