@@ -92,31 +92,9 @@
 	}
 	/*获取polygon数据*/
 	function getEntitiesPolygon(){
-		var getEntitiesPolygonParam = {
-				service: 'WFS',
-				version: '1.1.0',
-				request: 'GetFeature',
-				typeName: DBs + ':polygon', 
-				outputFormat: 'application/json',
-				cql_filter: 'place_id=' + placeid
-		};	
-			$.ajax({  
-				url: wfsUrl,
-				data: $.param(getEntitiesPolygonParam), 
-				type: 'GET',
-				dataType: 'json',
-				success: function(response){
-					var features = new ol.format.GeoJSON().readFeatures(response);
-					var featuresLength = features.length;
-					if(featuresLength > 0){
-						makeEntitiesPolygons(features);
-					}
-				}
-			})
-	}
-	function makeEntitiesPolygons(features){
 		shapePolygons ={};
-		var FloorNum = 0,FeatureIdNum = 0;
+		shapePenups = {};
+		var FloorNum = 0,FeatureIdNum = 0,PenupNum = 0;
 		for(var i=0;i<features.length;i++){
 			// polygon所在楼层
 			var featuresFloor = features[i].get('floor_id');
@@ -125,6 +103,9 @@
 			// polygon的name
 			var featuresName = features[i].get('name');
 			// penup
+			if(shapePenups[featuresFloor] == undefined){
+				shapePenups[featuresFloor] = [];
+			}
 			var featuresPenupDummy = features[i].get('penup');
 			var featuresPenup = featuresPenupDummy != null ? featuresPenupDummy.split(",").map(function(item) {
 			    var temp = parseInt(item);
@@ -143,7 +124,8 @@
 			for (var j=0;j<geom.length;j++){
 				featuresGeom[3*j] = geom[j][0];
 				featuresGeom[3*j+1] = geom[j][1];
-				featuresGeom[3*j+2] = featuresHeightBase;
+				//featuresGeom[3*j+2] = featuresHeightBase;
+				featuresGeom[3*j+2] = featuresExtrudedHeightBase;
 				featuresExtrudedHeight[j] = featuresExtrudedHeightBase;
 				
 				// 根据penup取值
@@ -151,35 +133,21 @@
 					if(featuresPenup.indexOf(j) != -1){
 						if(featuresPenup.indexOf(j+1) != -1 ){
 							if(featuresPenup.indexOf(j-1) == -1 )/*front*/{
-								PenupGeom['0'+j] = ['front',geom[j][0]+ 0.00000001,geom[j][1],featuresHeightBase];
+								PenupGeom = geom[j];
+								PenupGeom.push(featuresExtrudedHeightBase);
 							}else{/*middle*/
-								PenupGeom['0'+j]=['middle',geom[j][0],geom[j][1],featuresHeightBase];
+								PenupGeom.push(geom[j][0]);
+								PenupGeom.push(geom[j][1]);
+								PenupGeom.push(featuresExtrudedHeightBase);
 							}
 						}else {
 							if(featuresPenup.indexOf(j-1) != -1 )/*later*/{
-								PenupGeom['0'+j]=['later',geom[j][0]+ 0.00000001,geom[j][1],featuresHeightBase];
+								PenupGeom.push(geom[j][0]);
+								PenupGeom.push(geom[j][1]);
+								PenupGeom.push(featuresExtrudedHeightBase);
+								shapePenups[featuresFloor][PenupNum++] = [PenupGeom,featuresName];
 							}
 						}
-					}
-				}
-			}
-			// 循环时从后往前加
-			if(featuresPenup.length > 1){
-				for (var j=featuresPenup.length-1;j>=0;j--){
-					switch (PenupGeom['0' + featuresPenup[j]][0]){
-					case 'front':
-						featuresGeom.splice(3*(featuresPenup[j]+1),0,PenupGeom['0' + featuresPenup[j]][1],PenupGeom['0' + featuresPenup[j]][2],PenupGeom['0' + featuresPenup[j]][3]);
-						featuresExtrudedHeight.splice(featuresPenup[j]+1,0,featuresExtrudedHeightBase + 1.8);
-						break;
-					case 'middle':
-						featuresExtrudedHeight[featuresPenup[j]] = featuresExtrudedHeightBase +1.8;
-						break;
-					case 'later':
-						featuresGeom.splice(3*featuresPenup[j],0,PenupGeom['0' + featuresPenup[j]][1],PenupGeom['0' + featuresPenup[j]][2],PenupGeom['0' + featuresPenup[j]][3]);
-						featuresExtrudedHeight.splice(featuresPenup[j],0,featuresExtrudedHeightBase + 1.8);
-						break;
-					default:
-						break;
 					}
 				}
 			}
@@ -189,9 +157,9 @@
 			}else if(shapePolygons[featuresFloor][featuresFeatureId] == undefined ){
 				shapePolygons[featuresFloor][featuresFeatureId] = [];
 			}
-			shapePolygons[featuresFloor][featuresFeatureId].push([featuresExtrudedHeightBase,featuresExtrudedHeight,featuresGeom,featuresName]);
+			shapePolygons[featuresFloor][featuresFeatureId].push([featuresExtrudedHeightBase,featuresHeightBase,featuresGeom,featuresName]);
 		}	
-		setEntitiesPolygon(shapePolygons[floorid]);
+		setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
 	}
 	/*获取POI数据*/
 	function getEntitiesPOI(){

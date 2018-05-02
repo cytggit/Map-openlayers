@@ -1,6 +1,7 @@
 /*DATA*/
 var shapeBackgrounds ={};
 var shapePolygons ={};
+var shapePenups ={};
 var shapePOIs ={};
 var shapeLocates = {};
 /*Entities*/
@@ -8,6 +9,7 @@ var shapeLocates = {};
 var shapeBackground;
 // Polygon
 var shapeWall = [],shapeWallNum = 0; // 
+var shapeDoor = [],shapeDoorNum = 0; 
 var shapeDesk = [],shapeDeskNum = 0; // 
 // POI
 var shapePoiAll = [],shapePoiAllNum = 0;
@@ -38,6 +40,24 @@ function setEntitiesPolygon(shapeData){
 		var allFeature = Object.keys(shapeData)
 		shapeWall = [];shapeWallNum = 0;
 		shapeDesk = [];shapeDeskNum = 0;
+		shapeDoor = [];shapeDoorNum = 0;
+		// 门-penup
+		for(var j=0;j<shapeDoorData.length;j++){
+			shapeDoor[shapeDoorNum++] = viewer.entities.add({ 
+			        name : shapeDoorData[1],  
+			        polylineVolume : {  
+			          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
+			          			shapeDoorData[j][0]),  
+			          	shape :[new Cesium.Cartesian2(-0.11,0),  // 横截面形状，相对值，中心点距离边界的值
+			          			new Cesium.Cartesian2(0.11, 0),  
+			          			new Cesium.Cartesian2(0.11, 1.8),  
+			          			new Cesium.Cartesian2(-0.11,1.8)],  
+			          	cornerType : Cesium.CornerType.ROUNDED,  // 控制端点形状
+			          	material : Cesium.Color.BROWN.withAlpha(1),  
+		        }		        
+		   });
+		}
+
 		for (var i=0;i<allFeature.length;i++){
 			var featureID = allFeature[i];
 			for (var j=0;j<shapeData[featureID].length;j++){
@@ -45,14 +65,25 @@ function setEntitiesPolygon(shapeData){
 				case 'wall':
 				   shapeWall[shapeWallNum++] = viewer.entities.add({ 
 				        name : shapeData[featureID][j][3],  
-				        wall : {
-							 positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
-									 shapeData[featureID][j][2]),  
-							 fill: true,
-				             material : Cesium.Color.WHITE,  
-							 minimumHeights : shapeData[featureID][j][1], //  下高
-							 //maximumHeights : shapePolygon[featureID][j][1], //  上高
-				         }  
+				        corridor : {
+				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(
+				          			shapeData[featureID][j][2]),
+				          	height : shapeData[featureID][j][1],//浮空高度,不带高度时不用设置
+				          	extrudedHeight : shapeData[featureID][j][1] + 0.001 ,//拉伸高度,不带高度时不用设置
+				          	width : 0.2,
+				          	cornerType: Cesium.CornerType.ROUNDED,// 控制端点形状
+				          	material : Cesium.Color.BLACK,
+				        },
+				        polylineVolume : {  
+				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
+				          			shapeData[featureID][j][2]),  
+				          	shape :[new Cesium.Cartesian2(-0.1,0),  // 横截面形状，相对值，中心点距离边界的值
+				          			new Cesium.Cartesian2(0.1, 0),  
+				          			new Cesium.Cartesian2(0.1, shapeHeight[featureID]),  
+				          			new Cesium.Cartesian2(-0.1,shapeHeight[featureID])],  
+				          	cornerType : Cesium.CornerType.ROUNDED,  // 控制端点形状
+				          	material : Cesium.Color.WHITE.withAlpha(1),  
+				        }
 				     });
 				   break;
 				case 'desk':
@@ -61,10 +92,10 @@ function setEntitiesPolygon(shapeData){
 						polygon : {  
 							hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(
 									shapeData[featureID][j][2]),
-							//height: shapePolygon[featureID][j][0],// 拉伸高度！
-							extrudedHeight: shapeData[featureID][j][0], //基础高度！
-							perPositionHeight : true,  //指定使用每个坐标自带的高度！
-							material : Cesium.Color.CORNSILK, //Cesium.Color.CORNSILK.withAlpha(0.5)
+							height: shapeData[featureID][j][0] ,// 拉伸高度！
+							extrudedHeight: shapeData[featureID][j][1], //基础高度！
+							perPositionHeight : false,  //指定使用每个坐标自带的高度！
+							material : Cesium.Color.GHOSTWHITE, //Cesium.Color.CORNSILK.withAlpha(0.5)
 						}  
 					});
 					break;

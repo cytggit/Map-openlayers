@@ -450,7 +450,7 @@ function loadBasemap(){
 	// 3Dmap
 	viewer.entities.removeAll();
 	setEntitiesBackground(shapeBackgrounds[floorid]);
-	setEntitiesPolygon(shapePolygons[floorid]);
+	setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
 	setEntitiesPOI(shapePOIs[floorid]);
 
 }
