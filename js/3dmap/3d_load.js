@@ -92,6 +92,29 @@
 	}
 	/*获取polygon数据*/
 	function getEntitiesPolygon(){
+		var getEntitiesPolygonParam = {
+				service: 'WFS',
+				version: '1.1.0',
+				request: 'GetFeature',
+				typeName: DBs + ':polygon', 
+				outputFormat: 'application/json',
+				cql_filter: 'place_id=' + placeid
+		};	
+			$.ajax({  
+				url: wfsUrl,
+				data: $.param(getEntitiesPolygonParam), 
+				type: 'GET',
+				dataType: 'json',
+				success: function(response){
+					var features = new ol.format.GeoJSON().readFeatures(response);
+					var featuresLength = features.length;
+					if(featuresLength > 0){
+						makeEntitiesPolygons(features);
+					}
+				}
+			})
+	}
+	function makeEntitiesPolygons(features){
 		shapePolygons ={};
 		shapePenups = {};
 		var FloorNum = 0,FeatureIdNum = 0,PenupNum = 0;
