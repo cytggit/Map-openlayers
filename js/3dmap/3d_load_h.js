@@ -35,7 +35,7 @@ function setEntitiesBackground(shapeData){
 		viewer.zoomTo(shapeBackground);
 	}
 }
-function setEntitiesPolygon(shapeData){
+function setEntitiesPolygon(shapeData,shapeDoorData){
 	if(shapeData != undefined){
 		var allFeature = Object.keys(shapeData)
 		shapeWall = [];shapeWallNum = 0;
