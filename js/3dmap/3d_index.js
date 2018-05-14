@@ -1,5 +1,6 @@
 var viewer;
 var scene;  
+var camera;
 function load3dMap (){	
 	viewer = new Cesium.Viewer('cesiumContainer',{
 		animation: false,										//控制视图动画的播放(左下角)。 默认true
@@ -38,7 +39,7 @@ function load3dMap (){
 		// showRenderLoopErrors							//渲染循环发生错误时提示error
 		// automaticallyTrackDataSourceClocks		//不懂！！！
 		// contextOptions										//上下文和WebGL创建属性对应options传递给Scene。不懂！！！
-		sceneMode: Cesium.SceneMode.COLUMBUS_VIEW,							//控制默认3D模式，可设置默认为2D\3D\2.5D模式
+		//sceneMode: Cesium.SceneMode.COLUMBUS_VIEW,							//控制默认3D模式，可设置默认为2D\3D\2.5D模式
 		// mapProjection											//地图投影，2D、哥伦布视图有效
 		// globe														//地球渲染，
 		// orderIndependentTranslucency				//不懂！！！如果配置支持则使用独立的半透明
@@ -53,6 +54,7 @@ function load3dMap (){
 	});
 	
 	scene = viewer.scene;
+	camera = viewer.camera;
 	// TODO 可以设置成公司logo
     viewer._cesiumWidget._creditContainer.style.display="none";  
 	//viewer._cesiumWidget._creditContainer.innerHTML = 
@@ -68,19 +70,29 @@ function load3dMap (){
     $('.cesium-geocoder-input').css("border", "solid 1px #fcfafa");
     
     
-    // 加载底图白色底
-    scene.primitives.add(new Cesium.Primitive({  
-      geometryInstances : new Cesium.GeometryInstance({  
-          geometry : new Cesium.RectangleGeometry({  
-              rectangle : Cesium.Rectangle.fromDegrees(-180.0, -90.0, 180.0, 90.0),  
-              vertexFormat : Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
-            })  ,
-            attributes : {
-                color : new Cesium.ColorGeometryInstanceAttribute(1,0.98,0.98,1)
-              }
-          }),  
-          appearance : new Cesium.PerInstanceColorAppearance()
-    }));  
+    // 加载底图
+    viewAddBottomMap(); 
+	// 切换初始角度
+    changeCamera([mapCenter(placeid)[0]+0.0003,mapCenter(placeid)[1]-0.00025],(floorid-1) * 3 +80,-42.4);
+	
+}
+
+//加载底图
+function viewAddBottomMap(){
+    viewer.entities.add({ 
+        polygon : {  
+          	hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(  // 普通不带挖空效果的polygon		
+          			[10.0, 0.0,0,
+          			160.0, 0.0,0,
+          			160.0, 90.0,0,
+          			10.0, 90.0,0,
+          			10.0, 0.0,0]
+          	),  
+          	height : -1000,
+          	extrudedHeight: 200,
+          	material : /*Cesium.Color.LIGHTGREY, */new Cesium.Color(0.05,0.35,0.69, 1)
+        }  
+     });
 }
 
 function changeMap(mapType){
@@ -112,4 +124,24 @@ function changeMap(mapType){
 	default: 
 		break;
 	}
+}
+// 切换视角
+function changeCamera(center,high,heading){
+	camera.flyTo({
+		destination :  Cesium.Cartesian3.fromDegrees(center[0],center[1],high), // 设置位置
+        orientation: {
+            heading : Cesium.Math.toRadians(heading), // 方向
+            pitch : Cesium.Math.toRadians(-60.0),// 倾斜角度
+            roll : 0
+        },
+        //duration:5, // 设置飞行持续时间，默认会根据距离来计算
+        complete: function () {
+            // 到达位置后执行的回调函数
+            console.log('到达目的地');
+        },
+        cancle: function () {
+            // 如果取消飞行则会调用此函数
+            console.log('飞行取消')
+        },
+	});
 }

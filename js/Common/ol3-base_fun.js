@@ -189,15 +189,26 @@ function backcenter(){
 	// }else {
 		// alert('fetch can not use!');
 	// }
+	// 2d
 	map.on('pointerdrag', function() {
 		backcenterFlag = false;
 	});
+	// 3d
+	viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
+		backcenterFlag = false;
+     }, Cesium.ScreenSpaceEventType.WHEEL);  
+	 viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
+		backcenterFlag = false;
+     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);  
 	// 平移动画
 	if (backcenterFlag){
+		// 2d
 		view.animate({
 			duration: 1000,
 			center: locate
 		});		
+		// 3d
+		changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +60,2);
 	}
 	// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
 	if (locateFloor != floorid){
@@ -357,6 +368,62 @@ function removeSelectSingleClick(){
 	map.removeInteraction(selectSingleClick);	
 }
 
+// 3d定位点详情
+function get3DPopup(){
+	var infoDiv = '<div id="trackPopUp" style="display:none;">'+
+	    '<div id="trackPopUpContent" class="leaflet-popup" style="top:5px;left:0;">'+
+	      '<a id="leaflet-popup-close-button" class="leaflet-popup-close-button" href="#">×</a>'+
+	      '<div class="leaflet-popup-content-wrapper">'+
+	        '<div id="trackPopUpLink" class="leaflet-popup-content" style="max-width: 300px;"></div>'+
+	      '</div>'+
+	      '<div class="leaflet-popup-tip-container">'+
+	        '<div class="leaflet-popup-tip"></div>'+
+	      '</div>'+
+	    '</div>'+
+	'</div>';
+	$("#cesiumContainer").append(infoDiv);	
+	viewer.screenSpaceEventHandler.setInputAction(function(movement) {                        
+         //点击弹出气泡窗口
+         var pick = scene.pick(movement.position);
+         var c ;
+         if(pick && pick.id && pick.id._position && pick.id._properties){//选中某模型       
+        	 c = new Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, pick.id._position._value);
+        	 var x = c.x - ($('#trackPopUpContent').width()) / 2;
+        	 var y = c.y - ($('#trackPopUpContent').height());
+        	 $('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
+        	 
+        	 var alertinfo = '编号：  ' + pick.id._properties._l_id + '<br>';
+				// + '姓名  ' + pick.id._properties._name + '<br>'
+				// + '心率：  ' + pick.id._properties._heart_rate + '<br>'
+				// + '血压：  ' + pick.id._properties._spb + "/" + pick.id._properties._dpb + '<br>'
+				// + '步数：  ' + pick.id._properties._steps;
+        	 document.getElementById('trackPopUpLink').innerHTML = alertinfo;
+        	 
+        	 $('#trackPopUp').show();
+        	 
+            var removeHandler = scene.postRender.addEventListener(function () {
+            	 //$('#trackPopUp').hide();
+         		var changedC = new Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, pick.id._position._value);
+         		// If things moved, move the popUp too
+         		if ((c.x !== changedC.x) || (c.y !== changedC.y)) {
+         		c = changedC;
+         		var x = c.x - ($('#trackPopUpContent').width()) / 2;
+         		var y = c.y - ($('#trackPopUpContent').height());
+         		$('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
+         		}
+             });
+         }
+         else{
+             $('#trackPopUp').hide();
+         }
+     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);    
+	
+	document.getElementById('leaflet-popup-close-button').onclick = function (){
+		$('#trackPopUp').hide();
+		return false;
+	}	
+}
+
 
 // 楼层选择
 function floorSelect(e){
@@ -449,6 +516,7 @@ function loadBasemap(){
 
 	// 3Dmap
 	viewer.entities.removeAll();
+	viewAddBottomMap(); 
 	setEntitiesBackground(shapeBackgrounds[floorid]);
 	setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
 	setEntitiesPOI(shapePOIs[floorid]);

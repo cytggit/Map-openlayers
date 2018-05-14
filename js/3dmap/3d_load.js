@@ -243,18 +243,26 @@
 		for(var i=0;i<features.length;i++){
 			// Locate所在楼层
 			var featuresFloor = features[i].get('floor_id');
+			// Locate属性
+			// var featuresName = features[i].get('name');
+			var featuresLid = features[i].get('l_id');
+			// var featuresHeartRate = features[i].get('heart_rate');
+			// var featuresSpb = features[i].get('spb');
+			// var featuresDpb = features[i].get('dpb');
+			// var featuresSteps = features[i].get('steps');
+			// var featuresCategory = features[i].get('category');
 			// Locate所在高度
 			var featuresExtrudedHeightBase = (featuresFloor-1) * 3 + shapeHeight['999999'];
 			var featuresHeightBase = featuresExtrudedHeightBase + shapeHeight['locate'];
 			// Locate所在形状
 			var geom = features[i].getGeometry().getCoordinates();
-			var featuresGeom = [geom[0],geom[1],featuresHeightBase];
+			var featuresObjArr = [geom[0],geom[1],featuresHeightBase,featuresLid];
 			
 			if(shapeLocates[featuresFloor] == undefined){
 				shapeLocates[featuresFloor] = [];
 			}
 
-			shapeLocates[featuresFloor].push(featuresGeom);
+			shapeLocates[featuresFloor].push(featuresObjArr);
 		}	
 		// console.log(shapePolygons);
 		setEntitiesLocate(shapeLocates[floorid]);
