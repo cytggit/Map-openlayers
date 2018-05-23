@@ -18,10 +18,16 @@ var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 
+// 3d 初始化 变量设置
 var geomPlaces;
 var geomBackgrounds = {};
 var geomPolygons = {};
 var geomPOIs = {};
+
+// 定位点纠偏 变量设置
+var setCenterFlag = true,getLocateLocateFlag = true,LocatesForShow = {};
+var beforeLocatesForShow = {};// 平滑  id：geom
+var checkWallInFlag = {};// 定位点穿墙 id：[before.polygon.fid,now.polygon.fid]
 
 //设置视图
 var view = new ol.View({
@@ -209,6 +215,14 @@ function featObjectSend(featString){
 	request.send(featString);		
 }
 
+// 字符转换
+var str2Unicode = function(str) {
+    var es=[];
+    for(var i=0;i < str.length;i++)
+        es[i]=("00"+str.charCodeAt(i).toString(16)).slice(-4);
+    return "\\u"+es.join("\\u");
+} 
+
 
 // 路径规划时对定位点做路网吸附
 function pointToLinestring(pointFeature,lineFeature){
@@ -278,47 +292,180 @@ function distanceFromAToB(A,B){
 	return length;
 }
 
-
-// 定位点顺滑平移-伪实现
-function moveAnimation(beforePoint,features){
-	var futurePoint = locate;
+//定位点顺滑平移-伪实现
+function moveAnimation(beforePoints,nowfeaturesLocate){
+	var featuresLocate = nowfeaturesLocate;
     var progress = 0;  
-    var speed = 100;  
-
-	var intervalX = (futurePoint[0] - beforePoint[0])/speed;
-	var intervalY = (futurePoint[1] - beforePoint[1])/speed;
-    //cancelAnimationFrame(timer);
+    var speed = 300;  	
 	
-	var newpoint = beforePoint;
+    var intervalX={},intervalY={};
+	for(var i = 0;i < featuresLocate.length; i++){
+		var locate_ID = featuresLocate[i].get('l_id');
+		if(checkWallInFlag[locate_ID][2].length < 3){
+			var futurePoint = featuresLocate[i].getGeometry().getCoordinates();
+			intervalX[locate_ID] = (futurePoint[0] - beforePoints[locate_ID][0])/speed;
+			intervalY[locate_ID] = (futurePoint[1] - beforePoints[locate_ID][1])/speed;
+
+		}
+	}
     var timer = requestAnimationFrame(function moveFeature(){
-		progress += 1;  
+    	progress += 1;  
+    	var newpoint = [];
+    	for(var i = 0;i < featuresLocate.length; i++){
+    		var locate_ID = featuresLocate[i].get('l_id');
+
+    		if(intervalX[locate_ID] || intervalX[locate_ID] == 0 ){
+    			newpoint[0] = beforePoints[locate_ID][0] + intervalX[locate_ID] * progress;
+    			newpoint[1] = beforePoints[locate_ID][1] + intervalY[locate_ID] * progress;
+    		}else{
+    			var newpointNum = checkWallInFlag[locate_ID][2].length;
+    			var newpointNumDummy = parseInt(progress/(speed/newpointNum));
+    			newpointNumDummy = newpointNumDummy < newpointNum ? newpointNumDummy : newpointNum-1;
+    			newpoint = checkWallInFlag[locate_ID][2][newpointNumDummy];
+    		}
+			featuresLocate[i].setGeometry(new ol.geom.Point(newpoint));
+    	}
+    	
+    	center_wfs.clear();
+    	center_wfs.addFeatures(featuresLocate);
+    	
         if(progress%speed != 0){
-			newpoint[0] += intervalX;
-			newpoint[1] += intervalY;
-			features[0].setGeometry(new ol.geom.Point(newpoint));
-			center_wfs.clear();
-			center_wfs.addFeatures(features);
             timer = requestAnimationFrame(moveFeature);
-        }else{
-			newpoint = futurePoint;
-			features[0].setGeometry(new ol.geom.Point(newpoint));
-			center_wfs.clear();
-			center_wfs.addFeatures(features);			
+        }else{		
             cancelAnimationFrame(timer);
         }    
-    });
+    });	
 }
-// 字符转换
-var str2Unicode = function(str) {
-    var es=[];
-    for(var i=0;i < str.length;i++)
-        es[i]=("00"+str.charCodeAt(i).toString(16)).slice(-4);
-    return "\\u"+es.join("\\u");
-} 
 
+// 墙
+var polygonWallsFeature = function (){
+	var arr = [];
+	var listFeatures = Object.keys(geojsonstyle);
+	var reg = new RegExp('100305');
+	for (var i = 0;i< listFeatures.length;i++){
+		if (listFeatures[i].match(reg) && listFeatures[i] != '10030505' ){
+			arr.push(listFeatures[i]);
+		}
+	}
+	arr.push('10020401');
+	arr.push('10020511');
+	return arr;
+}
+// 判断定位点位置
+var polygonWalls = [];
+var polygonWallsFeatures;
+var WallInFlag = function checkWallIn(Geom){	
+	if(polygonWalls.length == 0){polygonWalls = polygonLayer.getSource().getFeatures();}
+	polygonWallsFeatures = polygonWallsFeature();
+	for (var i = 0; i< polygonWalls.length; i++){
+		var polygonWallId = polygonWalls[i].get('feature_id');
+		
+		for(var j in polygonWallsFeatures){
+			if(polygonWallId == polygonWallsFeatures[j]){
+				var polygonWall = polygonWalls[i].getGeometry().getCoordinates()[0];
+				if (rayCasting(Geom,polygonWall) == 'in'){
+					return polygonWalls[i].getId();
+				}
+			}
+		}
+	}
+	return null;
+};
 
+// 防止穿墙
+function checkLocateIn(locate_ID,beforeGeom,nowGeom){
+	checkWallInFlag[locate_ID][0] = checkWallInFlag[locate_ID][1];
+	checkWallInFlag[locate_ID][1] = WallInFlag(nowGeom);
+	if(checkWallInFlag[locate_ID][0] != checkWallInFlag[locate_ID][1]){
+		// 取路径(折点包括前后定位点)
+		checkWallInFlag[locate_ID][2] = getRoute(beforeGeom,nowGeom);
+	}else {
+		checkWallInFlag[locate_ID][2] = [];
+	}
+}
+//取路径(折点包括前后定位点)
+function getRoute(beforeGeom,nowGeom){
+	var RouteParam = 'x1:' + beforeGeom[0] + ';y1:' + beforeGeom[1] + ';x2:' + nowGeom[0] + ';y2:' + nowGeom[1];			
+	var RouteRequestParam = {
+		service: 'WFS',
+		version: '1.1.0',
+		request: 'GetFeature',
+		typeName: DBs + ':route_new', // 路径规划图层
+		outputFormat: 'application/json',
+		viewparams: RouteParam
+	};	
+	var routeCoordinates = [];
+	$.ajax({  
+		url: wfsUrl,
+		data: $.param(RouteRequestParam), 
+		type: 'GET',
+		dataType: 'json',
+		async: false,
+		success: function(response){
+			var geoms = response.features[0].geometry.coordinates;
+			if(geoms){
+				// 判断所取线段的方向
+				var dis = distanceFromAToB(beforeGeom,geoms[0]) - distanceFromAToB(beforeGeom,geoms[geoms.length-1]);
+				if(dis < 0){
+					routeCoordinates = geoms;			
+				}else{
+					var newgeoms=[];
+					var j = 0;
+					for (var i=geoms.length -1;i>=0;i--){
+						newgeoms[j++] = geoms[i];
+					}
+					routeCoordinates = newgeoms;
+				}
+			}
 
+		},
+		error: function (){
+			console.log('error   route');
+		}
+	});	
+	routeCoordinates.unshift(beforeGeom);
+	routeCoordinates.push(nowGeom);
+	return routeCoordinates;
+}
 
+function rayCasting(p, poly) {
+    var px = p[0];
+    var py = p[1];
+    var flag = false;
+
+    for(var i = 0, l = poly.length, j = l - 1; i < l; j = i, i++) {
+        var sx = poly[i][0];
+        var sy = poly[i][1];
+        var tx = poly[j][0];
+        var ty = poly[j][1];
+
+        // 点与多边形顶点重合
+        if((sx === px && sy === py) || (tx === px && ty === py)) {
+            //console.log('点与多边形顶点重合');
+            return 'on';
+        }
+
+        // 判断线段两端点是否在射线两侧
+        if((sy < py && ty >= py) || (sy >= py && ty < py)) {
+            // 线段上与射线 Y 坐标相同的点的 X 坐标
+            var x = sx + (py - sy) * (tx - sx) / (ty - sy);
+
+            // 点在多边形的边上
+            if(x === px) {
+                //console.log('点在多边形的边上');
+                return 'on';
+            }
+
+            // 射线穿过多边形的边界
+            if(x > px) {
+                //console.log('射线穿过多边形的边界');
+                flag = !flag;
+            }
+        }
+    }
+    // 射线穿过多边形边界的次数为奇数时点在多边形内
+    return flag ? 'in' : 'out';
+}
 
 
 

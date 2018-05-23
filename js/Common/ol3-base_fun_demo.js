@@ -49,6 +49,7 @@ function getlocation(){
 				features = new ol.format.GeoJSON().readFeatures(response);
 				
 			}else{
+				//alert('未获取到定位信息，请检查定位标签状态！');
 				var gpsfeature = new ol.Feature();
 				
 				var gpsCoordinates = [] ;
@@ -67,19 +68,18 @@ function getlocation(){
 				// });
 			}
 			
-			if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 1){
+			//if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 1){
 				doWithLocate(features);
-				makeEntitiesLocate(features);
-			}
+				//makeEntitiesLocate(features);
+			//}
 
 		}		
 	});
 }
 
 function doWithLocate(features){
-
 	if(deviceId != 'all'){
-		var beforeLocate = locate;
+		//var beforeLocate = locate;
 		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
 		locateFloor = features[0].get('floor_id');
 		// 切换到定位点所在的区域
@@ -98,27 +98,55 @@ function doWithLocate(features){
 		// if (locateFloor == floorid){
 			
 		// 判断是否正在路径规划，做路网吸附
-		// if(!pathPlanningOFF &&  ){
 		if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
 			var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
 			features = newcenterFearure;
 		}
 		
-		// 定位点顺滑平移-伪实现
-		if( beforeLocate != null && distanceFromAToB(beforeLocate,locate) < 10){
-			moveAnimation(beforeLocate,features);
-		}else{			
-			center_wfs.clear();
-			center_wfs.addFeatures(features);
-		}
+		// // 定位点顺滑平移-伪实现
+		// if( beforeLocate != null && distanceFromAToB(beforeLocate,locate) < 10){
+			// moveAnimation(beforeLocate,features);
+		// }else{			
+			// center_wfs.clear();
+			// center_wfs.addFeatures(features);
+		// }
 		
 		// }
 	}else{
-		//var features = new ol.format.GeoJSON().readFeatures(response);
-		center_wfs.clear();
+		// center_wfs.clear();
 		LocationLayer.setStyle(locationStyle);
-		center_wfs.addFeatures(features);
+		// center_wfs.addFeatures(features);
 	}
+	var LocateInfo = features;
+	var LocateLength = features.length;
+	for(var i = 0;i < LocateLength; i++){
+		var locate_ID = LocateInfo[i].get('l_id');
+		var locateGeom = LocateInfo[i].getGeometry().getCoordinates();
+		if(!LocatesForShow[locate_ID]){
+			LocatesForShow[locate_ID] = locateGeom;
+			beforeLocatesForShow[locate_ID] = locateGeom;
+			checkWallInFlag[locate_ID] = [];
+			checkWallInFlag[locate_ID][0] = WallInFlag(locateGeom);
+			checkWallInFlag[locate_ID][1] = checkWallInFlag[locate_ID][0];
+			checkWallInFlag[locate_ID][2] = [];
+		}else{
+			var beforeLocateForShow = LocatesForShow[locate_ID];
+			beforeLocatesForShow[locate_ID] = beforeLocateForShow;
+			
+			var locateDis = distanceFromAToB(beforeLocateForShow,locateGeom);
+			
+			if( locateDis < 1){// 1米内不跳动
+				LocateInfo[i].setGeometry(new ol.geom.Point(beforeLocateForShow));	
+			}else{
+				LocatesForShow[locate_ID] = locateGeom;
+				
+			}
+			checkLocateIn(locate_ID,beforeLocateForShow,locateGeom);
+		}
+	}
+	moveAnimation(beforeLocatesForShow,LocateInfo);
+	makeEntitiesLocate(LocateInfo);
+	
 }
 
 // 获取实时定位信息
