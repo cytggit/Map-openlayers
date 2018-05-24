@@ -45,7 +45,7 @@ function getlocation(){
 		success: function(response){
 
 			var features ;
-			if(response.features.length !=0){
+			if(JSON.stringify(response)!="{}"){
 				features = new ol.format.GeoJSON().readFeatures(response);
 				
 			}else{
