@@ -73,16 +73,15 @@ var selectSingleClickStyle = function(feature){
 };
 
 
-
-// = new ol.style.Style({
-	// image: new ol.style.Circle({
-		// fill: new ol.style.Fill({
-			// color: [255,255,255,0.1]
-		// }),
-		// radius: 6,
-	// })
-// });
-	
+// 隐藏定位 style 
+var locationStyleUnshow= new ol.style.Style({
+	image: new ol.style.Circle({
+		fill: new ol.style.Fill({
+			color: [255,255,255,0.1]
+		}),
+		radius: 6,
+	})
+});
 // 定位 style 
 var locationStyle = new ol.style.Style({
 	image: new ol.style.Icon({

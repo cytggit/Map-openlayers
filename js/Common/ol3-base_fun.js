@@ -45,7 +45,7 @@ function getlocation(){
 		success: function(response){
 
 			var features ;
-			if(JSON.stringify(response)!="{}"){
+			if(response.features.length !=0){
 				features = new ol.format.GeoJSON().readFeatures(response);
 				
 			}else{
@@ -87,36 +87,14 @@ function doWithLocate(features){
 	
 		// 电子围栏预警
 		electronicFenceWarn();	
-		// 设置定位点style
-		if (locateStyleWarn){
-			LocationLayer.setStyle(locationWarnStyle);
-		}else{
-			LocationLayer.setStyle(locationStyle);
-		}
-
-		// 当定位点所在楼层和室内图选择的楼层相同时，显示定位点
-		// if (locateFloor == floorid){
-			
+	
 		// 判断是否正在路径规划，做路网吸附
 		if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
 			var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
 			features = newcenterFearure;
-		}
-		
-		// // 定位点顺滑平移-伪实现
-		// if( beforeLocate != null && distanceFromAToB(beforeLocate,locate) < 10){
-			// moveAnimation(beforeLocate,features);
-		// }else{			
-			// center_wfs.clear();
-			// center_wfs.addFeatures(features);
-		// }
-		
-		// }
-	}else{
-		// center_wfs.clear();
-		LocationLayer.setStyle(locationStyle);
-		// center_wfs.addFeatures(features);
+		}		
 	}
+
 	var LocateInfo = features;
 	var LocateLength = features.length;
 	for(var i = 0;i < LocateLength; i++){
@@ -135,15 +113,27 @@ function doWithLocate(features){
 			
 			var locateDis = distanceFromAToB(beforeLocateForShow,locateGeom);
 			
-			if( locateDis < 1){// 1米内不跳动
+			if( pathPlanningOFF && locateDis < 1){// 1米内不跳动
 				LocateInfo[i].setGeometry(new ol.geom.Point(beforeLocateForShow));	
 			}else{
 				LocatesForShow[locate_ID] = locateGeom;
-				
 			}
 			checkLocateIn(locate_ID,beforeLocateForShow,locateGeom);
 		}
 	}
+	
+	// 设置定位点style
+	if(features[0].get('floor_id') == floorid){
+		if (locateStyleWarn){
+			LocationLayer.setStyle(locationWarnStyle);
+		}else{
+			LocationLayer.setStyle(locationStyle);
+		}
+	}else{
+		// 当定位点所在楼层和室内图选择的楼层不同时，隐藏定位点
+		LocationLayer.setStyle(locationStyleUnshow);
+	}	
+	// 定位点顺滑平移-伪实现
 	moveAnimation(beforeLocatesForShow,LocateInfo);
 	makeEntitiesLocate(LocateInfo);
 	
@@ -237,12 +227,14 @@ function backcenter(){
 		});		
 		// 3d
 		changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +60,2);
+		
+		// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
+		if (locateFloor != floorid){
+			// 定位点楼层的图标高亮
+			changeFloor(locateFloor);
+		}	
 	}
-	// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
-	if (locateFloor != floorid){
-		// 定位点楼层的图标高亮
-		changeFloor(locateFloor);
-	}	
+	
 }
 
 // 电子围栏预警
