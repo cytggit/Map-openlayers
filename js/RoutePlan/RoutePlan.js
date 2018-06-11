@@ -127,6 +127,7 @@ function StartPathPlanning(){
 			alert('起点和终点不能相同！');
 		}else{
 			console.log('开始路径规划！');
+			$('.control-delete').css("display","block");	
 			RouteLayer = new ol.layer.Vector({
 				title: 'route map',
 				visible: true,
