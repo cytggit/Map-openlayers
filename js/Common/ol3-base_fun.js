@@ -68,10 +68,9 @@ function getlocation(){
 				// });
 			}
 			
-			//if( locate == null || distanceFromAToB(locate,features[0].getGeometry().getCoordinates()) > 1){
+			if(features.length){
 				doWithLocate(features);
-				//makeEntitiesLocate(features);
-			//}
+			}	
 
 		}		
 	});
@@ -79,20 +78,18 @@ function getlocation(){
 
 function doWithLocate(features){
 	if(deviceId != 'all'){
-		//var beforeLocate = locate;
-		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
-		locateFloor = features[0].get('floor_id');
-		// 切换到定位点所在的区域
-		getPlace(locate);
-	
-		// 电子围栏预警
-		electronicFenceWarn();	
-	
 		// 判断是否正在路径规划，做路网吸附
 		if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
 			var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
 			features = newcenterFearure;
 		}		
+		//var beforeLocate = locate;
+		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
+		locateFloor = features[0].get('floor_id');
+		// 切换到定位点所在的区域
+		getPlace(locate);
+		// 电子围栏预警
+		electronicFenceWarn();	
 	}
 
 	var LocateInfo = features;
@@ -121,22 +118,36 @@ function doWithLocate(features){
 			checkLocateIn(locate_ID,beforeLocateForShow,locateGeom);
 		}
 	}
-	
+		
 	// 设置定位点style
 	if(features[0].get('floor_id') == floorid){
-		if (locateStyleWarn){
-			LocationLayer.setStyle(locationWarnStyle);
-		}else{
-			LocationLayer.setStyle(locationStyle);
-		}
+		if (locateStyleWarn){LocationLayer.setStyle(locationWarnStyle);
+		}else{LocationLayer.setStyle(locationStyle);}
 	}else{
-		// 当定位点所在楼层和室内图选择的楼层不同时，隐藏定位点
+		// 楼层不同时，隐藏定位点
 		LocationLayer.setStyle(locationStyleUnshow);
 	}	
 	// 定位点顺滑平移-伪实现
 	moveAnimation(beforeLocatesForShow,LocateInfo);
 	makeEntitiesLocate(LocateInfo);
 	
+	// 判断是否正在路径规划，做实时规划
+	if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
+		// 实时路径规划
+		if(LocatesForShow && distanceFromAToB([sourceLabelX,sourceLabelY],locate) > 1){
+			if(document.getElementById('label-start').value == '我的位置'){
+				RouteLayer.getSource().clear();
+				sourceLabelX = locate[0];
+				sourceLabelY = locate[1];
+				StartPathPlanning();
+			}else if (document.getElementById('label-end').value == '我的位置'){
+				RouteLayer.getSource().clear();
+				targetLabelX = locate[0];
+				targetLabelY = locate[1];
+				StartPathPlanning();
+			}	
+		}
+	}
 }
 
 // 获取实时定位信息
@@ -315,33 +326,41 @@ function loadselectSingleClick(){
 	});
 	map.addInteraction(selectSingleClick);
 	selectSingleClick.on('select', function(e) {
-		selectInfo = e.selected[0].values_;
-
-		if (selectInfo.sfloor != undefined){
-			// alert('选中起点');
-			setFloorAndCenter(selectInfo.sfloor,sourceLabelX,sourceLabelY);
-			selectSingleClick.setActive(false);
-			selectSingleClick.setActive(true);
-		}else if(selectInfo.efloor != undefined){
-			// alert('选中终点');
-			setFloorAndCenter(selectInfo.efloor,targetLabelX,targetLabelY);
-			selectSingleClick.setActive(false);
-			selectSingleClick.setActive(true);
-		}else{
-			// alert('选中poi');
-			selectName = selectInfo.name;
-			selectId = selectInfo.fid;
-			var geom = selectInfo.geometry;
-			var geomtype = geom.getType();
-			if (geomtype == 'Polygon'){
-				coordinate = geom.getInteriorPoint().getCoordinates();
-			}else if (geomtype == 'Point'){
-				coordinate = geom.getCoordinates();
+		if(e.selected[0]){
+			selectInfo = e.selected[0].values_;
+	
+			if (selectInfo.sfloor != undefined){
+				// alert('选中起点');
+				setFloorAndCenter(selectInfo.sfloor,sourceLabelX,sourceLabelY);
+				selectSingleClick.setActive(false);
+				selectSingleClick.setActive(true);
+			}else if(selectInfo.efloor != undefined){
+				// alert('选中终点');
+				setFloorAndCenter(selectInfo.efloor,targetLabelX,targetLabelY);
+				selectSingleClick.setActive(false);
+				selectSingleClick.setActive(true);
+			}else{
+				// alert('选中poi');
+				selectName = selectInfo.name;
+				selectId = e.selected[0].id_.split(".")[1];
+				var geom = selectInfo.geometry;
+				var geomtype = geom.getType();
+				if (geomtype == 'Polygon'){
+					coordinate = geom.getInteriorPoint().getCoordinates();
+				}else if (geomtype == 'Point'){
+					coordinate = geom.getCoordinates();
+				}
+				HighlightElementContent.innerHTML = selectName;
+				HighlightOverlay.setPosition(coordinate);		
+				// 清除路径规划
+				clearPath();				
 			}
-			HighlightElementContent.innerHTML = selectName;
-			HighlightOverlay.setPosition(coordinate);		
+		}else{
+			HighlightOverlay.setPosition(undefined);
+			HighlightElementCloser.blur();
+			//return false;
 			// 清除路径规划
-			clearPath();				
+			clearPath();
 		}
 
 	});		

@@ -73,16 +73,15 @@ var selectSingleClickStyle = function(feature){
 };
 
 
-
-// = new ol.style.Style({
-	// image: new ol.style.Circle({
-		// fill: new ol.style.Fill({
-			// color: [255,255,255,0.1]
-		// }),
-		// radius: 6,
-	// })
-// });
-	
+// 隐藏定位 style 
+var locationStyleUnshow= new ol.style.Style({
+	image: new ol.style.Circle({
+		fill: new ol.style.Fill({
+			color: [255,255,255,0.1]
+		}),
+		radius: 6,
+	})
+});
 // 定位 style 
 var locationStyle = new ol.style.Style({
 	image: new ol.style.Icon({
@@ -124,6 +123,14 @@ var collectionStyle = new ol.style.Style({
 // 检索
 var selectStyle = {
 	'30050100' : new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvgselect,
+			imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,1]    // 摆放位置
+		}),
+		zIndex: 460
+	}),
+	'30050300' : new ol.style.Style({
 		image: new ol.style.Icon({
 			img: mysvgselect,
 			imgSize: [30, 30],   // 图标大小

@@ -135,7 +135,7 @@ function StartPathPlanning(){
 			});		
 			
 			if (RouteSourceFloor == RouteTargetFloor){
-				RouteParam = 'x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
+				RouteParam = 'floorid:' + RouteSourceFloor  + ';x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
 				var RouteRequestParam = {
 					service: 'WFS',
 					version: '1.1.0',
@@ -177,16 +177,20 @@ function StartPathPlanning(){
 					dataType: 'json',
 					success: function(response){
 						if(response.features.length > 0){
-							var routeCoordinatesa = response.features[0].geometry.coordinates;
-							var routeCoordinatesb = response.features[0].properties.line2.coordinates;
+							var routeCoordinatesa = response.features[0].geometry ?  response.features[0].geometry.coordinates : [];
+							var routeCoordinatesb = response.features[0].properties.line2 ? response.features[0].properties.line2.coordinates :[];
 	
-							routeFeature[0] = new ol.Feature({
-								geometry: new ol.geom.LineString(routeCoordinatesa),
-							});		
-							routeFeature[1] = new ol.Feature({
-								geometry: new ol.geom.LineString(routeCoordinatesb),
-							});		
-						
+							if(routeCoordinatesa){
+								routeFeature[0] = new ol.Feature({
+									geometry: new ol.geom.LineString(routeCoordinatesa),
+								});	
+							}
+							if(routeCoordinatesb){
+								routeFeature[1] = new ol.Feature({
+									geometry: new ol.geom.LineString(routeCoordinatesb),
+								});		
+							}
+
 							// 规划完了之后默认显示在起点处
 							setFloorAndCenter(RouteSourceFloor,sourceLabelX,sourceLabelY);
 							setRouteStyleWithFloor();

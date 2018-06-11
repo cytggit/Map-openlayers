@@ -130,6 +130,14 @@ var selectStyle = {
 		}),
 		zIndex: 460
 	}),
+	'30050300' : new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvgselect,
+			imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,1]    // 摆放位置
+		}),
+		zIndex: 460
+	}),
 	'30050800' : new ol.style.Style({
 		image: new ol.style.Icon({
 			img: mysvgselect,

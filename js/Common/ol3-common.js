@@ -232,7 +232,7 @@ function pointToLinestring(pointFeature,lineFeature){
 	var line = lineFeature[0].getGeometry().getCoordinates();
 	
 	var A,B;
-	var distance = 2,newpoint;
+	var distance = 3,newpoint;
 	var newPointFeature = pointFeature;
 	
 	A = line[0];
@@ -296,7 +296,7 @@ function distanceFromAToB(A,B){
 function moveAnimation(beforePoints,nowfeaturesLocate){
 	var featuresLocate = nowfeaturesLocate;
     var progress = 0;  
-    var speed = 300;  	
+    var speed = 100;  	
 	
     var intervalX={},intervalY={};
 	for(var i = 0;i < featuresLocate.length; i++){
@@ -385,7 +385,7 @@ function checkLocateIn(locate_ID,beforeGeom,nowGeom){
 }
 //取路径(折点包括前后定位点)
 function getRoute(beforeGeom,nowGeom){
-	var RouteParam = 'x1:' + beforeGeom[0] + ';y1:' + beforeGeom[1] + ';x2:' + nowGeom[0] + ';y2:' + nowGeom[1];			
+	var RouteParam =  'floorid:' + floorid + ';x1:' + beforeGeom[0] + ';y1:' + beforeGeom[1] + ';x2:' + nowGeom[0] + ';y2:' + nowGeom[1];			
 	var RouteRequestParam = {
 		service: 'WFS',
 		version: '1.1.0',
