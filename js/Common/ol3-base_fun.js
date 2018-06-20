@@ -63,6 +63,7 @@ function getlocation(){
 
 					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
 					gpsfeature.set('floor_id','01');
+					gpsfeature.set('l_id',deviceId);
 					features = [gpsfeature];
 					
 				// });
