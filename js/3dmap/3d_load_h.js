@@ -16,7 +16,7 @@ var shapePoiAll = [],shapePoiAllNum = 0;
 var shapeLabel = [],shapeLabelNum = 0;
 var shapeBillboard = [],shapeBillboardNum = 0;
 // Locate
-var shapeLocate = [];var gltfModel=[];
+// var shapeLocate = [];var gltfModel=[];
 
 function setEntitiesBackground(shapeData){
 	if(shapeData != undefined){
@@ -226,83 +226,102 @@ var position = Cesium.Cartesian3.fromDegrees(121.42873954447407, 31.166484582251
 var hpRoll = new Cesium.HeadingPitchRoll();
 var fixedFrameTransforms =  Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west');*/
 
-//TODO locate model 删除再加载，改为只改变坐标，顺滑移动
-var LocatesId = 0;
+// locate  删除再加载，改为只改变坐标，顺滑移动
+var LocatesId = [];
 function setEntitiesLocate(shapeData){
-	for(var i = 0;i<LocatesId;i++){
-		viewer.entities.removeById('locate' +i);
-	}
-	// if(gltfModel.length > 0){
-		// for (var j=0;j<gltfModel.length;j++){
-			// scene.primitives.remove(gltfModel[j]);
-		// }
-		// gltfModel=[];
-	// }
-
-	if(shapeData != undefined /*&& !locateFlag*/){
-		/*console.log(locateFlag);*/
-		/*locateFlag = true;*/
-		for (var j=0;j<shapeData.length;j++){
-		    // //创建坐标  
-			// shapeLocate[j] = Cesium.Cartesian3.fromDegrees( shapeData[j][0],shapeData[j][1],shapeData[j][2] );  
-		    // //创建一个东（X，红色）北（Y，绿色）上（Z，蓝色）的本地坐标系统  
-		    // var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame( shapeLocate[j] );  
-		    // // 改变3D模型的模型矩阵，可以用于移动物体  
-		    // // 物体的世界坐标 = 物体的模型坐标 * 世界矩阵  
-		    // gltfModel[j] = Cesium.Model.fromGltf( {//异步的加载模型  
-				// name : 'locate',  
-		        // url : 'http://map.intmote.com/map/js/Cesium/Apps/SampleData/models/CesiumMan/Cesium_Man.gltf',  
-		        // modelMatrix : modelMatrix, //模型矩阵  
-		        // scale : 1.0 //缩放  
-		    // } );
-		    // model = scene.primitives.add( gltfModel[j] );
-		    // Cesium.when( model.readyPromise ).then( function( model )  
-		    		// {  
-		    		    // model.activeAnimations.addAll( {//播放模型中全部动画，如果需要播放单个动画，可以调用add，传入动画id  
-		    		        // loop : Cesium.ModelAnimationLoop.REPEAT, //直到被移出activeAnimations，一直播放  
-		    		         // speedup : 1,  //加速播放  
-		    		         // //reverse : true  //逆序播放  
-		    		    // } );  
-		    		// } );  
-			shapeLocate[j] = viewer.entities.add({  
-				id : 'locate' + j,
-				name : 'locate',  
-				position : Cesium.Cartesian3.fromDegrees(shapeData[j][0],shapeData[j][1],shapeData[j][2]),
-			    label : { //文字标签  
-			        text : shapeData[j][3],  
-			        font : '9pt sans-serif',  
-			        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
-			        fillColor : Cesium.Color.ANTIQUEWHITE,
-			        outlineColor : Cesium.Color.ROYALBLUE,
-			        outlineWidth : 4,  
-			        verticalOrigin : Cesium.VerticalOrigin.TOP, //垂直方向以底部来计算标签的位置  
-			        //heightReference: 2,
-			        //pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
-			        
-			    },     
-			    billboard : { //图标  
-			        image : './icon/3d_locate.png',  
-			        verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
-			        //eyeOffset : Cesium.Cartesian3.UNIT_Z,
-			        //alignedAxis: Cesium.Cartesian3.UNIT_X,
-			        width : 30,  
-			        height : 30  
-			    },  
-				properties: {
-			    	// 'name':shapeData[j][3],
-			    	'l_id':shapeData[j][3],
-			    	// 'heart_rate':shapeData[j][5],
-			    	// 'spb':shapeData[j][6],
-			    	// 'dpb':shapeData[j][7],
-			    	// 'steps':shapeData[j][8],
-			    },
-			});
+	if(LocatesId.length ==0 ){
+		if(shapeData != undefined ){// add 第一次传进定位点
+			for (var j=0;j<shapeData.length;j++){
+				addEntitiesLocate(shapeData[j]);
+				LocatesId[j] = shapeData[j][3];
+			}
 		}
-	}/*else if (shapeData != undefined && locateFlag){
-		console.log(locateFlag);
-		
-	}*/
-	LocatesId = shapeData? shapeData.length:0;
+	}else {
+		if(shapeData != undefined ){// upd (include add and del)定位点更新
+			for(var i = 0;i<LocatesId.length;i++){
+				for(var j = 0;j<shapeData.length;j++){
+					if(LocatesId[i] == shapeData[j][3]){
+						break;
+					}else if(j == shapeData.length -1){
+						viewer.entities.removeById(LocatesId[i]);// del
+					}
+				}
+			}
+			for(var i = 0;i<shapeData.length;i++){
+				if(LocatesId.indexOf(shapeData[i][3]) > -1){// upd
+					viewer.entities.getById(shapeData[i][3]).position = Cesium.Cartesian3.fromDegrees(shapeData[i][0],shapeData[i][1],shapeData[i][2]);
+				}else{// add
+					addEntitiesLocate(shapeData[i]);
+				}
+			}
+			// 更新LocatesId
+			LocatesId = [];
+			for (var j=0;j<shapeData.length;j++){
+				LocatesId[j] = shapeData[j][3];
+			}
+		}else{// del 定位点全部消失
+			for(var i = 0;i<LocatesId.length;i++){
+				viewer.entities.removeById(LocatesId[i]);
+			}
+			LocatesId = [];
+		}
+	}
+}
+function addEntitiesLocate(Obj){
+    /*//创建坐标  
+	shapeLocate[j] = Cesium.Cartesian3.fromDegrees( shapeData[j][0],shapeData[j][1],shapeData[j][2] );  
+    //创建一个东（X，红色）北（Y，绿色）上（Z，蓝色）的本地坐标系统  
+    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame( shapeLocate[j] );  
+    // 改变3D模型的模型矩阵，可以用于移动物体  
+    // 物体的世界坐标 = 物体的模型坐标 * 世界矩阵  
+    gltfModel[j] = Cesium.Model.fromGltf( {//异步的加载模型  
+		name : 'locate',  
+        url : IconPath + '/models/CesiumMan/Cesium_Man.gltf',  
+        modelMatrix : modelMatrix, //模型矩阵  
+        scale : 1.0 //缩放  
+    } );
+    model = scene.primitives.add( gltfModel[j] );
+    Cesium.when( model.readyPromise ).then( function( model )  
+    		{  
+    		    model.activeAnimations.addAll( {//播放模型中全部动画，如果需要播放单个动画，可以调用add，传入动画id  
+    		        loop : Cesium.ModelAnimationLoop.REPEAT, //直到被移出activeAnimations，一直播放  
+    		         speedup : 1,  //加速播放  
+    		         //reverse : true  //逆序播放  
+    		    } );  
+    		} );  */
+	viewer.entities.add({  
+		id : Obj[3],//'locate' + j,
+		name : 'locate',  
+		position : Cesium.Cartesian3.fromDegrees(Obj[0],Obj[1],Obj[2]),
+		label : { //文字标签  
+	        text : Obj[3],  
+	        font : '9pt sans-serif',  
+	        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
+	        fillColor : Cesium.Color.ANTIQUEWHITE,
+	        outlineColor : Cesium.Color.DARKSLATEGRAY,
+	        outlineWidth : 4,  
+	        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
+	        //heightReference: 2,
+	        //pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
+	        
+	    },   
+	    billboard : { //图标  
+	        image : './icon/3d_locate.png',  
+	        verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
+	        //eyeOffset : Cesium.Cartesian3.UNIT_Z,
+	        //alignedAxis: Cesium.Cartesian3.UNIT_X,
+	        width : 40,  
+	        height : 40  
+	    },  
+	    properties: {
+	    	// 'name':Obj[3],
+	    	'l_id':Obj[3],
+	    	// 'heart_rate':Obj[5],
+	    	// 'spb':Obj[6],
+	    	// 'dpb':Obj[7],
+	    	// 'steps':Obj[8],
+	    },	
+	});
 }
 
 /*// polygon填充色

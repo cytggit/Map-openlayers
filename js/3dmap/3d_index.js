@@ -137,11 +137,11 @@ function changeCamera(center,high,heading){
         //duration:5, // 设置飞行持续时间，默认会根据距离来计算
         complete: function () {
             // 到达位置后执行的回调函数
-            console.log('到达目的地');
+            //console.log('到达目的地');
         },
         cancle: function () {
             // 如果取消飞行则会调用此函数
-            console.log('飞行取消')
+            //console.log('飞行取消')
         },
 	});
 }

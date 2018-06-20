@@ -68,32 +68,44 @@ function getlocation(){
 				// });
 			}
 			
-			if(features.length){
+			//if(features.length){
 				doWithLocate(features);
-			}	
+			//}	
 
 		}		
 	});
 }
 
 function doWithLocate(features){
+	var LocateInfo = features;
+	var LocateLength = features.length;
+	
 	if(deviceId != 'all'){
 		// 判断是否正在路径规划，做路网吸附
 		if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
-			var newcenterFearure = pointToLinestring(features,RouteLayer.getSource().getFeatures());
-			features = newcenterFearure;
+			var newcenterFearure = pointToLinestring(LocateInfo,RouteLayer.getSource().getFeatures());
+			LocateInfo = newcenterFearure;
 		}		
 		//var beforeLocate = locate;
-		locate = features[0].getGeometry().getCoordinates(); // 取得位置信息		
-		locateFloor = features[0].get('floor_id');
+		locate = LocateInfo[0].getGeometry().getCoordinates(); // 取得位置信息		
+		locateFloor = LocateInfo[0].get('floor_id');
 		// 切换到定位点所在的区域
 		getPlace(locate);
 		// 电子围栏预警
 		electronicFenceWarn();	
+	}else{
+		locateFloor = checkUrlParam('floor_id');
+		if(LocateLength > 0){
+			var sumX = 0 ,sumY = 0;
+			for (var i = 0;i<LocateLength; i++){
+				sumX += LocateInfo[0].getGeometry().getCoordinates()[0];
+				sumY += LocateInfo[0].getGeometry().getCoordinates()[1];
+			}
+			locate = [sumX/LocateLength,sumY/LocateLength];
+			backcenter();
+		}
 	}
 
-	var LocateInfo = features;
-	var LocateLength = features.length;
 	for(var i = 0;i < LocateLength; i++){
 		var locate_ID = LocateInfo[i].get('l_id');
 		var locateGeom = LocateInfo[i].getGeometry().getCoordinates();
@@ -120,7 +132,7 @@ function doWithLocate(features){
 	}
 		
 	// 设置定位点style
-	if(features[0].get('floor_id') == floorid){
+	if(locateFloor == floorid){
 		if (locateStyleWarn){LocationLayer.setStyle(locationWarnStyle);
 		}else{LocationLayer.setStyle(locationStyle);}
 	}else{
@@ -179,7 +191,6 @@ function loadlocation(){
 		// 获取定位信息
 		startlocation();
 		LocationLayer.setSource(center_wfs);
-		backcenterFlag = true;
 	}	
 }
 // 加载楼层条
@@ -409,11 +420,16 @@ function removeSelectSingleClick(){
 
 // 3d定位点详情
 function get3DPopup(){
+	$(".cesium-selection-wrapper").hide();
+	$(".cesium-infoBox").hide();
 	var infoDiv = '<div id="trackPopUp" style="display:none;">'+
 	    '<div id="trackPopUpContent" class="leaflet-popup" style="top:5px;left:0;">'+
 	      '<a id="leaflet-popup-close-button" class="leaflet-popup-close-button" href="#">×</a>'+
-	      '<div class="leaflet-popup-content-wrapper">'+
-	        '<div id="trackPopUpLink" class="leaflet-popup-content" style="max-width: 300px;"></div>'+
+	      '<div class="leaflet-popup-content-wrapper" >'+
+	      	'<div  id="leaflet-popup-pucture" class="col-md-4 col-sm-4 col-sm-6">'+
+	      		'<img style="width: 100px; heigth: 220px;"/>'+
+			'</div>'+
+	        '<div id="trackPopUpLink" class="leaflet-popup-content col-md-8 col-sm-8 col-sm-6"></div>'+
 	      '</div>'+
 	      '<div class="leaflet-popup-tip-container">'+
 	        '<div class="leaflet-popup-tip"></div>'+
@@ -421,46 +437,62 @@ function get3DPopup(){
 	    '</div>'+
 	'</div>';
 	$("#cesiumContainer").append(infoDiv);	
-	viewer.screenSpaceEventHandler.setInputAction(function(movement) {                        
-         //点击弹出气泡窗口
-         var pick = scene.pick(movement.position);
-         var c ;
-         if(pick && pick.id && pick.id._position && pick.id._properties){//选中某模型       
-        	 c = new Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, pick.id._position._value);
-        	 var x = c.x - ($('#trackPopUpContent').width()) / 2;
-        	 var y = c.y - ($('#trackPopUpContent').height());
-        	 $('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
-        	 
-        	 var alertinfo = '编号：  ' + pick.id._properties._l_id + '<br>';
-				// + '姓名  ' + pick.id._properties._name + '<br>'
-				// + '心率：  ' + pick.id._properties._heart_rate + '<br>'
-				// + '血压：  ' + pick.id._properties._spb + "/" + pick.id._properties._dpb + '<br>'
-				// + '步数：  ' + pick.id._properties._steps;
-        	 document.getElementById('trackPopUpLink').innerHTML = alertinfo;
-        	 
-        	 $('#trackPopUp').show();
-        	 
-            var removeHandler = scene.postRender.addEventListener(function () {
-            	 //$('#trackPopUp').hide();
-         		var changedC = new Cesium.SceneTransforms.wgs84ToWindowCoordinates(scene, pick.id._position._value);
-         		// If things moved, move the popUp too
-         		if ((c.x !== changedC.x) || (c.y !== changedC.y)) {
-         		c = changedC;
-         		var x = c.x - ($('#trackPopUpContent').width()) / 2;
-         		var y = c.y - ($('#trackPopUpContent').height());
-         		$('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
-         		}
-             });
-         }
-         else{
-             $('#trackPopUp').hide();
-         }
-     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);    
-	
-	document.getElementById('leaflet-popup-close-button').onclick = function (){
-		$('#trackPopUp').hide();
-		return false;
-	}	
+	var removeHandler,content;
+	var handler3D = new Cesium.ScreenSpaceEventHandler(scene.canvas);
+    handler3D.setInputAction(function(movement) {						
+		var pick = scene.pick(movement.position);
+		if(removeHandler){removeHandler.call();}
+		if(pick && pick.id && pick.id._position && pick.id._properties){
+		    content = '编号：  ' + pick.id._properties._l_id + '<br>';
+					   // '姓名：  ' + pick.id._properties._name + '<br>'
+					// + '编号：  ' + pick.id._properties._l_id + '<br>'
+					// + '心率：  ' + pick.id._properties._heart_rate + '<br>'
+					// + '血压：  ' + pick.id._properties._spb + "/" + pick.id._properties._dpb + '<br>'
+					// + '步数：  ' + pick.id._properties._steps;
+		    //var personImgUrl = getImg(pick.id._properties._l_id);// 取人员照片URL
+		    //var obj = {position:movement.position,content:content,personImgUrl:personImgUrl};
+		    var obj = {position:movement.position,content:content};
+		    infoWindow(obj);
+		   
+		    function infoWindow(obj) {
+        		        var picked = scene.pick(obj.position);
+        		        if (Cesium.defined(picked)) {
+        		            var id = Cesium.defaultValue(picked.id, picked.primitive.id);
+        		            if (id instanceof Cesium.Entity) {
+        		            	$('#trackPopUpLink').empty();
+        		            	$('#trackPopUpLink').append(obj.content);
+        		            	//$('#leaflet-popup-pucture img').attr("src",obj.personImgUrl);
+        		        		function positionPopUp (c) {
+        		        			var x = c.x - ($('#trackPopUpContent').width()) / 2;
+        		        			var y = c.y - ($('#trackPopUpContent').height());
+        		        			$('#trackPopUpContent').css('transform', 'translate3d(' + x + 'px, ' + y + 'px, 0)');
+        		        		}
+        		        		var c = new Cesium.Cartesian2(obj.position.x, obj.position.y);
+        		        		positionPopUp(c); 
+        		        		$('#trackPopUp').show();
+        		        		removeHandler = viewer.scene.postRender.addEventListener(function () {
+        		        			var changedC = Cesium.SceneTransforms.wgs84ToWindowCoordinates(viewer.scene, id._position._value);
+        		        			if ((c.x !== changedC.x) || (c.y !== changedC.y)) {
+        		        				positionPopUp(changedC);
+        		        				c = changedC;
+        		        			}
+        		        		});
+        		        		// PopUp close button event handler
+        		        		$('.leaflet-popup-close-button').click(function() {
+        		        			$('#trackPopUp').hide();
+        		        			$('#trackPopUpLink').empty();
+        		        			removeHandler.call();
+        		        			return false;
+        		        		});	            				
+        		                return id;
+        		            }
+        		        }	    	
+             }  
+		}else{
+			$('#trackPopUp').hide();
+			$('#trackPopUpLink').empty();
+		}
+	}, Cesium.ScreenSpaceEventType.LEFT_CLICK);	
 }
 
 

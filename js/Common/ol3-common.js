@@ -175,7 +175,7 @@ var checkFlag = false;
 var locateStyleWarn = false;
 
 // 返回中心点的Flag 当为true时有定位信息，可以返回中心点
-var backcenterFlag = false;
+var backcenterFlag = true;;
 
 var OldWarnType = null; // 电子围栏预警的flag 对比前一次的变化去预警
 
