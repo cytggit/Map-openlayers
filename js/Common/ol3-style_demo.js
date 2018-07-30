@@ -2,7 +2,17 @@
 
 var svglocation = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
 	'<circle fill="#FFFFFF" stroke="#AAAAAA" stroke-width="1" cx="15" cy="15" r="8"/>' +
-	'<circle fill="#5555ff" stroke="#3333FF" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
+	'<circle fill="#0099ff" stroke="#00aaff" stroke-width="1" cx="15" cy="15" r="5"/>'+
+	'</svg>';
+	
+var svglocationNavi = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80px" height="80px">'+    	
+	'<circle fill="#ffffff" fill-opacity="0.1" stroke="#0099ff" stroke-width="0.5" cx="40" cy="40" r="39"/>' +
+	'<circle fill="#FFFFFF" stroke="#bbbbbb" stroke-width="0.5" cx="40" cy="40" r="15"/>' +
+	'<text x="35" y="12" fill="#000000" font-size="8pt" >&#21271;</text>'+
+	'<text x="45" y="68" fill="#000000" font-size="8pt" rotate="180" >&#21335;</text>'+
+	'<text x="12" y="45" fill="#000000" font-size="8pt" rotate="270" >&#35199;</text>'+
+	'<text x="68" y="35" fill="#000000" font-size="8pt" rotate="90" >&#19996;</text>'+
+	'</svg>';
 
 var svglocationWarn = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30px" height="30px">'+    
 	'<circle fill="#FFFFFF" stroke="#AA0000" stroke-width="1" cx="15" cy="15" r="8"/>' +
@@ -13,20 +23,22 @@ var svgap = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
 	'<circle fill="#2828ff" stroke="#0000FF" stroke-width="1" cx="15" cy="15" r="5"/></svg>';
 	
 var svgselect = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
-		'<path fill="#ff0000" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+		'<path fill="#ff0000" d="M20.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
 		'</svg>';//<text x="9.5" dy="13" fill="#FFFFFF" font-size="5pt" >oo</text>
 	
-var svgroutestart = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
-	'<path fill="#00CD00" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
-	'<text x="12" dy="15" fill="#FFFFFF" font-size="9pt" >S</text></svg>';	
+var svgroutestart = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">'+    
+	'<path fill="#00CD00" stroke="#ffffff" stroke-width="1" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+	'<text x="10.5" dy="14" fill="#FFFFFF" font-size="7pt" >&#36215;</text></svg>';	
 
 var svgrouteend = '<svg version="1.1" id="Layer_1" encoding="UTF-8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">'+    
-	'<path fill="#CD0000" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
-	'<text x="12" dy="15" fill="#FFFFFF" font-size="9pt" >E</text></svg>';
+	'<path fill="#CD0000" stroke="#ffffff" stroke-width="1" d="M22.906,10.438c0,4.367-6.281,14.312-7.906,17.031c-1.719-2.75-7.906-12.665-7.906-17.031S10.634,2.531,15,2.531S22.906,6.071,22.906,10.438z"/>'+
+	'<text x="10.5" dy="14" fill="#FFFFFF" font-size="7pt" >&#32456;</text></svg>';
 
 	
 var mysvglocation = new Image();
 mysvglocation.src = 'data:image/svg+xml,' + escape(svglocation);	
+var mysvglocationNavi = new Image();// 导航起点
+mysvglocationNavi.src = 'data:image/svg+xml,' + escape(svglocationNavi);	
 var mysvglocationWarn = new Image();
 mysvglocationWarn.src = 'data:image/svg+xml,' + escape(svglocationWarn);
 var mysvgap = new Image();
@@ -91,6 +103,30 @@ var locationStyle = new ol.style.Style({
 	}),
 	zIndex: 600
 });
+// 定位 style --导航
+var locationNaviStyle = [
+	new ol.style.Style({
+		image: new ol.style.Icon({
+			// img: mysvglocation,
+			src: './icon/locate-navi1.png',
+			rotateWithView: true,
+			rotation:-0.8,
+			// imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,0.5],    // 摆放位置
+			scale: 0.3
+		}),
+		zIndex: 600
+	}),
+	new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvglocationNavi,
+			rotateWithView: true,
+			imgSize: [80, 80],   // 图标大小
+			anchor: [0.5,0.5],    // 摆放位置
+		}),
+		zIndex: 599
+	})
+];
 // 定位 style 电子围栏预警
 var locationWarnStyle = new ol.style.Style({
 	image: new ol.style.Icon({
@@ -124,24 +160,27 @@ var collectionStyle = new ol.style.Style({
 var selectStyle = {
 	'30050100' : new ol.style.Style({
 		image: new ol.style.Icon({
-			img: mysvgselect,
-			imgSize: [30, 30],   // 图标大小
+			// img: mysvgselect,
+			src: './icon/select.png',
+			imgSize: [22, 30],   // 图标大小
 			anchor: [0.5,1]    // 摆放位置
 		}),
 		zIndex: 460
 	}),
 	'30050300' : new ol.style.Style({
 		image: new ol.style.Icon({
-			img: mysvgselect,
-			imgSize: [30, 30],   // 图标大小
+			// img: mysvgselect,
+			src: './icon/select.png',
+			imgSize: [22, 30],   // 图标大小
 			anchor: [0.5,1]    // 摆放位置
 		}),
 		zIndex: 460
 	}),
 	'30050800' : new ol.style.Style({
 		image: new ol.style.Icon({
-			img: mysvgselect,
-			imgSize: [30, 30],   // 图标大小
+			// img: mysvgselect,
+			src: './icon/select.png',
+			imgSize: [22, 30],   // 图标大小
 			anchor: [0.5,1]    // 摆放位置
 		}),
 		zIndex: 460
@@ -326,31 +365,48 @@ var electronicFenceStyle = {
 	})
 };
 	
+// 规划路线style
 var routeStyle = 	{
-	'1': new ol.style.Style({
-		stroke: new ol.style.Stroke({
-			color: [0,255,255,1],
-			// lineCap: , //butt, round, or square Default is round.
-			// lineJoin: , //bevel, round, or miter Default is round.
-			lineDash: [1,2,3,4,5,6], // 虚线
-			lineDashOffset: 1,
-			// miterLimit: ,  // 最大斜接长度
-			width: 2
-		}),
-		zIndex: 250
-	}),
-	'0': new ol.style.Style({
-		stroke: new ol.style.Stroke({
-			color: [0,255,255,0.4],
-			// lineCap: , //butt, round, or square Default is round.
-			// lineJoin: , //bevel, round, or miter Default is round.
-			lineDash: [1,2,3,4,5,6], // 虚线
-			lineDashOffset: 1,
-			// miterLimit: ,  // 最大斜接长度
-			width: 2
-		}),
-		zIndex: 250
-	})
+	'1': [	new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: [0, 153, 255,1],
+					width: 8
+				}),
+			}),
+			new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: [60, 173, 255,1],
+					// color: gradient,
+					// lineCap: , //butt, round, or square Default is round.
+					// lineJoin: , //bevel, round, or miter Default is round.
+					// lineDash: [1,2,3,4,5,6], // 虚线
+					// lineDashOffset: 1,
+					// miterLimit: ,  // 最大斜接长度
+					width: 6
+				}),
+				zIndex: 250
+			})
+		],
+	'0': [	new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: [200, 200, 200,1],
+					width: 8
+				}),
+			}),
+			new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: [220, 220, 220,1],
+					// color: gradient,
+					// lineCap: , //butt, round, or square Default is round.
+					// lineJoin: , //bevel, round, or miter Default is round.
+					// lineDash: [1,2,3,4,5,6], // 虚线
+					// lineDashOffset: 1,
+					// miterLimit: ,  // 最大斜接长度
+					width: 6
+				}),
+				zIndex: 250
+			})
+		]
 };
 	
 // 基础图层style

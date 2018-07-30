@@ -108,6 +108,7 @@ function changeMap(mapType){
 		$("#changeMap-Act").attr("onClick","changeMap('to2d');")
 		//更改图标
 		$("#changeMap-Img").attr("src","./icon/2d.png");
+		$("#changeMap-Span").html("二维");
 		break;
 	case 'to2d': 
 		$("#map").css("width", "100%");
@@ -119,6 +120,7 @@ function changeMap(mapType){
 		$("#changeMap-Act").attr("onClick","changeMap('to3d');")
 		//更改图标
 		$("#changeMap-Img").attr("src","./icon/3d.png");
+		$("#changeMap-Span").html("三维");
 		map.updateSize();
 		break;
 	default: 

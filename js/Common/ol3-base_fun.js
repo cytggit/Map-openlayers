@@ -1,4 +1,3 @@
-
 // 确认网址的参数 返回参数值
 function checkUrlParam(checkName){
 	var checkUrlParams = window.location.search.substr(1)
@@ -44,11 +43,12 @@ function getlocation(){
 		jsonpCallback: 'successCallBack',
 		success: function(response){
 
-			var features ;
-			if(JSON.stringify(response)!="{}"){
+			var features;
+			if(JSON.stringify(response)!="{}" && response.features.length != 0 ){
 				features = new ol.format.GeoJSON().readFeatures(response);
 				
 			}else{
+				
 				//alert('未获取到定位信息，请检查定位标签状态！');
 				var gpsfeature = new ol.Feature();
 				
@@ -95,7 +95,6 @@ function doWithLocate(features){
 		// 电子围栏预警
 		electronicFenceWarn();	
 	}else{
-		locateFloor = checkUrlParam('floor_id');
 		if(LocateLength > 0){
 			var sumX = 0 ,sumY = 0;
 			for (var i = 0;i<LocateLength; i++){
@@ -176,7 +175,8 @@ function loadlocation(){
 	if(deviceId == 'all'){
 		placeid = checkUrlParam('place_id');
 		if (checkFlag){
-			floorid = checkUrlParam('floor_id');
+			locateFloor = checkUrlParam('floor_id');
+			floorid = locateFloor;
 		}
 		if (checkFlag){
 			getGeomData();
@@ -340,7 +340,7 @@ function loadselectSingleClick(){
 	selectSingleClick.on('select', function(e) {
 		if(e.selected[0]){
 			selectInfo = e.selected[0].values_;
-	
+			
 			if (selectInfo.sfloor != undefined){
 				// alert('选中起点');
 				setFloorAndCenter(selectInfo.sfloor,sourceLabelX,sourceLabelY);
@@ -353,6 +353,8 @@ function loadselectSingleClick(){
 				selectSingleClick.setActive(true);
 			}else{
 				// alert('选中poi');
+				selectSingleClick.setActive(false);
+				selectSingleClick.setActive(true);
 				selectName = selectInfo.name;
 				selectId = e.selected[0].id_.split(".")[1];
 				var geom = selectInfo.geometry;
@@ -362,55 +364,21 @@ function loadselectSingleClick(){
 				}else if (geomtype == 'Point'){
 					coordinate = geom.getCoordinates();
 				}
-				HighlightElementContent.innerHTML = selectName;
-				HighlightOverlay.setPosition(coordinate);		
+				var selectFeature = new ol.Feature();
+				selectFeature.setGeometry(new ol.geom.Point(coordinate));
+				selectFeature.set('floor_id',selectInfo.floor_id);
+				selectFeature.set('l_id',selectId);
+				selectFeature.set('name',selectName);
+				showSelectDetail(selectFeature);
 				// 清除路径规划
-				clearPath();				
+				backPathPlan();				
 			}
 		}else{
-			HighlightOverlay.setPosition(undefined);
-			HighlightElementCloser.blur();
-			//return false;
 			// 清除路径规划
-			clearPath();
+			//backPathPlan();
 		}
 
 	});		
-	HighlightElementCloser.onclick = function (){
-		HighlightOverlay.setPosition(undefined);
-		HighlightElementCloser.blur();
-		return false;
-	}	
-	// 收藏
-	HighlightElementCollection.onclick = function (){
-		checkCollection(selectId,coordinate);
-	}
-	// 搜周边
-	HighlightElementSearch.onclick = function (){
-		// 周边检索
-	}
-	// 从这走
-	HighlightElementFrom.onclick = function (){
-		// 打开路径规划功能
-		pathPlanningMain();
-		// 设置起点为选中的点
-		clearStartLabel();
-		LabelAction = 'startLabel';
-		document.getElementById('label-start').value = selectName;
-		setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
-		// 地图点选终点
-		getEndLabelOnMap();
-	}
-	// 去这里
-	HighlightElementTo.onclick = function (){
-		removeSelectSingleClick();
-		// 打开路径规划功能
-		pathPlanningMain();
-		// 设置终点为选中的点，自动规划完路线
-		LabelAction = 'endLabel';
-		document.getElementById('label-end').value = selectName;
-		setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
-	}
 }
 	
 // 关闭 selectSingleClick 点选
@@ -550,20 +518,7 @@ function floorUpdate(newfloorId){
 		// clearPath();  // 只清除 路径规划
 		// backPathPlan();  // 清除 路径规划  & 刷新 点选
 		if(RouteLayer != null && RouteLayer != undefined){
-			if(RouteSourceFloor == RouteTargetFloor/* 非跨楼层*/ ){
-				if(RouteSourceFloor == floorid){/* 切换到路线所在楼层 */
-					routeFeature[0].setStyle(routeStyle[1]);
-					RouteStartLayer.setOpacity(1);
-					RouteDestLayer.setOpacity(1);
-				}else{/* 切换到路线之外楼层 */
-					routeFeature[0].setStyle(routeStyle[0]);
-					RouteStartLayer.setOpacity(0.4);
-					RouteDestLayer.setOpacity(0.4);
-				}
-			}else{/* 跨楼层*/
-				setRouteStyleWithFloor();
-				//RouteLayer.setStyle();
-			}
+			setRouteStyleWithFloor();
 		}
 		
 	}

@@ -38,6 +38,11 @@ function selectDoor(){
 	}
 }
 
+function clearSearchText(){
+	document.getElementById('work-search').value = '';
+	$('#search_result').empty();
+}
+
 // 实时检索
 function selectPoi(){
 	
@@ -54,7 +59,6 @@ function selectPoi(){
 		requestSelect(searchKey);
 	}
 }
-var eventName = (navigator.userAgent.indexOf("MSIE")!=-1) ? "propertychange" :"input";
 
 $("#work-search").bind(eventName,function(){
 	selectPoi();
@@ -66,7 +70,8 @@ function requestSelect(searchKey){
 			request: 'GetFeature',
 			typeName: DBs + ':select', // 定位点图层
 			outputFormat: 'application/json',
-			cql_filter: "place_id=" + placeid + " and name like '%"+str2Unicode(searchKey)+"%'"
+			cql_filter: "place_id=" + placeid + " and name like '%"+str2Unicode(searchKey)+"%'",
+			sortby: "floor_id,name"
 		};		
 		$.ajax({  
 			url: wfsUrl,
@@ -88,70 +93,98 @@ function requestSelect(searchKey){
 						var lat = geom[1];
 						var name = selects[i].get('name');
 						var site = selects[i].site == null ? "" : selects[i].site;
-						laver += "<tr id='sel'><td class='line' id="+selects[i].id_ +">"
-						+"<img  style='float:left; margin:1rem  0.8rem;' src='icon/site.png'/>"
-						+"<div  style='float:left;margin:5px; '>"
+						laver += "<tr id='sel'><td class='line' id="+selects[i].id_ +" style='border-radius: 3px;'>"
+						+"<img  style='float:left; margin:20px 5%;' src='images/u84.png'/>"
+						+"<div  style='float:left; padding: 12px;'>"
 							+"<span hidden class='lineno' style='font-size:1.2rem;line-height:2.4rem;'>"+ i+ "、"+ "</span>"+ name + "</br>"
 							+"<span  style='float:left;font-size:10px;'>F"+selects[i].get('floor_id')+"</span> "
 						+"</div>"
-						+"<div  style='float:right;margin:1rem  0.8rem;' onclick='plannig("+lon+","+lat+",\""+name+"\",\"" + selects[i].get('floor_id') + "\""+")'><img src='icon/navi.png'/></div>"
-						
-						+"</td></tr>";
+						+"<div class='line-route' style='float:right;margin:20px 5%;' onclick='plannig("+lon+","+lat+",\""+name+"\",\"" + selects[i].get('floor_id') + "\""+")'><img src='images/u85.png'/></div>"
+						+"<img id='u16_img' style='float: right;width: 90%;height: 1px;' class='img ' src='images/u55.png'/>"
+						+"</td></tr>"
+						; 
 					}
 					laver += "</table>";
 					$('#search_result').empty();
 					$('#search_result').html(laver);
 					$('.line:first').addClass('hover');
+					$('.line:first').css('background' , 'rgb(22, 155, 213)' );
+					$('.hover img').attr("src","images/u80.png");
+					$('.hover div img').attr("src","images/u81.png");
 					$('#search_result').css('display', '');
 
 					$('.line').hover(function() {
 						$('.line').removeClass('hover');
 						$(this).addClass('hover');
+						$('.line').css('background' , 'rgb(255, 255, 255)' );
+						$('.line img').attr("src","images/u84.png");
+						$('.line div img').attr("src","images/u85.png");
+						$(this).css('background' , 'rgb(22, 155, 213)' );
+						$('.hover img').attr("src","images/u80.png");
+						$('.hover div img').attr("src","images/u81.png");
 					}, function() {
+						$('.hover').css('background' , 'rgb(255, 255, 255)' );
+						$('.hover img').attr("src","images/u84.png");
+						$('.hover div img').attr("src","images/u85.png");
 						$(this).removeClass('hover');
 					});
 					$('.line').click(function() {
-						
-						$('.control-delete').css("display","block");
-						
 						var selectFeature = selects[$(this).text().split("、")[0]];
-						var selectGeom = selectFeature.getGeometry().getCoordinates();
-						
-						$('#work-search').val(selectFeature.get('name'));
-						
-						setFloorAndCenter(selectFeature.get('floor_id'),selectGeom[0],selectGeom[1]);
-						selectLayer.setStyle(selectStyle[30050100]);
-						select_wfs.addFeature(selectFeature);
-						selectLayer.setSource(select_wfs);		
-						
-						//$('#search_result').empty();
-
-						selectinfo = 'select';
-						//计算距离[121.42308,31.16801]
-						var length = distanceFromAToB(selectGeom,locate);
-						//显示div框
-						var len = "距离：" + parseInt(length)+ "米";
-						$(".div2").show();
-						$(".site").html(selectFeature.get('name'));
-						$(".floor").html(selectFeature.get('floor_id') + "层");
-						$("#length").html(len);
-						$("#ms").html(null);
-						$("#mark").html(null);
-						
-						//存放数据
-						$("#gps_x").val(selectGeom[0]);
-						$("#gps_y").val(selectGeom[1]);
-						$("#gps_name").val(selectFeature.get('name'));
-						$("#gps_fid").val(selectFeature.get('floor_id'));
+						showSelectDetail(selectFeature);
 					})
 				}				
 			}
 			
 		}); 	
 }
+function showSelectDetail(selectFeature){
+	$('.control-delete').css("display","block");
+	console.log($('.search-input').text());
+	$('.search-input').text("666");
+	
+	var selectGeom = selectFeature.getGeometry().getCoordinates();					
+	var selectName = selectFeature.get('name');
+	var selectFloor = selectFeature.get('floor_id');
+	
+	setFloorAndCenter(selectFloor,selectGeom[0],selectGeom[1]);
+	selectLayer.setStyle(selectStyle[30050100]);
+	select_wfs.clear();
+	select_wfs.addFeature(selectFeature);
+	selectLayer.setSource(select_wfs);		
+	//$('#search_result').empty();
+	selectinfo = 'select';
+	
+	if(!checkAPPFlag){/* 非PC端 */
+		
+		//计算距离
+		var length = distanceFromAToB(selectGeom,locate);
+		//显示div框
+		var flr = "楼层：" + selectFloor + "层";
+		var len = "距离：" + parseInt(length)+ "米";
+		$(".div2").show();
+		$(".site").html(selectName);
+		$(".floor").html(flr);
+		$("#length").html(len);
+		$("#ms").html(null);
+		$("#mark").html(null);
+		
+		//存放数据
+		$("#gps_x").val(selectGeom[0]);
+		$("#gps_y").val(selectGeom[1]);
+		$("#gps_name").val(selectName);
+		$("#gps_fid").val(selectFloor);
+		$("#gps_lid").val(selectFeature.get('l_id'));
+		
+		// 判断是否收藏
+		checkCollection();
+	}else{
+		
+	}
+}
 //点击"去这里"规划路线
 $(".walk").click(function(){
 	$(".div2").hide();
+	$('.control-delete').css("display","none");
 	var lon = parseFloat($("#gps_x").val());
 	var lat = parseFloat($("#gps_y").val());
 	var name = $("#gps_name").val();
@@ -205,7 +238,7 @@ function removeselect(){
 		if(selectinfo == 'select'){
 			$('.control-search').attr("onclick","selectPoi();");
 			$('.control-search img').attr("src","./icon/search.png");
-			document.getElementById('work-search').value = '';
+			$('.search-input').val = '';
 		}
 		selectLayer.getSource().clear();
 		selectinfo = null;
@@ -228,5 +261,6 @@ function removesome(){
 	if (!pathPlanningOFF){
 		clearPath();
 	}
+	$('#search_result').empty();
 	$('.control-delete').css("display","none");
 }

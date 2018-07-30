@@ -57,7 +57,7 @@
 	var LocationLayer = new ol.layer.Vector({
 		title: 'center point',
 		visible: true,
-		zIndex: 60
+		zIndex: 90
 	});	
 	
 	// 检索图层 	

@@ -2,7 +2,7 @@
 <html xmlns=http://www.w3.org/1999/xhtml>
 <head>                  
     <meta http-equiv=Content-Type content="text/html;charset=utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, initial-scale=1"/>
+	<meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
     <meta content=always name=referrer>
@@ -25,94 +25,77 @@
 
 <body >
     <div id="map" class="map"  style="width:100%"></div>
-	<div class="container">
+	<div class="searchmain">
 		<div class="search" >
 			<a href="#" data-toggle="modal" data-target="#searchPageModal">
-				<span class="search_left">搜索</span>
-				<span class="search_input">
-					搜地点、导航路线
-				</span>
+				<div id="u146" class="ax_default icon">
+					<img id="u146_img" class="img " src="images/u146.png"/>
+				</div> 
+				<div id="u145_text" class="text ">
+					<span class="search_input">搜地点、找线路</span>
+				</div> 
 			</a>
 			<div class="control-delete" onclick="removesome();"><img style="width:1.4em" src="./icon/delete.png" alt="✖" /></div>
 		</div>
 	</div>
 	<div id="cesiumContainer" class="map" style="width:0%; right: 0px; background-color: rgba(148,148,248,0.3)"></div>
-    <button onclick="moveToCenter();" type="button" class="control-locate btn btn-default">
-		<img style="width:1em" src="./icon/locate.png" />
-		<!-- <i class="glyphicon glyphicon-map-marker"></i> -->
+    <button align="center" onclick="moveToCenter();" type="button" class="control-locate btn btn-default">
+		<img style="width: 1.2em;height: 1.2em;" src="./icon/locate.png" />
 	</button>
     <div class="feature-select">
         <ul class="nav nav-pills nav-stacked">
             <li class="dropdown" id="changeMap-Act" onClick="changeMap('to3d');">
 				<a href="#">
 					<!-- 2,3D切换 -->
-					<img style="width:1.2em" id="changeMap-Img" src="./icon/3d.png" />
-					<!-- <i class="fa fa-star"></i> -->
+					<div align="center"><img align="center"  id="changeMap-Img" src="./icon/3d.png" /></div>
+					<span id="changeMap-Span">三维</span>
 				</a>
 			</li>
-			<!-- <li class="divider"></li>
-            <li class="dropdown">
+			<!-- 导览 -->
+            <!-- <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                    <img style="width:1.2em" src="./icon/search.png" />
+                    <div align="center"><img  src="./icon/heatmap.png" /></div>
+					<span>导览</span>
                 </a>
                 <ul class="dropdown-menu feature-list">
-                    <li id="selectToilet" onclick="selectToilet();"><a href="#">WC</a></li>
-                    <li class="divider"></li>
-					<li id="selectDoor" onclick="selectDoor();"><a href="#">大门</a></li>
-                </ul>
-            </li> -->
-			<li class="divider"></li>
-            <li class="dropdown">
-                <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-					<!-- 导览 -->
-                    <img style="width:1.2em" src="./icon/heatmap.png" />
-					<!-- <i class="fa fa-picture-o"></i> -->
-                </a>
-                <ul class="dropdown-menu feature-list">
-                    <!-- <li class="dropdown-header">导览</li> -->
                     <li id="guideHeatmap" onclick="guideHeatmap();"><a href="#">热力图</a></li>
                     <li class="divider"></li>
 					<li id="guideGuidemap" onclick="guideGuidemap();"><a href="#">导览图</a></li>
                 </ul>
-            </li>
-			<li class="divider"></li>
-            <li class="dropdown">
+            </li> -->
+             <!-- 测距 -->
+			<!-- <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                    <!-- 测距 -->
-					<img style="width:1.2em" src="./icon/length.png" /> 
-					<!-- <i class="fa fa-arrows-h"></i> -->
+					<div align="center"><img src="./icon/length.png" /></div>
+					<span>测距</span>
 				</a>
                 <ul class="dropdown-menu feature-list">
-                    <!-- <li class="dropdown-header">测距</li> -->
                     <li id="startLength" onclick="startLength();"><a href="#">开始</a></li>
                     <li class="divider"></li>
 					<li id="stopLength" onclick="stopLength();"><a href="#">停止</a></li>
                     <li class="divider"></li>
 					<li id="removeLength" onclick="removeLength();"><a href="#">清除</a></li>
                 </ul>
-            </li>
-			<li class="divider"></li>
+            </li> -->
             <li class="dropdown" onClick="pathPlanningMain();">
-                <a href="#" data-toggle="modal" data-target="#pathModal">
+                <a href="#">
 					<!-- 路径规划 -->
-                    <img style="width:1.2em" src="./icon/route-planning.png" />
-					<!-- <i class="fa fa-level-up"></i> -->
+                    <div align="center"><img  src="./icon/route-planning.png" /></div>
+					<span>路线</span>
 				</a>
             </li>
-			<li class="divider"></li>
             <li class="dropdown" onClick="collectionPoi();">
 				<a href="#">
 					<!-- 收藏 -->
-					<img style="width:1.2em" src="./icon/collection.png" />
-					<!-- <i class="fa fa-star"></i> -->
+					<div class="showCollection" align="center"><img src="./icon/collection.png" /></div>
+					<span>收藏</span>
 				</a>
 			</li>
-			<li class="divider"></li>
             <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
 					<!-- 电子围栏 -->
-					<img style="width:1.2em" src="./icon/electronicFence.png" />
-					<!-- <i class="fa fa-ban"></i> -->
+					<div align="center"><img src="./icon/electronicFence.png" /></div>
+					<span>围栏</span>
 				</a>
                 <ul class="dropdown-menu feature-list">
                     <li id="electronicFence" onclick="electronicFence();"><a href="#">显示</a></li>
@@ -135,11 +118,11 @@
         <div class="wheel">
             <ul class="nav nav-pills nav-stacked">
 <!--                 <li role="presentation" class="up"><a href="#"><i class="glyphicon glyphicon-chevron-up"></i></a></li> -->
-				<li role="presentation" class="nav nav-pills nav-stacked floorshow active"  ><a style="padding: 10px 12px; ">F01</a></li>
+				<li role="presentation" class="nav nav-pills nav-stacked floorshow active"  ><a style="padding: 8px 11px; background-color: rgb(22, 155, 213);border-radius: 3px;">F01</a></li>
 				<!-- <li class="divider"></li> -->
 				<li class="dropdown">
-					<a href="#"role="presentation" data-toggle="dropdown" class="down dropdown-toggle" style="padding: 2px 14px; "><i class="glyphicon glyphicon-chevron-down"></i></a>
-					 <ul class="dropdown-menu" style="width:3.1em;min-width:10px;">
+					<a href="#"role="presentation" data-toggle="dropdown" class="down dropdown-toggle" style="padding: 0px 14px; color: rgb(22, 155, 213);"><i class="glyphicon glyphicon-chevron-down"></i></a>
+					 <ul class="dropdown-menu" style="width:3.1em;min-width:10px;border: none;border-radius: 3px;box-shadow: 0 1px 3px rgba(170,170,170,.7);">
 						<li class="floor-wheel" >
 						<!-- <div class="levels-select"> -->
 							<ul class="nav nav-pills nav-stacked " id="floorlist">
@@ -152,7 +135,7 @@
         </div>
     </div>	
 
-	<!-- 底部 -->
+	<!-- 底部 搜索详情-->
 	<div id="div2" class="div2"  >
 		<div class="wrap">
 			<div class="down">
@@ -166,123 +149,193 @@
 					<img src="icon/walk.png" alt="行走" />
 					<p>到这去</p>
 				</div>
+				<div id="u55" class="ax_default">
+					<img id="u55_img" class="img " src="images/u55.png"/>
+				</div>
+				<div class="detail-menu">
+					<ul>
+						<li id="collection" onclick="">
+							<button  class="collection">
+								<img src="images/u62.png" alt="收藏" />
+								<span>收藏</span>
+							</button>
+						</li>
+						<li id="navigation" onclick="addNavigation();">
+							<button  class="navigation">
+								<img src="images/u59.png" style="width: 11px;" alt="导航" />
+								<span>导航</span>
+							</button>
+						</li>
+						<li id="around" onclick="">
+							<button  class="around">
+								<img src="images/u60.png" alt="周边" />
+								<span>周边</span>
+							</button>
+						</li>
+					</ul>
+				</div>
 				<!-- 存放规划路线需要的值 -->
 				<input type="text" id="gps_x" hidden="true">
 				<input type="text" id="gps_y" hidden="true">
 				<input type="text" id="gps_name" hidden="true">
 				<input type="text" id="gps_fid" hidden="true">
+				<input type="text" id="gps_lid" hidden="true">
 			</div>			
 		</div>
 	</div>
-</div>
 
 	
 	<!--搜索页面模态框-->
 	<div class="modal fade"
-		style="width: 100%; height: 100%; background-color: #ffffff;"
+		style="width: 100%; height: 100%; background-color:rgba(255, 255, 255, 0.717647058823529);"
 		id="searchPageModal" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel">
-		<div class="modal-dialog modal-lg" style="margin: 0px;"
+		<div class="modal-dialog modal-lg" style="margin: 0px;position: absolute;height: 100%;width: 100%;"
 			role="document">
 			<div class="modal-content"
-				style="border: 0px solid rgba(0, 0, 0, .2); -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .5);">
-				<div class="modal-body">
-					<form class="form-horizontal" style="margin-bottom: 120%;">
-						<div class="container2">
-							<div class="search">
-								<div class="search_left_back"
-									data-dismiss="modal">
-									<img id="clean" src="./icon/backMianPage.png" />
+				style="border: 0px solid rgba(0, 0, 0, .2); -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .5);height: 100%;background-color: #fff0;">
+				<div class="modal-body" style="position: absolute;height: 100%;width: 100%;padding: 0px;">
+						<div class="searchmain">
+							<div class="search" >
+								<div id="u102" class="ax_default icon" data-dismiss="modal">
+									<img id="clean" class="u102_img" src="images//u33.png"/>
 								</div>
-								<div class="search_input2" >
-									<input id="work-search" type="text" placeholder="搜索办公室、教室等">
+								<div id="u145_text" class="search_input2">
+									<p><input id="work-search" type="text" ></p>
+								</div> 
+								<div id="clearSearchText" class="ax_default icon" onclick="clearSearchText();">
+									<img id="u73_img" class="img " src="images/u73.png"/>
 								</div>
-								<div class="search_right" id="doSearch" onclick="selectPoi();">
-									<img src="./icon/search.png" alt="查询" />
+								<div id="u108" class="ax_default">
+									<img id="u108_img" class="img " src="images/u12.png"/>
 								</div>
+								<div class="search_right" id="doSearch" onclick="selectPoi();">搜索</div>
 								<div id="search_result" data-dismiss="modal" class=" "></div>
 								<input id="fid" type="text" hidden="true">
 							</div>
 						</div>
-						<div class="words">快捷搜索...</div>
-						<div class="servers">
-							<ul>
-								<li id="selectDoor" data-dismiss="modal" onclick="selectDoor();"><img
-									src="icon/door.png" alt="大门" /></li>
-								<li id="selectElevator" data-dismiss="modal"
-									onclick="selectElevator();"><img src="icon/elevator.png"
-									alt="电梯" /></li>
-								<li id="selectToilet" data-dismiss="modal"
-									onclick="selectToilet();"><img src="icon/wc.png" alt="卫生间" /></li>
-							</ul>
+						<div id="u98" class="ax_default box_2">
+							<div id="u98_div" class="">
+								<div id="u109" class="ax_default icon">
+									<img id="u109_img" class="img " src="images/u109.png"/>
+									<span class="search-servers">快捷搜索...</span>
+								</div>
+								<div id="u106" class="ax_default">
+									<img id="u106_img" class="img " src="images/u55.png"/>
+								</div>
+								<div class="servers">
+									<ul>
+										<li id="selectDoor" data-dismiss="modal" onclick="selectDoor();"><img
+											src="icon/door.png" alt="大门" /></li>
+										<li id="selectElevator" data-dismiss="modal"
+											onclick="selectElevator();"><img src="icon/elevator.png"
+											alt="电梯" /></li>
+										<li id="selectToilet" data-dismiss="modal"
+											onclick="selectToilet();"><img src="icon/wc.png" alt="卫生间" /></li>
+									</ul>
+								</div>
+							</div> 
 						</div>
-					</form>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-    <!--路径规划模态框-->
-    <div class="modal fade" id="pathModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                 <!--<div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h6 class="modal-title" id="myModalLabel">路径规划</h6>
-                </div> -->
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <div class="col-xs-7">
-                                <div class="input-group has-feedback">
-                                    <span class="input-group-addon">起点</span>
-                                    <input class="form-control" id="label-start" placeholder="请选择起点">
-                                    <a class="btn close form-control-feedback" onClick="clearStartLabel();" style="pointer-events: auto"><span aria-hidden="true">&times;</span></a>
-                                </div>
-                            </div>
-                            <div class="btn-group col-xs-5">
-                                <button onclick="getStartLabelFromLocate();" type="button" class="btn btn-default">
-									<i class="glyphicon glyphicon-map-marker"></i>
-								</button>
-                                <button onclick="getStartLabelOnMap();" type="button" class="btn btn-default">
-									<i class="glyphicon glyphicon-screenshot"></i>
-								</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-xs-7">
-                                <div class="input-group has-feedback">
-                                    <span class="input-group-addon">终点</span>
-                                    <input class="form-control" id="label-end" placeholder="请选择终点">
-                                    <a class="btn close form-control-feedback" onClick="clearEndLabel();" style="pointer-events: auto"><span aria-hidden="true">&times;</span></a>
-                                </div>
-                            </div>
-                            <div class="btn-group col-xs-5">
-                                <button onclick="getEndLabelFromLocate();" type="button" class="btn btn-default">
-									<i class="glyphicon glyphicon-map-marker"></i>
-								</button>
-                                <button onclick="getEndLabelOnMap();" type="button" class="btn btn-default">
-									<i class="glyphicon glyphicon-screenshot"></i>
-								</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-primary" onclick="clearPathPlan();">清空结果</button> -->
-                    <button type="button" class="btn btn-warning" onclick="backPathPlan();" data-dismiss="modal">返回</button>
-                </div>
+    <!--规划详情-->
+	<div class="route-planning" >
+        <div class="modal-dialog modal-lg" role="document" style="margin: 0px;width: 100%;">
+            <div class="modal-content"style="border: 0px solid rgba(0, 0, 0, .2); -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .5);height: 100%;background-color: #fff0;">
+				<div class="modal-body" style="position: absolute;height: 100%;width: 100%;padding: 0px;">
+						<div class="routemain">
+							<div class="route" >
+								<div id="u102" class="ax_default icon" onclick="backPathPlan();">
+									<img id="clean" class="u102_img" src="images//u33.png"/>
+								</div>
+
+								<div id="u145_text" class="route_input1" onclick="setLabelAction('start');">
+									<p><input id="label-start" type="text" placeholder="请选择起点"></p>
+								</div> 
+								<div id="clearSearchStartText" class="ax_default icon" onclick="clearStartLabel();">
+									<img id="u73_img" class="img " src="images/u73.png"/>
+								</div>
+
+								<!-- <div class="search_right" id="doSearch" onclick="">搜索</div> -->
+								
+								<div id="u136_text" class="route_input2"  onclick="setLabelAction('end');">
+									<p><input  id="label-end" placeholder="请选择终点" type="text" ></p>
+								</div> 
+								<div id="clearSearchEndText" class="ax_default icon" onclick="clearEndLabel();">
+									<img id="u73_img" class="img " src="images/u73.png"/>
+								</div>
+								
+								<div id="u107" class="ax_default">
+									<img id="u107_img" class="img " src="images/u55.png"/>
+								</div>
+								<div id="route_search_result" data-dismiss="modal" class=" "></div>
+							</div>
+						</div>
+						<div id="route-server" class="ax_default box_2">
+							<div id="route-server_div" class="">
+								<div class="detail-route">
+									<ul>
+										<li id="locate-label" onclick="getLabelFromLocate();">
+											<img src="images/u26.png" alt="我的位置" />
+											<span>我的位置</span>
+										</li>
+										<li id="collection-label" onclick="">
+											<img src="images/u27.png" alt="收藏的点" />
+											<span>收藏的点</span>
+										</li>
+										<li id="map-label" onclick="getLabelOnMap();">
+											<img src="images/u28.png" alt="地图选点" />
+											<span>地图选点</span>
+										</li>										
+									</ul>
+								</div> 
+							</div> 
+						</div>
+				</div>
             </div>
         </div>
     </div>	
+	<div class="route-down">
+		<div class="down route-msg">	
+			<div id="route2msg" class="ax_default box_2">
+				<p><span id="route-length"></span></p>
+            </div>
+			<button type="button" id="route2navi" class="ax_default box_2" onclick="navigation();">
+				<p><span>开始导航</span></p>
+            </button>
+		</div>
+	</div>
+	
+	<!-- 导航详情 -->
+	<div class="navi-top">	
+		<div id="naviLength" class="ax_default box_2">
+			<p><span id="navi-length">10米后左转</span></p>
+        </div>
+	</div>
+	<div class="navi-down">
+		<div class="down navi-down-msg" style="padding: 2px 5px;">	
+			<div id="navi-back" class="ax_default box_2 col-xs-2 col-sm-2" onclick="removeNavigation();">
+				<p><span>退出</span></p>
+			</div>
+			<div id="" class="ax_default box_2 col-xs-1 col-sm-1">
+				<img id="navi-back-img" class="img " src="images/u12.png"/>
+			</div>
+			<div id="navi-time" class="ax_default box_2 col-xs-9 col-sm-9">
+				<p><span></span></p>
+			</div>
+		</div>
+	</div>
 </body>
-
- 	<script type="text/JavaScript" src="http://map.intmote.com/map/js/Basejs/jquery-1.9.1.js" ></script>	
+ 	<script type="text/JavaScript" src="./js/Basejs/jquery-1.9.1.js" ></script>	
     <!-- <script type="text/JavaScript" src="http://192.168.1.126:8080/webgis/cyt_test/js/ol.js"></script> -->
-    <script type="text/JavaScript" src="http://map.intmote.com/map/js/Basejs/ol.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/JavaScript" src="./js/Basejs/ol.js"></script>
 
-	<script type="text/javascript" src="http://map.intmote.com/map/js/Basejs/ol3-layerswitcher.js"></script>
-	<script type="text/javascript" src="http://map.intmote.com/map/js/Basejs/coordtransform.js"></script>
+	<script type="text/javascript" src="./js/Basejs/ol3-layerswitcher.js"></script>
+	<script type="text/javascript" src="./js/Basejs/coordtransform.js"></script>
 	<script type="text/javascript" src="./js/Common/ol3-common.js"></script>
 
 	<script type="text/javascript" src="./js/ElectronicFence/ElectronicFence_h.js"></script>
@@ -296,12 +349,12 @@
 	<script type="text/javascript" src="./js/Common/ol3-base_init.js"></script>
 	<script type="text/javascript" src="./js/Common/ol3-base_fun_demo.js"></script>
 
-	
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	
-
 <script>
-	
+
+	// 根据设备做页面&功能调整
+	checkAPP();
+
 	// 创建地图
 	var amap = new ol.layer.Group({
 		title: 'amap',
@@ -350,7 +403,6 @@
 	<script type="text/javascript" src="./js/Heatmap/Heatmap.js"></script>
 	<script type="text/javascript" src="./js/Distance/Distance.js"></script>
 	<script type="text/javascript" src="./js/RoutePlan/RoutePlan.js"></script>
-
 	<link rel="stylesheet" href="./js/Cesium/Build/Cesium/Widgets/widgets.css" type="text/css">
 	<script type="text/javascript" src="./js/Cesium/Build/Cesium/Cesium.js"></script>
 	<script type="text/javascript" src="./js/3dmap/3d_load_h.js"></script>

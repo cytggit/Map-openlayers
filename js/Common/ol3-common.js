@@ -9,8 +9,9 @@ var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
-var locateIp = 'http://114.215.83.3:8090';
-var comIp = 'http://114.215.83.3:8090';
+var lineDBs = 'leador';
+var locateIp = 'https://map.intmote.com';
+var comIp = 'https://map.intmote.com';
 // var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
@@ -28,6 +29,28 @@ var geomPOIs = {};
 var setCenterFlag = true,getLocateLocateFlag = true,LocatesForShow = {};
 var beforeLocatesForShow = {};// 平滑  id：geom
 var checkWallInFlag = {};// 定位点穿墙 id：[before.polygon.fid,now.polygon.fid]
+
+// 判断设备
+var checkAPPFlag = true;
+function checkAPP() {
+	var userAgentInfo = navigator.userAgent;
+	var Agents = ["Android", "iPhone","SymbianOS", "Windows Phone","iPad", "iPod"];
+	for (var v = 0; v < Agents.length; v++) {
+		if (userAgentInfo.indexOf(Agents[v]) > 0) {
+			checkAPPFlag = false;
+			break;
+		}
+	}
+	
+	$(".around").attr("disabled","disabled");// 周边、暂时没做
+	$(".around").css("background","rgba(188,188,188,1)");
+	if(checkAPPFlag){/* PC设备导航不可用 */
+		$(".navigation").attr("disabled","disabled");
+		$(".navigation").css("background","rgba(188,188,188,1)");	
+		$("#route2navi").attr("disabled","disabled");
+		$("#route2navi").css("background","rgba(188,188,188,1)");
+	}
+}
 
 //设置视图
 var view = new ol.View({
@@ -210,7 +233,7 @@ function updateNewFeature(features,featureType,updType){
 // 发送操作数据库请求
 function featObjectSend(featString){
 	var request = new XMLHttpRequest();
-	request.open('POST', wfsUrl + '?service=wfs');
+	request.open('POST', wfsUrl + '?service=wfs',false);
 	request.setRequestHeader('Content-Type', 'text/xml');
 	request.send(featString);		
 }
@@ -232,7 +255,7 @@ function pointToLinestring(pointFeature,lineFeature){
 	var line = lineFeature[0].getGeometry().getCoordinates();
 	
 	var A,B;
-	var distance = 3,newpoint;
+	var distance = 2,newpoint;
 	var newPointFeature = pointFeature;
 	
 	A = line[0];
