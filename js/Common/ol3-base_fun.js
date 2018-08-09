@@ -102,7 +102,7 @@ function doWithLocate(features){
 				sumY += LocateInfo[0].getGeometry().getCoordinates()[1];
 			}
 			locate = [sumX/LocateLength,sumY/LocateLength];
-			backcenter();
+			//backcenter();
 		}
 	}
 

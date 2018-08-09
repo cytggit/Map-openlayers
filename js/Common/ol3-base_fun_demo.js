@@ -102,7 +102,7 @@ function doWithLocate(features){
 				sumY += LocateInfo[0].getGeometry().getCoordinates()[1];
 			}
 			locate = [sumX/LocateLength,sumY/LocateLength];
-			backcenter();
+			//backcenter();
 		}
 	}
 
@@ -370,15 +370,54 @@ function loadselectSingleClick(){
 				selectFeature.set('l_id',selectId);
 				selectFeature.set('name',selectName);
 				showSelectDetail(selectFeature);
+				// HighlightElementContent.innerHTML = selectName;
+				// HighlightOverlay.setPosition(coordinate);		
 				// 清除路径规划
 				backPathPlan();				
 			}
 		}else{
+			// HighlightOverlay.setPosition(undefined);
+			// HighlightElementCloser.blur();
 			// 清除路径规划
 			//backPathPlan();
 		}
 
 	});		
+	// HighlightElementCloser.onclick = function (){
+		// HighlightOverlay.setPosition(undefined);
+		// HighlightElementCloser.blur();
+		// return false;
+	// }	
+	// // 收藏
+	// HighlightElementCollection.onclick = function (){
+		// checkCollection(selectId,coordinate);
+	// }
+	// // 搜周边
+	// HighlightElementSearch.onclick = function (){
+		// // 周边检索
+	// }
+	// // 从这走
+	// HighlightElementFrom.onclick = function (){
+		// // 打开路径规划功能
+		// pathPlanningMain();
+		// // 设置起点为选中的点
+		// clearStartLabel();
+		// LabelAction = 'startLabel';
+		// document.getElementById('label-start').value = selectName;
+		// setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
+		// // 地图点选终点
+		// getEndLabelOnMap();
+	// }
+	// // 去这里
+	// HighlightElementTo.onclick = function (){
+		// removeSelectSingleClick();
+		// // 打开路径规划功能
+		// pathPlanningMain();
+		// // 设置终点为选中的点，自动规划完路线
+		// LabelAction = 'endLabel';
+		// document.getElementById('label-end').value = selectName;
+		// setlabelOnClick(LabelAction,coordinate,selectInfo.floor_id);
+	// }
 }
 	
 // 关闭 selectSingleClick 点选
