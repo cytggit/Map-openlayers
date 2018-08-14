@@ -412,12 +412,12 @@
 <script>	
 	map.addOverlay(HighlightOverlay);
 	
-	load3dMap();
-	get3DPopup();
+	// get deviceid placeid and floorid
+	getInitParam();
 	
 	// 加载定位信息
 	loadlocation(); 
-
+	
 	// 点选元素-高亮
 	loadselectSingleClick();
 </script>

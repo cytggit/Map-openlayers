@@ -182,6 +182,8 @@ function getPlace(center){
 	}
 	if(mindistance < 200 && centerPlace != placeid){
 		placeid = centerPlace;
+		load3dMap();
+		get3DPopup();
 		getGeomData();
 		// 加载楼层条
 		getFloorList();

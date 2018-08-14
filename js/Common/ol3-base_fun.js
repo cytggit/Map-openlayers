@@ -22,6 +22,17 @@ function checkUrlParam(checkName){
 	return checkValue;	
 }
 
+function getInitParam(){
+	deviceId = checkUrlParam('deviceId');
+	if(deviceId == 'all'){
+		placeid = checkUrlParam('place_id');
+		if (checkFlag){
+			locateFloor = checkUrlParam('floor_id');
+			floorid = locateFloor;
+		}
+	}
+}
+
 // 获取定位信息
 function getlocation(){	
 	// 当deviceId为all的时候，显示所有当前楼层的位置
@@ -169,24 +180,17 @@ function startlocation(){
 }
 
 // 加载定位信息
-function loadlocation(){	
-	deviceId = checkUrlParam('deviceId');
-	
-	if(deviceId == 'all'){
-		placeid = checkUrlParam('place_id');
-		if (checkFlag){
-			locateFloor = checkUrlParam('floor_id');
-			floorid = locateFloor;
-		}
-		if (checkFlag){
-			getGeomData();
-			getFloorList();
-			changeFloor(floorid);
-			load3dData();
-			startlocation();
-			LocationLayer.setSource(center_wfs);
-			view.setCenter(mapCenter(placeid));
-		}
+function loadlocation(){
+	if(deviceId == 'all'  && checkFlag){
+		load3dMap();
+		get3DPopup();
+		getGeomData();
+		getFloorList();
+		changeFloor(floorid);
+		load3dData();
+		startlocation();
+		LocationLayer.setSource(center_wfs);
+		view.setCenter(mapCenter(placeid));
 	}
 	if (deviceId != 'all' && checkFlag) {
 		// 获取定位信息

@@ -24,7 +24,7 @@
 </head>
 
 <body >
-    <div id="map" class="map"  style="width:100%"></div>
+    <div id="map" class="map"  style="width:50%"></div>
 	<div class="searchmain">
 		<div class="search" >
 			<a href="#" data-toggle="modal" data-target="#searchPageModal">
@@ -38,7 +38,7 @@
 			<div class="control-delete" onclick="removesome();"><img style="width:1.4em" src="./icon/delete.png" alt="✖" /></div>
 		</div>
 	</div>
-	<div id="cesiumContainer" class="map" style="width:0%; right: 0px; background-color: rgba(148,148,248,0.3)"></div>
+	<div id="cesiumContainer" class="map" style="width:50%; right: 0px; background-color: rgba(148,148,248,0.3)"></div>
     <button align="center" onclick="moveToCenter();" type="button" class="control-locate btn btn-default">
 		<img style="width: 1.2em;height: 1.2em;" src="./icon/locate.png" />
 	</button>
@@ -412,8 +412,8 @@
 <script>	
 	map.addOverlay(HighlightOverlay);
 	
-	load3dMap();
-	get3DPopup();
+	// get deviceid placeid and floorid
+	getInitParam();
 	
 	// 加载定位信息
 	loadlocation(); 
