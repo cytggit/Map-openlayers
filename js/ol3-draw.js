@@ -44,7 +44,7 @@ function loadTable(){
 				$("#tabel-key").html(place + floor + Fname);
 				break;
 			case 'point':
-				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded + angle);
+				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded + angle + lonlat);
 				break;
 			case 'polygon':
 				$("#tabel-key").html(feature + Fname +penup);
@@ -321,6 +321,7 @@ function addData(){
 			
 			if (tableType == 'point'){
 				oldCoordinates = evt.feature.values_.geom.getCoordinates();
+				document.getElementById('lonlat_value').value = oldCoordinates[0].toFixed(8) +","+ oldCoordinates[1].toFixed(8);
 				var Coordinates = [oldCoordinates[1],oldCoordinates[0]];
 				newFeature.setGeometry(new ol.geom.Point(Coordinates));
 			}else if (tableType == 'polyline'){

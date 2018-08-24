@@ -990,6 +990,10 @@ var angle = "<div class='input-group has-feedback' id='angle'>" +
 	"<input class='form-control' id='angle_value'>"+
 	"<a class='btn close form-control-feedback'  id='clear_angle' style='pointer-events: auto'><span aria-hidden='true'>&times;</span></a>"+
 "</div>";		
+var lonlat = "<div class='input-group has-feedback' id='lonlat'>" +
+	"<span class='input-group-addon' id='lonlat_key'>坐标</span>" +
+	"<input class='form-control' id='lonlat_value'>"+
+"</div>";	
 
 // polygon
 var penup = "<div class='input-group has-feedback' id='penup'>" +
