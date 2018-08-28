@@ -144,8 +144,7 @@ var geojsonstylefunction = function(feature){
 			case 'Point':
 				return geojsonstyle[30999999];	
 				break;
-			case 'Polyline':
-				console.log(feature);
+			case 'LineString':
 				return geojsonstyle[20020900];	
 				break;
 			case 'Polygon':
@@ -168,6 +167,7 @@ var electronicFenceStyleFun = function(feature){
 
 // 测距
 var formatLength; // 计算线的长度
+var getLength; // 计算线的长度(不带单位)
 var wgs84Sphere = new ol.Sphere(6378137); // 计算线的长度所用常量
 var sketch; // 绘制的形状
 var measureTooltipElement; // 显示长度

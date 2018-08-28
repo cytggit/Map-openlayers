@@ -58,6 +58,13 @@ function loadTable(){
 				$("#tabel-key").html(electronic_type + Fname);
 				break;
 		}
+		if(tableType == 'polygon' || tableType == 'polygon_background' ){
+			$(".draw-circle").attr("disabled",false);
+			$(".draw-box").attr("disabled",false);
+		}else{
+			$(".draw-circle").attr("disabled","disabled");
+			$(".draw-box").attr("disabled","disabled");
+		}
 	}		
 }
 // 加载楼层条
@@ -89,11 +96,15 @@ function initdraw(){
 			map.addInteraction(this.polyline);
 			map.addInteraction(this.polygon_background);
 			map.addInteraction(this.polygon);
+			map.addInteraction(this.circle);
+			map.addInteraction(this.box);
 			map.addInteraction(this.electronic_fence);
 			this.point.setActive(false);
 			this.polyline.setActive(false);
 			this.polygon_background.setActive(false);
 			this.polygon.setActive(false);
+			this.circle.setActive(false);
+			this.box.setActive(false);
 			this.electronic_fence.setActive(false);
 		},
 		point: new ol.interaction.Draw({
@@ -114,6 +125,61 @@ function initdraw(){
 		polygon: new ol.interaction.Draw({
 			source: polygonLayer.getSource(),
 			type: /** @type {ol.geom.GeometryType} */ ('Polygon'),
+			geometryName: 'geom',
+		}),
+		circle: new ol.interaction.Draw({
+			source: polygonLayer.getSource(),
+			type: /** @type {ol.geom.GeometryType} */ ('LineString'),
+			maxPoints: 2,
+			geometryFunction: function(coordinates, geometry){
+				if(!geometry){
+					geometry = new ol.geom.Polygon(null);
+				}
+				function createCircle(origin, radius, sides, rotation) {
+					var angle = Math.PI * ((1/sides) - (1/2));
+					if(rotation) {
+						angle += (rotation / 180) * Math.PI;
+					}
+					
+					var rotatedAngle, x, y;
+					var points = [];
+					for(var i=0; i<sides +1; i++) {
+						rotatedAngle = angle + (i * 2 * Math.PI / sides);
+						x = origin[0] + (radius * Math.cos(rotatedAngle));
+						y = origin[1] + (radius * Math.sin(rotatedAngle));
+						points.push([x,y]);
+					}
+					return points;
+				};
+			
+				var start = coordinates[0];
+				var end = coordinates[1];
+				var radius = Math.abs(start[0] - end[0]);
+			
+				var geometryCircle = createCircle(start,radius,100,0);
+
+				geometry.setCoordinates([
+					geometryCircle
+				]);
+				return geometry;
+			},
+			geometryName: 'geom',
+		}),
+		box: new ol.interaction.Draw({
+			source: polygonLayer.getSource(),
+			type: /** @type {ol.geom.GeometryType} */ ('LineString'),
+			maxPoints: 2,
+			geometryFunction: function(coordinates, geometry){
+				if(!geometry){
+					geometry = new ol.geom.Polygon(null);
+				}
+				var start = coordinates[0];
+				var end = coordinates[1];
+				geometry.setCoordinates([
+					[start, [start[0], end[1]], end, [end[0], start[1]], start]
+				]);
+				return geometry;
+			},
 			geometryName: 'geom',
 		}),
 		electronic_fence: new ol.interaction.Draw({
@@ -242,6 +308,14 @@ function Updatedraw(drawinfo){
 					console.log(drawinfo.innerText);
 					addData();
 					break;
+				case 'addCircle': 
+					console.log(drawinfo.innerText);
+					addCircle();
+					break;
+				case 'addBox': 
+					console.log(drawinfo.innerText);
+					addBox();
+					break;
 				case 'updata': 
 					console.log(drawinfo.innerText);
 					updata();
@@ -261,6 +335,12 @@ function checkDrawData(){
 	switch (drawtype) {  
 		case 'addData': 
 			DrawFeature.setActive(false);
+			break;
+		case 'addCircle': 
+			DrawFeature['circle'].setActive(false);
+			break;
+		case 'addBox': 
+			DrawFeature['box'].setActive(false);
 			break;
 		case 'updata': 
 			ModifyFeature.setActive(false);
@@ -343,6 +423,94 @@ function addData(){
 				}
 				newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));				
 			}
+		}, this);			
+}
+function addCircle(){
+	DrawFeature['circle'].setActive("true");
+	
+	// 测算长度
+	var listener;
+	DrawFeature['circle'].on('drawstart',
+		function(evt) {
+			measureTooltipElement = null;
+			createMeasureTooltip();
+			// set sketch
+			sketch = evt.feature;
+			tooltipCoord = evt.coordinate;
+			listener = sketch.getGeometry().on('change', function(evt) {
+				var target = evt.target;
+				var tooltipCoord = target.flatCoordinates;
+				var geom = [[tooltipCoord[0],tooltipCoord[1]], [tooltipCoord[2],tooltipCoord[3]]];
+				var output = formatLength(geom);
+				measureTooltipElement.innerHTML = output;
+				measureTooltips[measureNum].setPosition([tooltipCoord[0],tooltipCoord[1]]);
+			});
+		}, this);
+
+	// 判断编辑的表
+	newdrawNum=0;
+	DrawFeature['circle'].on('drawend',
+		function(evt) {
+			var newCoordinates = [];
+			var oldCoordinates;
+
+			newFeature = new ol.Feature();
+			newFeature.setId(placeType + tableType + newdrawNum);
+			newFeature.setGeometryName('geom');	
+			newFeature.set('geom', null);
+			
+			removeLength();
+			var Coordinates = evt.feature.values_.geom.getCoordinates()[0];
+			var CoordinatesLength = Coordinates.length;
+			for (var i=0;i<CoordinatesLength;i++){
+				oldCoordinates = Coordinates[i];
+				newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
+			}
+			newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));							
+		}, this);			
+}
+function addBox(){
+	DrawFeature['box'].setActive("true");
+	
+	// 测算长度
+	var listener;
+	DrawFeature['box'].on('drawstart',
+		function(evt) {
+			measureTooltipElement = null;
+			createMeasureTooltip();
+			// set sketch
+			sketch = evt.feature;
+			tooltipCoord = evt.coordinate;
+			listener = sketch.getGeometry().on('change', function(evt) {
+				var target = evt.target;
+				var geom = target.getCoordinates()[0];
+				var output = formatLength(geom);
+				var tooltipCoord = target.getLastCoordinate();
+				measureTooltipElement.innerHTML = output;
+				measureTooltips[measureNum].setPosition(tooltipCoord);
+			});
+		}, this);
+
+	// 判断编辑的表
+	newdrawNum=0;
+	DrawFeature['box'].on('drawend',
+		function(evt) {
+			var newCoordinates = [];
+			var oldCoordinates;
+
+			newFeature = new ol.Feature();
+			newFeature.setId(placeType + tableType + newdrawNum);
+			newFeature.setGeometryName('geom');	
+			newFeature.set('geom', null);
+			
+			removeLength();
+			var Coordinates = evt.feature.values_.geom.getCoordinates()[0];
+			var CoordinatesLength = Coordinates.length;
+			for (var i=0;i<CoordinatesLength;i++){
+				oldCoordinates = Coordinates[i];
+				newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
+			}
+			newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));				
 		}, this);			
 }
 function getcolumn(){
@@ -570,6 +738,14 @@ function SaveData(){
 			updateNewFeature(FeatureDummy,tableType,'insert');
 			alert('新增数据成功！');	
 			break;
+		case 'addCircle': 
+			updateNewFeature(FeatureDummy,tableType,'insert');
+			alert('新增数据成功！');	
+			break;
+		case 'addBox': 
+			updateNewFeature(FeatureDummy,tableType,'insert');
+			alert('新增数据成功！');	
+			break;
 		case 'updata': 
 			updateNewFeature(FeatureDummy,tableType,'update');
 			alert('修改数据成功！');	
@@ -793,6 +969,18 @@ formatLength = function(line) {
 	}
 	return output;
 };
+getLength = function(line) {
+	var coordinates = line;
+	var length = 0;
+	var sourceProj = map.getView().getProjection();
+	for (var i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+		var c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326');
+		var c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326');
+		length += wgs84Sphere.haversineDistance(c1, c2);
+	}
+	return length;
+};
+
 
 // 清除测距
 function removeLength(){
