@@ -267,6 +267,15 @@ var APStyle = {
 		}),
 		zIndex: 450
 	}),
+	'02'/*wifi*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/00.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
+			scale: 0.4
+		}),
+		zIndex: 450
+	}),
 	'11'/*蓝牙*/: new ol.style.Style({
 		image: new ol.style.Icon({
 			src: './icon/11.png',
@@ -285,6 +294,42 @@ var APStyle = {
 		}),
 		zIndex: 450
 	}),
+	'12'/*蓝牙*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/11.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
+			scale: 0.4
+		}),
+		zIndex: 450
+	}),
+	'22'/*RFID*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/22.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
+			scale: 0.4
+		}),
+		zIndex: 450
+	}),
+	'20'/*RFID*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/22.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
+			scale: 0.4
+		}),
+		zIndex: 450
+	}),
+	'21'/*RFID*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/22.png',
+			anchor: [0.5,0.5],
+			opacity: 0.5,
+			scale: 0.4
+		}),
+		zIndex: 450
+	}),
 	'110'/*增加WiFi*/: new ol.style.Style({
 		image: new ol.style.Icon({
 			src: './icon/110.png',
@@ -297,6 +342,15 @@ var APStyle = {
 	'111'/*增加蓝牙*/: new ol.style.Style({
 		image: new ol.style.Icon({
 			src: './icon/111.png',
+			anchor: [0.5,0.5],
+			opacity: 1,
+			scale: 0.4
+		}),
+		zIndex: 500
+	}),
+	'112'/*增加RFID*/: new ol.style.Style({
+		image: new ol.style.Icon({
+			src: './icon/112.png',
 			anchor: [0.5,0.5],
 			opacity: 1,
 			scale: 0.4
