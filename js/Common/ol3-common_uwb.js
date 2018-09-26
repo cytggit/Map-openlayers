@@ -8,7 +8,7 @@ var placeid = '1';
 var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
-var DBs = 'mote'; //数据源
+var DBs = 'coges'; //数据源
 var lineDBs = 'leador';
 var locateIp = 'http://map.intmote.com';
 var comIp = 'http://map.intmote.com';
@@ -114,7 +114,7 @@ var geojsonstylefunction = function(feature){
 			geojsonstyle[featureiiiid].getImage().setScale((map.getView().getZoom()-19)*0.1);
 			//console.log(0000000000000);
 		}else {
-			geojsonstyle[featureiiiid].getImage().setScale(0.1);
+			geojsonstyle[featureiiiid].getImage().setScale(0.25);
 		}
 		geojsonstyle[featureiiiid].getImage().setRotation(featureangle);
 	}
@@ -122,7 +122,7 @@ var geojsonstylefunction = function(feature){
 		if (map.getView().getZoom() > 18){
 			geojsonstyle[featureiiiid].getImage().setScale((map.getView().getZoom()-18)*0.06);
 		}else {
-			geojsonstyle[featureiiiid].getImage().setScale(0.1);
+			geojsonstyle[featureiiiid].getImage().setScale(0.2);
 		}
 	}
 	// 返回数据的style
@@ -171,7 +171,7 @@ var mapCenter = function(placeId){
 // 根据中心点判断最近的place
 function getPlace(center){
 	var centerPlace;
-	var mindistance = 200;
+	var mindistance = 20000000;
 	var placeLength = geomPlaces.length;
 	for (var placeNum =0;placeNum < placeLength;placeNum++){
 		var dummyDis = distanceFromAToB(geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates(),center) ;
@@ -180,7 +180,7 @@ function getPlace(center){
 			mindistance = dummyDis;
 		}
 	}
-	if(mindistance < 200 && centerPlace != placeid){
+	if(mindistance < 20000000 && centerPlace != placeid){
 		placeid = centerPlace;
 		load3dMap();
 		get3DPopup();

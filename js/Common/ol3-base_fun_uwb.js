@@ -10,7 +10,7 @@ function checkUrlParam(checkName){
 		var checkValue = unescape(checkValues[2]);  
 		if (checkValue != ''){
 			checkFlag = true;
-			view.setZoom(21);
+			view.setZoom(5);
 		}else{
 			alert('未设置参数“' + checkName + '”的值');
 			checkFlag = false;
@@ -113,7 +113,7 @@ function doWithLocate(features){
 				sumY += LocateInfo[0].getGeometry().getCoordinates()[1];
 			}
 			locate = [sumX/LocateLength,sumY/LocateLength];
-			//backcenter();
+			backcenter();
 		}
 	}
 
@@ -175,7 +175,7 @@ function doWithLocate(features){
 
 // 获取实时定位信息
 function startlocation(){  
-	setTimeout(startlocation,500);  
+	setTimeout(startlocation,1000);  
 	getlocation();
 }
 
