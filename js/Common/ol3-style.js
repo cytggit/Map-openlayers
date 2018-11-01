@@ -838,7 +838,7 @@ var geojsonstyle = {
 	}),
 	'10030604' /*电梯间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
+			color: [255,255,255,1],
 			width: 0.8
 		}),
 		fill: new ol.style.Fill({
@@ -848,7 +848,7 @@ var geojsonstyle = {
 	}),
 	'10030605' /*楼梯间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
+			color: [255,255,255,1],
 			width: 0.8
 		}),
 		fill: new ol.style.Fill({
