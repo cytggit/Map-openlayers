@@ -446,6 +446,156 @@ var geojsonstyle = {
 		}),
 		zIndex:101
 	}),
+	'10020101'/*监狱*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [255,255,255,1]
+		}),
+		zIndex:101
+	}),
+	'10030101'/*监室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [250,224,204,1]
+		}),
+		zIndex:102
+	}),
+	'10030102'/*放风场*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [217,237,218,1]
+		}),
+		zIndex:102
+	}),
+	'10030103'/*谈话室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [195,229,233,1]
+		}),
+		zIndex:102
+	}),
+	'10030104'/*管教办公室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [146,183,188,1]
+		}),
+		zIndex:102
+	}),
+	'10030105'/*医疗器具室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [211,211,180,1]
+		}),
+		zIndex:102
+	}),
+	'10030106'/*储藏室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [252,246,156,1]
+		}),
+		zIndex:102
+	}),
+	'10030107'/*开水间*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,213,219,1]
+		}),
+		zIndex:102
+	}),
+	'10030108'/*休息室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,143,124,1]
+		}),
+		zIndex:102
+	}),
+	'10030109'/*值班室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [199,161,149,1]
+		}),
+		zIndex:102
+	}),
+	'10030110'/*分控室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [189,139,142,1]
+		}),
+		zIndex:102
+	}),
+	'10030111'/*禁闭室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [210,190,113,1]
+		}),
+		zIndex:102
+	}),
+	'10030112'/*会见室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [174,189,196,1]
+		}),
+		zIndex:102
+	}),
+	'10030113'/*询问室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [199,214,225,1]
+		}),
+		zIndex:102
+	}),
+	'10030114'/*淋浴室*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [255,188,155,1]
+		}),
+		zIndex:102
+	}),
 	'10030501'/*总裁*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
@@ -504,7 +654,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [220,220,255,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030507' /*市场部*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -514,7 +664,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030508' /*综合部*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -524,7 +674,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030509' /*质量部*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -534,7 +684,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030510' /*商务部*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -544,7 +694,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030511' /*人力资源*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -554,7 +704,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030512' /*项目管理*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -564,7 +714,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030513' /*地图办公室*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -574,7 +724,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [233,242,239,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030514' /*总经理室*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -584,7 +734,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [220,220,255,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030515' /*副总经理室*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -594,7 +744,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [220,220,255,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030516' /*经理*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -604,7 +754,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [220,220,255,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030517' /*资料室*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -614,7 +764,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [252,231,212,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030518' /*技术服务*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -624,7 +774,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [252,231,212,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030519' /*打印室*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -634,7 +784,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [252,231,212,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030520' /*设备间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -644,7 +794,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [252,231,212,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	'10030599' /*其他*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
@@ -654,7 +804,7 @@ var geojsonstyle = {
 		fill: new ol.style.Fill({
 			color: [252,231,212,0.5]
 		}),
-		zIndex: 103
+		zIndex: 102
 	}),
 	// '10030101' /*看板*/: new ol.style.Style({  
 		// stroke: new ol.style.Stroke({
@@ -668,11 +818,11 @@ var geojsonstyle = {
 	// }),
 	'10030602' /*卫生间*/: new ol.style.Style({  
 		stroke: new ol.style.Stroke({
-			color: [128,128,128,0.6],
+			color: [255,255,255,1],
 			width: 0.8
 		}),
 		fill: new ol.style.Fill({
-			color: [255,153,204,0.5]
+			color: [255,178,190,1]
 		}),
 		zIndex:103
 	}),
