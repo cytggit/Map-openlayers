@@ -596,7 +596,7 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
-	'10030114'/*铁栅隔离*/: new ol.style.Style({ 
+	'10030115'/*铁栅隔离*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [255,255,255,0.4],
 			width: 0.8
