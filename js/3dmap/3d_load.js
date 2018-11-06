@@ -117,7 +117,7 @@
 	function makeEntitiesPolygons(features){
 		shapePolygons ={};
 		shapePenups = {};
-		var FloorNum = 0,FeatureIdNum = 0,PenupNum = 0;
+		var FloorNum = 0,PenupFloorNum = {},PenupNum = 0;
 		for(var i=0;i<features.length;i++){
 			// polygon所在楼层
 			var featuresFloor = features[i].get('floor_id');
@@ -128,6 +128,7 @@
 			// penup
 			if(shapePenups[featuresFloor] == undefined){
 				shapePenups[featuresFloor] = [];
+				PenupFloorNum[featuresFloor] = 0;
 			}
 			var featuresPenupDummy = features[i].get('penup');
 			var featuresPenup = featuresPenupDummy != null ? featuresPenupDummy.split(",").map(function(item) {
@@ -168,7 +169,7 @@
 								PenupGeom.push(geom[j][0]);
 								PenupGeom.push(geom[j][1]);
 								PenupGeom.push(featuresExtrudedHeightBase);
-								shapePenups[featuresFloor][PenupNum++] = [PenupGeom,featuresName];
+								shapePenups[featuresFloor][PenupFloorNum[featuresFloor]++] = [PenupGeom,featuresName];
 							}
 						}
 					}
