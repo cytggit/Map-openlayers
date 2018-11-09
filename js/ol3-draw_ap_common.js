@@ -7,7 +7,7 @@ var locateTimeout;
 var deviceId;//设备自动生成
 
 var DBs = 'mote'; //数据源
-var locateIp = 'http://114.215.83.3:8090';
+var locateIp = 'http://47.100.36.235:8086';
 var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var comIp = 'http://114.215.83.3:8090';
