@@ -82,20 +82,12 @@ function viewAddBottomMap(){
     viewer.entities.add({ 
         polygon : {  
           	hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(  // 普通不带挖空效果的polygon		
-          			// [10.0, 0.0,0,
-          			// 160.0, 0.0,0,
-          			// 160.0, 90.0,0,
-          			// 10.0, 90.0,0,
-          			// 10.0, 0.0,0]
-
-					[120.0, 30.0,0,
-          			125.0, 30.0,0,
-          			125.0, 35.0,0,
-          			120.0, 35.0,0,
-          			120.0, 30.0,0]
+          			[10.0, 0.0,0,
+          			160.0, 0.0,0,
+          			160.0, 90.0,0,
+          			10.0, 90.0,0,
+          			10.0, 0.0,0]
           	),  
-          	height : -1000,
-          	extrudedHeight: 100,
           	material : /*Cesium.Color.LIGHTGREY, */new Cesium.Color(0.05,0.35,0.69, 1)
         }  
      });
