@@ -82,11 +82,17 @@ function viewAddBottomMap(){
     viewer.entities.add({ 
         polygon : {  
           	hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(  // 普通不带挖空效果的polygon		
-          			[10.0, 0.0,0,
-          			160.0, 0.0,0,
-          			160.0, 90.0,0,
-          			10.0, 90.0,0,
-          			10.0, 0.0,0]
+          			// [10.0, 0.0,0,
+          			// 160.0, 0.0,0,
+          			// 160.0, 90.0,0,
+          			// 10.0, 90.0,0,
+          			// 10.0, 0.0,0]
+
+					[130.0, 30.0,0,
+          			135.0, 30.0,0,
+          			135.0, 35.0,0,
+          			130.0, 35.0,0,
+          			130.0, 30.0,0]
           	),  
           	height : -1000,
           	extrudedHeight: 100,
