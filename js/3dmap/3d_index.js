@@ -89,7 +89,7 @@ function viewAddBottomMap(){
           			10.0, 0.0,0]
           	),  
           	height : -1000,
-          	extrudedHeight: 200,
+          	extrudedHeight: 100,
           	material : /*Cesium.Color.LIGHTGREY, */new Cesium.Color(0.05,0.35,0.69, 1)
         }  
      });
