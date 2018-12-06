@@ -95,14 +95,28 @@ var locationStyleUnshow= new ol.style.Style({
 	})
 });
 // 定位 style 
-var locationStyle = new ol.style.Style({
-	image: new ol.style.Icon({
-		img: mysvglocation,
-		imgSize: [30, 30],   // 图标大小
-		anchor: [0.5,0.5]    // 摆放位置
+var locationStyle =[
+	new ol.style.Style({
+		image: new ol.style.Icon({
+			// img: mysvglocation,
+			src: './icon/locate_rotation.png',
+			rotateWithView: true,
+			rotation: 0,
+			// imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,0.34],    // 摆放位置
+			scale: 0.3
+		}),
+		zIndex: 600
 	}),
-	zIndex: 600
-});
+	new ol.style.Style({
+		image: new ol.style.Icon({
+			img: mysvglocation,
+			imgSize: [30, 30],   // 图标大小
+			anchor: [0.5,0.5]    // 摆放位置
+		}),
+		zIndex: 600
+	})
+]; 
 // 定位 style --导航
 var locationNaviStyle = [
 	new ol.style.Style({
@@ -110,7 +124,7 @@ var locationNaviStyle = [
 			// img: mysvglocation,
 			src: './icon/locate-navi1.png',
 			rotateWithView: true,
-			rotation:-0.8,
+			rotation: 0,
 			// imgSize: [30, 30],   // 图标大小
 			anchor: [0.5,0.5],    // 摆放位置
 			scale: 0.3

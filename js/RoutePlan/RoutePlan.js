@@ -650,8 +650,6 @@ function addNavigation(){
 // 开启导航
 function navigation(){
 	NaviFlag = true;
-	// 开启罗盘-设置起点样式
-	window.addEventListener("deviceorientation", handleOrientation, true);
 	
 	// common 展示信息作成
 	setRouteLength();
@@ -660,6 +658,17 @@ function navigation(){
 	// RouteStartLayer.setStyle(getStartNaviStyle());
 	// RouteDestLayer.setStyle(destNaviStyle);
 
+	// 关闭规划详情页面
+	$('.routemain').css('display', 'none');
+	$('.route-down').css("display","none");	
+	$('#route-server').css("display","none");	
+	// 关闭主页菜单
+	$('.feature-select').css("display","none");	
+	//$('.control-locate').css("display","none");	
+	// 开启导航详情页面
+	$('.navi-top').css('display', 'block');
+	$('.navi-down').css('display', 'block');
+	
 	// 设置zoom,center
 	view.animate({
 		duration: 1000,
@@ -667,36 +676,10 @@ function navigation(){
 		zoom: 23
 	});	
 
-	// 关闭规划详情页面
-	$('.routemain').css('display', 'none');
-	$('.route-down').css("display","none");	
-	$('#route-server').css("display","none");	
-	// 关闭主页菜单
-	$('.feature-select').css("display","none");	
-	$('.control-locate').css("display","none");	
-	// 开启导航详情页面
-	$('.navi-top').css('display', 'block');
-	$('.navi-down').css('display', 'block');
 }
-// 开启罗盘
-function handleOrientation(orientData) {	
-	var alpha = orientData.alpha;
-	// var beta = orientData.beta;
-	// var gamma = orientData.gamma;
-	alpha = alpha>270 ? alpha-270:alpha + 90;
-	var locateRotation = (360 - alpha)/360 *2*3.1416 -0.8;
-	locationNaviStyle[0].getImage().setRotation(locateRotation);
-	LocationLayer.setStyle(locationNaviStyle);
-}
+
 // 退出导航 
-function removeNavigation(){
-	// 关闭罗盘
-	window.removeEventListener("deviceorientation", handleOrientation, true);
-	// 恢复规划样式-TODO
-	LocationLayer.setStyle(locationStyle);
-	// RouteStartLayer.setStyle(startRouteStyle);
-	// RouteDestLayer.setStyle(destRouteStyle);
-	
+function removeNavigation(){	
 	// 设置zoom,center
 	view.animate({
 		duration: 1000,
@@ -706,7 +689,7 @@ function removeNavigation(){
 	
 	// 恢复主页菜单
 	$('.feature-select').css("display","block");	
-	$('.control-locate').css("display","block");	
+	//$('.control-locate').css("display","block");	
 	// 恢复规划详情页面
 	$('.routemain').css('display', 'block');
 	$('.route-down').css("display","block");	
