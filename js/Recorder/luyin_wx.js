@@ -6,7 +6,7 @@ var aj=$.ajax({
 	dataType: "json",
 	<!-- contentType: "application/json; charset=utf-8",  -->
 	success: function (msg) {    
-		alert("appid: "+msg.appid+";  timestamp:" + msg.timestamp+" ; nonceStr:" + msg.nonceStr+";  signature:" + msg.signature); 
+		//alert("appid: "+msg.appid+";  timestamp:" + msg.timestamp+" ; nonceStr:" + msg.nonceStr+";  signature:" + msg.signature); 
 		if(msg){
 			wx.config({
 				debug:false,
