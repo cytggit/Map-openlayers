@@ -24,8 +24,7 @@ var aj=$.ajax({
 					'stopVoice',
 					'uploadVoice',
 					'downloadVoice',
-					'openLocation',//使用微信内置地图查看地理位置接口  
-					'getLocation' //获取地理位置接口  
+					'translateVoice'
 				]
 			});
 		}
@@ -100,7 +99,7 @@ $("#record-start-img").on("touchend", function (event) {
 				clearTimeout(recordTimer);
 				return;
 			}
-			play(res.localId);
+			// play(res.localId);
 			translateVoice(res.localId);
 			var timeLength = ((END-START)/1000).toFixed(1);  //时间差
 			alert(timeLength);
