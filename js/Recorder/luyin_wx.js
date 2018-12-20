@@ -53,7 +53,7 @@ function stopRecording() {
 	clearTimeout(timeout);  
 	state = 0;  
 }
-$(".voice2text").on("touchstart", function (event) {  
+$("#record-start-img").on("touchstart", function (event) {  
 	event.preventDefault();
 	START = new Date().getTime();
 	wx.startRecord({
@@ -78,7 +78,7 @@ $(".voice2text").on("touchstart", function (event) {
 	});
 });
 //取消触摸
-$('.voice2text').on('touchcancel', function(event){
+$('#record-start-img').on('touchcancel', function(event){
 	stopRecording();
 	wx.stopRecord({
 		success: function (res) {
@@ -88,7 +88,7 @@ $('.voice2text').on('touchcancel', function(event){
 		}
 	});
 })      
-$(".voice2text").on("touchend", function (event) { 
+$("#record-start-img").on("touchend", function (event) { 
 	stopRecording();
 	event.preventDefault();
 	END = new Date().getTime();
