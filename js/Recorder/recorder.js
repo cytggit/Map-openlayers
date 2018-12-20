@@ -10,7 +10,6 @@ function uploadAudio(url,fd) {
 		processData: false,         // 告诉jQuery不要去处理发送的数据  
 		data: fd,
 		success: function(msg){
-			console.log(msg);
 			var errno = msg.errno;
 			switch (errno) {
 				case 3301:// 音频质量过差

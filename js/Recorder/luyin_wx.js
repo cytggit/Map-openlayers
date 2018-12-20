@@ -36,12 +36,6 @@ var END = null; //最后时间
 var timeout;    //定时器  
 var state = 0;  //状态
 function showRecording() {
-	//span的width随机变化
-	// setInterval(function (){
-		// $(".sound-recording dd span").each(function (){
-			// $(this).width(48*Math.random() + 'px');
-		// });
-	// },200)
 	clearTimeout(timeout);
 	state = 0;  
 	timeout = setTimeout(function() {  
@@ -99,11 +93,7 @@ $("#record-start-img").on("touchend", function (event) {
 				clearTimeout(recordTimer);
 				return;
 			}
-			// play(res.localId);
 			translateVoice(res.localId);
-			var timeLength = ((END-START)/1000).toFixed(1);  //时间差
-			alert(timeLength);
-			uploadAudio("https://pig.intmote.com/wpLocateServer/getVoiceText.do",res.localId)
 		},
 		fail: function (res) {                                                                                        
 			alert(JSON.stringify(res));
@@ -111,42 +101,31 @@ $("#record-start-img").on("touchend", function (event) {
 	});
 }); 
 //播放语音
-function play() {
-	var localId = $("#hear input").val();
-	// $(".hear").addClass("cur");
-	wx.playVoice({
-		localId: localId
-	})
-	//语音播放结束的回调
-	wx.onVoicePlayEnd({
-		success: function (res) {
-			// $(".hear").removeClass("cur");
-			var localId = res.localId; // 返回音频的本地ID
-		}
-	});
-}
+// function play() {
+	// var localId = $("#hear input").val();
+	// // $(".hear").addClass("cur");
+	// wx.playVoice({
+		// localId: localId
+	// })
+	// //语音播放结束的回调
+	// wx.onVoicePlayEnd({
+		// success: function (res) {
+			// // $(".hear").removeClass("cur");
+			// var localId = res.localId; // 返回音频的本地ID
+		// }
+	// });
+// }
 function translateVoice(localId) {
 	wx.translateVoice({
 		localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 		isShowProgressTips: 1, // 默认为1，显示进度提示
 		success: function (res) {
 			alert(res.translateResult);
-			$('textarea[name=msg]').val(res.translateResult); // 语音识别的结果
+			$('#record-start-result').html(res.translateResult);
+			$('#work-search').val(res.translateResult);
+			selectPoi();
+			closerecorder();
 		}
 	});
-}
-function uploadVoice() {
-	var serverId = '';
-	var localId = $("#hear input").val();
-	if (localId != '') {
-		wx.uploadVoice({
-			localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
-			isShowProgressTips: 1, // 默认为1，显示进度提示
-				success: function (res) {
-				serverId = res.serverId; // 返回音频的服务器端ID
-			}
-		});
-	}
-	return serverId;
 }
 	
