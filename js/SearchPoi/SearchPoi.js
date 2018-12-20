@@ -245,7 +245,7 @@ function removeselect(){
 	}
 }	
 
-// 点击返回清空搜索狂
+// 点击清空搜索狂
 $("#clean").click(function() {
 	$("#search").val("");
 	$('#search_result').empty();

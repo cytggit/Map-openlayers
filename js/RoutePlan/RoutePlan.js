@@ -364,17 +364,20 @@ function setRouteLength(){
 
 	$("#route-length").html("距离终点：" + naviLength+ "米");	
 	if(NaviFlag){
+		var NaviTex;
 		if( -10< naviFirstAngle &&  naviFirstAngle< 10){
 			var upOrDown = RouteSourceFloor - RouteTargetFloor >0 ? "下" : "上";
 			if(RouteSourceFloor == RouteTargetFloor ){
-				$('#navi-length').html(naviFirstLength + "米后到达终点");
+				NaviTex = naviFirstLength + "米后到达终点";
 			}else{
-				$('#navi-length').html(naviFirstLength + "米后"+ upOrDown + "楼至 " + RouteTargetFloor + "层");
+				NaviTex = naviFirstLength + "米后"+ upOrDown + "楼至 " + RouteTargetFloor + "层";
 			}			
 		}else{
 			naviFirstDirection = naviFirstDirection > 0 ? "左" : "右";
-			$('#navi-length').html(naviFirstLength + "米后 " + naviFirstDirection + "转");
+			NaviTex = naviFirstLength + "米后 " + naviFirstDirection + "转";
 		}
+		$('#navi-length').html(NaviTex);
+		downloadAudio(NaviTex);
 		$('#navi-time span').html( "剩余" + naviLength + "米");
 	}
 }
@@ -649,10 +652,12 @@ function addNavigation(){
 }
 // 开启导航
 function navigation(){
+	downloadAudio("开始导航");
 	NaviFlag = true;
 	
 	// common 展示信息作成
-	setRouteLength();
+	setTimeout(setRouteLength,1500);  
+	// setRouteLength();
 	
 	// 开启导航样式-终点&路线样式 -todo
 	// RouteStartLayer.setStyle(getStartNaviStyle());

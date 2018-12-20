@@ -10,8 +10,8 @@ var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'mote'; //数据源
 var lineDBs = 'leador';
-var locateIp = 'http://47.100.36.235:8086';
-var comIp = 'http://map.intmote.com';
+var locateIp = 'https://locate.intmote.com';
+var comIp = 'https://map.intmote.com';
 // var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
@@ -101,7 +101,6 @@ function openOrientation() {
 		}
 	}
 }
-
 
 //设置视图
 var view = new ol.View({
