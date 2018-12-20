@@ -656,7 +656,7 @@ function navigation(){
 	NaviFlag = true;
 	
 	// common 展示信息作成
-	setTimeout(setRouteLength,1500);  
+	setTimeout(setRouteLength,2000);  
 	// setRouteLength();
 	
 	// 开启导航样式-终点&路线样式 -todo

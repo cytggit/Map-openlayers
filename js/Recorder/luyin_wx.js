@@ -46,7 +46,7 @@ function stopRecording() {
 	clearTimeout(timeout);  
 	state = 0;  
 }
-$("#record-start-img").on("touchstart", function (event) {  
+$("#record-start").on("touchstart", function (event) {  
 	event.preventDefault();
 	START = new Date().getTime();
 	wx.startRecord({
@@ -70,7 +70,7 @@ $("#record-start-img").on("touchstart", function (event) {
 	});
 });
 //取消触摸
-$('#record-start-img').on('touchcancel', function(event){
+$('#record-start').on('touchcancel', function(event){
 	stopRecording();
 	wx.stopRecord({
 		success: function (res) {
@@ -80,7 +80,7 @@ $('#record-start-img').on('touchcancel', function(event){
 		}
 	});
 })      
-$("#record-start-img").on("touchend", function (event) { 
+$("#record-start").on("touchend", function (event) { 
 	stopRecording();
 	event.preventDefault();
 	END = new Date().getTime();
