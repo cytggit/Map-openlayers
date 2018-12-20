@@ -73,7 +73,7 @@ function stopRecording() {
 	if(checkAPPFlag && recordingFlag){/* PC设备录音方式：HZRecorder */
 		 recorder.stop();
 		 //提交到服务器
-		recorder.upload("http://114.215.83.3:8088/wpLocateServer/getVoiceText.do");
+		recorder.upload("https://pig.intmote.com/wpLocateServer/getVoiceText.do");
 	}else{/* APP录音方式：微信 jssdk */
 		// yuyin_wx.js
 	}
