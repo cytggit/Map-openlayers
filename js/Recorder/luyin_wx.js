@@ -120,7 +120,7 @@ function translateVoice(localId) {
 		localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 		isShowProgressTips: 1, // 默认为1，显示进度提示
 		success: function (res) {
-			var msg = res.translateResult.replace(/<[^>]*>|/g,""); 
+			var msg = res.translateResult.replace(/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\，|\<|\。|\>|\/|\?]/g,"");
 			$('#record-start-result').html(msg);
 			$('#work-search').val(msg);
 			selectPoi();
