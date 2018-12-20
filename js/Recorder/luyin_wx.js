@@ -58,7 +58,6 @@ $("#record-start-img").on("touchstart", function (event) {
 	START = new Date().getTime();
 	wx.startRecord({
 		success: function(){
-			alert("开始录音惹~");
 			recordTimer = setTimeout(function(){
 				var longTime = new Date().getTime();
 				if(longTime - START > 100){
@@ -105,6 +104,7 @@ $("#record-start-img").on("touchend", function (event) {
 			translateVoice(res.localId);
 			var timeLength = ((END-START)/1000).toFixed(1);  //时间差
 			alert(timeLength);
+			uploadAudio("https://pig.intmote.com/wpLocateServer/getVoiceText.do",res.localId)
 		},
 		fail: function (res) {                                                                                        
 			alert(JSON.stringify(res));
@@ -122,7 +122,7 @@ function play() {
 	wx.onVoicePlayEnd({
 		success: function (res) {
 			// $(".hear").removeClass("cur");
-			//var localId = res.localId; // 返回音频的本地ID
+			var localId = res.localId; // 返回音频的本地ID
 		}
 	});
 }
@@ -131,6 +131,7 @@ function translateVoice(localId) {
 		localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 		isShowProgressTips: 1, // 默认为1，显示进度提示
 		success: function (res) {
+			alert(res.translateResult);
 			$('textarea[name=msg]').val(res.translateResult); // 语音识别的结果
 		}
 	});
