@@ -25,8 +25,9 @@ function uploadAudio(url,fd) {
 					$('#record-start-result').html('录音过长，请重说');
 					break;
 				case 0:
-					$('#record-start-result').html(msg.message);
-					$('#work-search').val(msg.message);
+					var msgtext = msg.message.replace(/[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\，|\<|\。|\>|\/|\?]/g,"");
+					$('#record-start-result').html(msgtext);
+					$('#work-search').val(msgtext);
 					selectPoi();
 					closerecorder();
 					break;
