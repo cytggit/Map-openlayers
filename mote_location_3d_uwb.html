@@ -30,12 +30,13 @@
 			<a href="#" data-toggle="modal" data-target="#searchPageModal">
 				<div id="u146" class="ax_default icon">
 					<img id="u146_img" class="img " src="images/u146.png"/>
-				</div> 
+				</div>
 				<div id="u145_text" class="text ">
 					<span class="search_input">搜地点、找线路</span>
-				</div> 
-			</a>
-			<div class="control-delete" onclick="removesome();"><img style="width:1.4em" src="./icon/delete.png" alt="✖" /></div>
+				</div>
+				<div class="control-record"><img style="width:1.6em" src="./images/voice2text.png" /></div>
+				</a>
+			<div class="control-delete" onclick="removesome();"><img style="width:1.4em" src="./images/delete.png" alt="✖" /></div>
 		</div>
 	</div>
 	<div id="cesiumContainer" class="map" style="width:0%; right: 0px; background-color: rgba(148,148,248,0.3)"></div>
@@ -134,7 +135,7 @@
             </ul>
         </div>
     </div>	
-
+	
 	<!-- 底部 搜索详情-->
 	<div id="div2" class="div2"  >
 		<div class="wrap">
@@ -183,7 +184,6 @@
 			</div>			
 		</div>
 	</div>
-
 	
 	<!--搜索页面模态框-->
 	<div class="modal fade"
@@ -205,6 +205,9 @@
 								</div> 
 								<div id="clearSearchText" class="ax_default icon" onclick="clearSearchText();">
 									<img id="u73_img" class="img " src="images/u73.png"/>
+								</div>
+								<div class="voice2text" onclick="openrecorder();">
+									<img style="width:1.6em" src="./images/voice2text.png" />
 								</div>
 								<div id="u108" class="ax_default">
 									<img id="u108_img" class="img " src="images/u12.png"/>
@@ -236,6 +239,14 @@
 								</div>
 							</div> 
 						</div>
+						<!-- 语音输入 -->
+						<div class="record-top">	
+							<div id="record-start" onclick="stopRecording();" class="ax_default box_2">
+								<img id="record-start-img" class="" src="images/voiceImg.png"/>
+								<p><span id="record-start-result">请开始说话</span></p>
+							</div>
+						</div>
+						
 				</div>
 			</div>
 		</div>
@@ -312,8 +323,9 @@
 	<!-- 导航详情 -->
 	<div class="navi-top">	
 		<div id="naviLength" class="ax_default box_2">
-			<p><span id="navi-length">10米后左转</span></p>
-        </div>
+			<audio id="audio" type="audio/mpeg" autoplay="autoplay" ></audio>
+			<p><span id="navi-length"></span></p>
+		</div>
 	</div>
 	<div class="navi-down">
 		<div class="down navi-down-msg" style="padding: 2px 5px;">	
@@ -409,6 +421,9 @@
 	<script type="text/javascript" src="./js/3dmap/3d_index.js"></script>
 	<script type="text/javascript" src="./js/3dmap/3d_load.js"></script>
 	
+	<script type="text/javascript" src="./js/Recorder/luyin_pc.js"></script>
+	<script type="text/javascript" src="./js/Recorder/luyin_wx.js"></script>
+	<script type="text/javascript" src="./js/Recorder/recorder.js"></script>
 <script>	
 	map.addOverlay(HighlightOverlay);
 	
@@ -417,7 +432,7 @@
 	
 	// 加载定位信息
 	loadlocation(); 
-	
+
 	// 点选元素-高亮
 	loadselectSingleClick();
 </script>

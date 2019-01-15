@@ -145,7 +145,7 @@ function doWithLocate(features){
 	// 设置定位点style
 	if(locateFloor == floorid){
 		if (locateStyleWarn){LocationLayer.setStyle(locationWarnStyle);
-		}else{LocationLayer.setStyle(locationStyle);}
+		}else{LocationLayer.setStyle(locationStyle[1]);}
 	}else{
 		// 楼层不同时，隐藏定位点
 		LocationLayer.setStyle(locationStyleUnshow);
@@ -226,6 +226,7 @@ function getFloorList(){
 // 回到定位点
 function moveToCenter(){
 	backcenterFlag = true;
+	rotationFlag = !rotationFlag;
 	backcenter();
 }
 function backcenter(){

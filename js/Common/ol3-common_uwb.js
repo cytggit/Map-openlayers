@@ -8,10 +8,10 @@ var placeid = '1';
 var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
 var LocationRequestParam; //定位param
-var DBs = 'coges'; //数据源
+var DBs = 'debo'; //数据源
 var lineDBs = 'leador';
-var locateIp = 'http://47.100.36.235:8086';
-var comIp = 'http://map.intmote.com';
+var locateIp = 'https://locate.intmote.com';
+var comIp = 'https://map.intmote.com';
 // var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
@@ -49,6 +49,56 @@ function checkAPP() {
 		$(".navigation").css("background","rgba(188,188,188,1)");	
 		$("#route2navi").attr("disabled","disabled");
 		$("#route2navi").css("background","rgba(188,188,188,1)");
+	}else{/* APP加罗盘 */
+		openOrientation();
+	}
+}
+// 开启罗盘
+var locateRotation;
+var rotationFlag = false;
+function openOrientation() {	
+	var ua = navigator.userAgent.toLowerCase();
+	if(/android/.test(ua)){/* android */
+		window.addEventListener('deviceorientationabsolute', DeviceOrientationHandler, false);
+		function DeviceOrientationHandler(event) {
+			var alpha = event.alpha;
+			locateRotation = Math.round(360 - alpha)/360 *2*3.1416;
+			if(NaviFlag){/* 导航模式 */
+				locationNaviStyle[0].getImage().setRotation(locateRotation);
+				LocationLayer.setStyle(locationNaviStyle);
+			}else{/* 普通模式 */
+				locationStyle[0].getImage().setRotation(locateRotation-3.1416);
+				LocationLayer.setStyle(locationStyle);
+			}
+			// 跟随模式 TODO
+			if(rotationFlag){// APP 跟随定位方向模式
+				view.setRotation(-locateRotation);
+			}else{ // APP退出跟随定位方向模式
+				view.setRotation(0);
+			}
+		}
+	}else{/* ios */
+		window.addEventListener('deviceorientation', DeviceOrientationHandler, false);
+		function DeviceOrientationHandler(event) {
+			var alpha = event.webkitCompassHeading;
+			// var beta = orientData.beta;
+			// var gamma = orientData.gamma;
+			// alpha = alpha>270 ? alpha-270:alpha + 90;
+			locateRotation = alpha/360 *2*3.1416;
+			if(NaviFlag){/* 导航模式 */
+				locationNaviStyle[0].getImage().setRotation(locateRotation);
+				LocationLayer.setStyle(locationNaviStyle);
+			}else{/* 普通模式 */
+				locationStyle[0].getImage().setRotation(locateRotation -3.1416);
+				LocationLayer.setStyle(locationStyle);
+			}
+			// 跟随模式 TODO
+			if(rotationFlag){// APP 跟随定位方向模式
+				view.setRotation(-locateRotation);
+			}else{ // APP退出跟随定位方向模式
+				view.setRotation(0);
+			}
+		}
 	}
 }
 

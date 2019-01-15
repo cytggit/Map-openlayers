@@ -113,7 +113,7 @@ function doWithLocate(features){
 				sumY += LocateInfo[0].getGeometry().getCoordinates()[1];
 			}
 			locate = [sumX/LocateLength,sumY/LocateLength];
-			backcenter();
+			//backcenter();
 		}
 	}
 
@@ -133,7 +133,7 @@ function doWithLocate(features){
 			
 			var locateDis = distanceFromAToB(beforeLocateForShow,locateGeom);
 			
-			if( pathPlanningOFF && locateDis < 0.3){// 1米内不跳动
+			if( pathPlanningOFF && locateDis < 30000){// uwb：0.3米内不跳动
 				LocateInfo[i].setGeometry(new ol.geom.Point(beforeLocateForShow));	
 			}else{
 				LocatesForShow[locate_ID] = locateGeom;
@@ -145,7 +145,7 @@ function doWithLocate(features){
 	// 设置定位点style
 	if(locateFloor == floorid){
 		if (locateStyleWarn){LocationLayer.setStyle(locationWarnStyle);
-		}else{LocationLayer.setStyle(locationStyle);}
+		}else{LocationLayer.setStyle(locationStyle[1]);}
 	}else{
 		// 楼层不同时，隐藏定位点
 		LocationLayer.setStyle(locationStyleUnshow);
@@ -226,6 +226,7 @@ function getFloorList(){
 // 回到定位点
 function moveToCenter(){
 	backcenterFlag = true;
+	rotationFlag = !rotationFlag;
 	backcenter();
 }
 function backcenter(){
