@@ -104,9 +104,9 @@ function openOrientation() {
 
 //设置视图
 var view = new ol.View({
-	center: [121.4286933,31.1664993],
+	center: [1.4286933,1.1664993],
 	projection: 'EPSG:4326',
-	zoom: 19
+	zoom: 5
 });
 // 室内图数据获取 	
 var geojsonObject = function(filter,Typename){
