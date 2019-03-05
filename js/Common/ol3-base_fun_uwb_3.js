@@ -10,7 +10,7 @@ function checkUrlParam(checkName){
 		var checkValue = unescape(checkValues[2]);  
 		if (checkValue != ''){
 			checkFlag = true;
-			view.setZoom(21);
+			view.setZoom(3);
 		}else{
 			alert('未设置参数“' + checkName + '”的值');
 			checkFlag = false;
@@ -133,7 +133,7 @@ function doWithLocate(features){
 			
 			var locateDis = distanceFromAToB(beforeLocateForShow,locateGeom);
 			
-			if( pathPlanningOFF && locateDis < 1){// 1米内不跳动
+			if( pathPlanningOFF && locateDis < 30000){// uwb：0.3米内不跳动
 				LocateInfo[i].setGeometry(new ol.geom.Point(beforeLocateForShow));	
 			}else{
 				LocatesForShow[locate_ID] = locateGeom;
@@ -175,7 +175,7 @@ function doWithLocate(features){
 
 // 获取实时定位信息
 function startlocation(){  
-	setTimeout(startlocation,5000);  
+	setTimeout(startlocation,1000);  
 	getlocation();
 }
 
@@ -254,7 +254,7 @@ function backcenter(){
 			center: locate
 		});		
 		// 3d
-		changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +60,2);
+		changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +6000000,2);
 		
 		// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
 		if (locateFloor != floorid){

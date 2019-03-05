@@ -45,13 +45,13 @@
 	</button>
     <div class="feature-select">
         <ul class="nav nav-pills nav-stacked">
-            <li class="dropdown" id="changeMap-Act" onClick="changeMap('to3d');">
-				<a href="#">
-					<!-- 2,3D切换 -->
-					<div align="center"><img align="center"  id="changeMap-Img" src="./icon/3d.png" /></div>
-					<span id="changeMap-Span">三维</span>
-				</a>
-			</li>
+            <!-- <li class="dropdown" id="changeMap-Act" onClick="changeMap('to3d');"> -->
+				<!-- <a href="#"> -->
+					<!-- 2,3D切换 --> 
+					<!-- <div align="center"><img align="center"  id="changeMap-Img" src="./icon/3d.png" /></div> -->
+					<!-- <span id="changeMap-Span">三维</span> -->
+				<!-- </a> -->
+			<!-- </li> -->
 			<!-- 导览 -->
             <!-- <li class="dropdown">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">
@@ -342,13 +342,12 @@
 	</div>
 </body>
  	<script type="text/JavaScript" src="./js/Basejs/jquery-1.9.1.js" ></script>	
-    <!-- <script type="text/JavaScript" src="http://192.168.1.126:8080/webgis/cyt_test/js/ol.js"></script> -->
 	<script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
     <script type="text/JavaScript" src="./js/Basejs/ol.js"></script>
 
 	<script type="text/javascript" src="./js/Basejs/ol3-layerswitcher.js"></script>
 	<script type="text/javascript" src="./js/Basejs/coordtransform.js"></script>
-	<script type="text/javascript" src="./js/Common/ol3-common.js"></script>
+	<script type="text/javascript" src="./js/Common/ol3-common_uwb_2.js"></script>
 
 	<script type="text/javascript" src="./js/ElectronicFence/ElectronicFence_h.js"></script>
 	<script type="text/javascript" src="./js/Collection/Collection_h.js"></script>
@@ -358,8 +357,8 @@
 	<script type="text/javascript" src="./js/RoutePlan/RoutePlan_h.js"></script>	
 		
 	<script type="text/javascript" src="./js/Common/ol3-style.js"></script>
-	<script type="text/javascript" src="./js/Common/ol3-base_init.js"></script>
-	<script type="text/javascript" src="./js/Common/ol3-base_fun_demo.js"></script>
+	<script type="text/javascript" src="./js/Common/ol3-base_init_uwb_2&3.js"></script>
+	<script type="text/javascript" src="./js/Common/ol3-base_fun_uwb_2.js"></script>
 
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script>
@@ -392,7 +391,7 @@
 		// 让id为map的div作为地图的容器
 		target: 'map' ,
 		layers: [
-			amap,
+			<!-- amap, -->
 			basemap,
 			overmap,
 			selectmap
@@ -415,11 +414,6 @@
 	<script type="text/javascript" src="./js/Heatmap/Heatmap.js"></script>
 	<script type="text/javascript" src="./js/Distance/Distance.js"></script>
 	<script type="text/javascript" src="./js/RoutePlan/RoutePlan.js"></script>
-	<link rel="stylesheet" href="./js/Cesium/Build/Cesium/Widgets/widgets.css" type="text/css">
-	<script type="text/javascript" src="./js/Cesium/Build/Cesium/Cesium.js"></script>
-	<script type="text/javascript" src="./js/3dmap/3d_load_h.js"></script>
-	<script type="text/javascript" src="./js/3dmap/3d_index.js"></script>
-	<script type="text/javascript" src="./js/3dmap/3d_load.js"></script>
 	
 	<script type="text/javascript" src="./js/Recorder/luyin_pc.js"></script>
 	<script type="text/javascript" src="./js/Recorder/luyin_wx.js"></script>

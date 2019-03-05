@@ -19,7 +19,7 @@ var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 
-// 3d 初始化 变量设置
+// 2d 初始化
 var geomPlaces;
 var geomBackgrounds = {};
 var geomPolygons = {};
@@ -106,7 +106,7 @@ function openOrientation() {
 var view = new ol.View({
 	center: [1.4286933,1.1664993],
 	projection: 'EPSG:4326',
-	zoom: 5
+	zoom: 3
 });
 // 室内图数据获取 	
 var geojsonObject = function(filter,Typename){
@@ -232,12 +232,9 @@ function getPlace(center){
 	}
 	if(mindistance < 20000000 && centerPlace != placeid){
 		placeid = centerPlace;
-		load3dMap();
-		get3DPopup();
 		getGeomData();
 		// 加载楼层条
 		getFloorList();
-		load3dData();
 	}else{
 		// 地图随定位点移动（保持定位点在地图中心）
 		backcenter();
