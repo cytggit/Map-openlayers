@@ -20,19 +20,21 @@ var shapeBillboard = [],shapeBillboardNum = 0;
 
 function setEntitiesBackground(shapeData){
 	if(shapeData != undefined){
-		shapeBackground = viewer.entities.add({  
-			name : shapeData[3],  
-			polygon : {  
-				hierarchy : Cesium.Cartesian3.fromDegreesArray(shapeData[2]),
-				height: shapeData[1],// 拉伸高度！
-				extrudedHeight: shapeData[0], //高度！
-				//perPositionHeight : true,  //指定使用每个坐标自带的高度！
-				material : Cesium.Color.LIGHTSTEELBLUE,  
-				//outline : true,  
-				//outlineColor : Cesium.Color.BLACK  
-			}  
-		});
-		//viewer.zoomTo(shapeBackground);
+		for (var j=0;j<shapeData.length;j++){
+			shapeBackground = viewer.entities.add({  
+				name : shapeData[j][3],  
+				polygon : {  
+					hierarchy : Cesium.Cartesian3.fromDegreesArray(shapeData[j][2]),
+					height: shapeData[j][1],// 拉伸高度！
+					extrudedHeight: shapeData[j][0], //高度！
+					//perPositionHeight : true,  //指定使用每个坐标自带的高度！
+					material : shapeColor['999999'],  
+					//outline : true,  
+					//outlineColor : Cesium.Color.BLACK  
+				}  
+			});
+			//viewer.zoomTo(shapeBackground);
+		}
 	}
 }
 function setEntitiesPolygon(shapeData,shapeDoorData){
@@ -86,6 +88,21 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 				        }
 				     });
 				   break;
+				case 'isolation': 
+				   shapeWall[shapeWallNum++] = viewer.entities.add({ 
+				        name : shapeData[featureID][j][3],  
+				        polylineVolume : {  
+				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
+				          			shapeData[featureID][j][2]),  
+				          	shape :[new Cesium.Cartesian2(-0.1,0),  // 横截面形状，相对值，中心点距离边界的值
+				          			new Cesium.Cartesian2(0.1, 0),  
+				          			new Cesium.Cartesian2(0.1, shapeHeight[featureID]),  
+				          			new Cesium.Cartesian2(-0.1,shapeHeight[featureID])],  
+				          	cornerType : Cesium.CornerType.ROUNDED,  // 控制端点形状
+				          	material : Cesium.Color.PERU.withAlpha(1),  
+				        }
+				     });
+				   break;
 				case 'room':
 					   shapeWall[shapeWallNum++] = viewer.entities.add({ 
 					        name : shapeData[featureID][j][3],  
@@ -115,7 +132,7 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 					          	height : shapeData[featureID][j][0],
 					          	extrudedHeight: shapeData[featureID][j][0]+0.001,
 					          	// perPositionHeight : true,  //指定使用每个坐标自带的高度！
-					          	material : Cesium.Color.LIGHTGREY,  
+					          	material : shapeColor[featureID],  
 					        }  
 					     });
 					   break;
@@ -128,7 +145,7 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 							height: shapeData[featureID][j][0] ,// 拉伸高度！
 							extrudedHeight: shapeData[featureID][j][1], //基础高度！
 							perPositionHeight : false,  //指定使用每个坐标自带的高度！
-							material : Cesium.Color.PERU, //Cesium.Color.CORNSILK.withAlpha(0.5)
+							material : shapeColor[featureID], //Cesium.Color.CORNSILK.withAlpha(0.5)
 						}  
 					});
 					break;
@@ -324,16 +341,59 @@ function addEntitiesLocate(Obj){
 	});
 }
 
-/*// polygon填充色
+// polygon填充色
 var shapeColor = {
-	'999999': wall  0.2,
-	'10020511'  wall : 2.6,
-	'10030501'  wall : 2.5,
-	'10030504'  wall : 2.5,
-	'10030502'  wall : 2.5,
-	'10030602'  wall : 2.5,
-	'10030505'  desk : 1.0,
-};*/
+	'999999': Cesium.Color.LIGHTSTEELBLUE,
+	'10020401': Cesium.Color.LIGHTGREY,
+	'10020511': Cesium.Color.LIGHTGREY,
+	'10020101': Cesium.Color.LIGHTGREY,
+	'10030101': Cesium.Color.LIGHTGREY,
+	'10030102': Cesium.Color.LIGHTGREY,
+	'10030103': Cesium.Color.LIGHTGREY,
+	'10030104': Cesium.Color.LIGHTGREY,
+	'10030105': Cesium.Color.LIGHTGREY,
+	'10030106': Cesium.Color.LIGHTGREY,
+	'10030107': Cesium.Color.LIGHTGREY,
+	'10030108': Cesium.Color.LIGHTGREY,
+	'10030109': Cesium.Color.LIGHTGREY,
+	'10030110': Cesium.Color.LIGHTGREY,
+	'10030111': Cesium.Color.LIGHTGREY,
+	'10030112': Cesium.Color.LIGHTGREY,
+	'10030113': Cesium.Color.LIGHTGREY,
+	'10030114': Cesium.Color.LIGHTGREY,
+	'10030115': Cesium.Color.LIGHTGREY,
+	'10030116': Cesium.Color.LIGHTGREY,
+	'10030501': Cesium.Color.LIGHTGREY,
+	'10030502': Cesium.Color.LIGHTGREY,
+	'10030503': Cesium.Color.LIGHTGREY,
+	'10030504': Cesium.Color.LIGHTGREY,
+	'10030505': Cesium.Color.PERU,
+	'10030506': Cesium.Color.LIGHTGREY,
+	'10030507': Cesium.Color.LIGHTGREY,
+	'10030508': Cesium.Color.LIGHTGREY,
+	'10030509': Cesium.Color.LIGHTGREY,
+	'10030510': Cesium.Color.LIGHTGREY,
+	'10030511': Cesium.Color.LIGHTGREY,
+	'10030512': Cesium.Color.LIGHTGREY,
+	'10030513': Cesium.Color.LIGHTGREY,
+	'10030514': Cesium.Color.LIGHTGREY,
+	'10030515': Cesium.Color.LIGHTGREY,
+	'10030516': Cesium.Color.LIGHTGREY,
+	'10030517': Cesium.Color.LIGHTGREY,
+	'10030518': Cesium.Color.LIGHTGREY,
+	'10030519': Cesium.Color.LIGHTGREY,
+	'10030520': Cesium.Color.LIGHTGREY,
+	'10030599': Cesium.Color.LIGHTGREY,
+	
+	'10030602': Cesium.Color.LIGHTGREY,
+	'10030603': Cesium.Color.PERU,
+	'10030604': Cesium.Color.WHITE,
+	'10030606': Cesium.Color.PERU,
+	'10030607': Cesium.Color.PERU,
+	'10030608': Cesium.Color.PERU,
+	'10030609': Cesium.Color.PERU,
+	'10030610': Cesium.Color.PERU
+};
 
 //polygon拉伸高度（米）
 var shapeHeight = {
@@ -357,6 +417,7 @@ var shapeHeight = {
 	'10030113' /* wall */: 2.5,
 	'10030114' /* wall */: 2.5,
 	'10030115' /* wall */: 2.5,
+	'10030116' /* wall */: 2.5,
 	'10030501' /* wall */: 2.5,
 	'10030502' /* wall */: 2.5,
 	'10030503' /* wall */: 2.5,
@@ -421,6 +482,7 @@ var shapeFeature = {
 	'10030113' /*单间*/: 'room',
 	'10030114' /*单间*/: 'room',
 	'10030115' /*单间*/: 'room',
+	'10030116' /*单间*/: 'isolation',
 	'10030501' /*单间*/: 'room',
 	'10030502' /*单间*/: 'room',
 	'10030503' /*单间*/: 'room',
