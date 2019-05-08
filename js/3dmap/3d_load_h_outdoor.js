@@ -28,7 +28,7 @@ function setEntitiesBackground(shapeData){
 					height: shapeData[j][1],// 拉伸高度！
 					extrudedHeight: shapeData[j][0], //高度！
 					//perPositionHeight : true,  //指定使用每个坐标自带的高度！
-					material : Cesium.Color.LIGHTSTEELBLUE,  
+					material : shapeColor['999999'],  
 					//outline : true,  
 					//outlineColor : Cesium.Color.BLACK  
 				}  
@@ -71,18 +71,18 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(
 				          			shapeData[featureID][j][2]),
 				          	height : shapeData[featureID][j][1],//浮空高度,不带高度时不用设置
-				          	extrudedHeight : shapeData[featureID][j][1] + 100 ,//拉伸高度,不带高度时不用设置
-				          	width : 20000,
+				          	extrudedHeight : shapeData[featureID][j][1] + 0.001 ,//拉伸高度,不带高度时不用设置
+				          	width : 0.2,
 				          	cornerType: Cesium.CornerType.ROUNDED,// 控制端点形状
 				          	material : Cesium.Color.BLACK,
 				        },
 				        polylineVolume : {  
 				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
 				          			shapeData[featureID][j][2]),  
-				          	shape :[new Cesium.Cartesian2(-10000,0),  // 横截面形状，相对值，中心点距离边界的值
-				          			new Cesium.Cartesian2(10000, 0),  
-				          			new Cesium.Cartesian2(10000, shapeHeight[featureID]),  
-				          			new Cesium.Cartesian2(-10000,shapeHeight[featureID])],  
+				          	shape :[new Cesium.Cartesian2(-0.1,0),  // 横截面形状，相对值，中心点距离边界的值
+				          			new Cesium.Cartesian2(0.1, 0),  
+				          			new Cesium.Cartesian2(0.1, shapeHeight[featureID]),  
+				          			new Cesium.Cartesian2(-0.1,shapeHeight[featureID])],  
 				          	cornerType : Cesium.CornerType.ROUNDED,  // 控制端点形状
 				          	material : Cesium.Color.WHITE.withAlpha(1),  
 				        }
@@ -110,18 +110,18 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 					          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(
 					          			shapeData[featureID][j][2]),
 					          	height : shapeData[featureID][j][1],//浮空高度,不带高度时不用设置
-					          	extrudedHeight : shapeData[featureID][j][1] + 100 ,//拉伸高度,不带高度时不用设置
-					          	width : 20000,
+					          	extrudedHeight : shapeData[featureID][j][1] + 0.001 ,//拉伸高度,不带高度时不用设置
+					          	width : 0.2,
 					          	cornerType: Cesium.CornerType.ROUNDED,// 控制端点形状
 					          	material : Cesium.Color.BLACK,
 					        },
 					        polylineVolume : {  
 					          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
 					          			shapeData[featureID][j][2]),  
-					          	shape :[new Cesium.Cartesian2(-10000,0),  // 横截面形状，相对值，中心点距离边界的值
-					          			new Cesium.Cartesian2(10000, 0),  
-					          			new Cesium.Cartesian2(10000, shapeHeight[featureID]),  
-					          			new Cesium.Cartesian2(-10000,shapeHeight[featureID])],  
+					          	shape :[new Cesium.Cartesian2(-0.1,0),  // 横截面形状，相对值，中心点距离边界的值
+					          			new Cesium.Cartesian2(0.1, 0),  
+					          			new Cesium.Cartesian2(0.1, shapeHeight[featureID]),  
+					          			new Cesium.Cartesian2(-0.1,shapeHeight[featureID])],  
 					          	cornerType : Cesium.CornerType.ROUNDED,  // 控制端点形状
 					          	material : Cesium.Color.WHITE.withAlpha(1),  
 					        },
@@ -130,9 +130,23 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 					          			shapeData[featureID][j][2]
 					          	),  
 					          	height : shapeData[featureID][j][0],
-					          	extrudedHeight: shapeData[featureID][j][0]+shapeHeight[featureID],
+					          	extrudedHeight: shapeData[featureID][j][0]+0.001,
 					          	// perPositionHeight : true,  //指定使用每个坐标自带的高度！
-					          	material : Cesium.Color.LIGHTGREY,  
+					          	material : shapeColor[featureID],  
+					        }  
+					     });
+					   break;
+				case 'outdoor':
+					   shapeWall[shapeWallNum++] = viewer.entities.add({ 
+					        name : shapeData[featureID][j][3],  
+					        polygon : {
+					          	hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(  // 普通不带挖空效果的polygon		
+					          			shapeData[featureID][j][2]
+					          	),  
+					          	height : shapeData[featureID][j][0],
+					          	extrudedHeight: shapeData[featureID][j][1],
+					          	perPositionHeight : false,  //指定使用每个坐标自带的高度！
+					          	material : shapeColor[featureID],  
 					        }  
 					     });
 					   break;
@@ -145,12 +159,10 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 							height: shapeData[featureID][j][0] ,// 拉伸高度！
 							extrudedHeight: shapeData[featureID][j][1], //基础高度！
 							perPositionHeight : false,  //指定使用每个坐标自带的高度！
-							material : Cesium.Color.PERU, //Cesium.Color.CORNSILK.withAlpha(0.5)
+							material : shapeColor[featureID], //Cesium.Color.CORNSILK.withAlpha(0.5)
 						}  
 					});
 					break;
-	/*			case 'wall':
-				*/	
 				default:
 					break;
 				}
@@ -398,14 +410,14 @@ var shapeColor = {
 //polygon拉伸高度（米）
 var shapeHeight = {
 		// polygon
-	'999999':/* wall */ 20000,
+	'999999':/* wall */ 0.2,
 	'10020401'/* wall */: 2.5,
-	'10020511' /* wall */: 260000,
+	'10020511' /* wall */: 0.1,
 	'10020101' /* wall */: 2.6,
 	'10030101' /* wall */: 2.5,
-	'10030102' /* wall */: 1000,
-	'10030103' /* wall */: 250000,
-	'10030104' /* wall */: 250000,
+	'10030102' /* wall */: 2.5,
+	'10030103' /* wall */: 2.5,
+	'10030104' /* wall */: 2.5,
 	'10030105' /* wall */: 2.5,
 	'10030106' /* wall */: 2.5,
 	'10030107' /* wall */: 2.5,
@@ -453,22 +465,22 @@ var shapeHeight = {
 	'30050200' /*billboard*/: 1.5,
 	'30050300' /*billboard*/: 2,
 	//'30050800' /*billboard*/: 1,
-	'30060000' /*POIall*/: 500000,
+	'30060000' /*POIall*/: 2.5,
 	'30060100' /*billboard*/: 0.5,
 	'30060200' /*billboard*/: 0.5,
-	'30060300' /*label*/: 100000,
+	'30060300' /*label*/: 2,
 	
 		// locate
-	'locate' /*locate*/: 20000,
+	'locate' /*locate*/: 2,
 };
 // feature ==>> shape feature
 var shapeFeature = {
 		// polygon
 	'10020401'/* 教室*/: 'room',
-	'10020511' /*公司*/: 'room',
+	'10020511' /*公司*/: 'outdoor',
 	'10020101' /*监狱*/: 'room',
 	'10030101' /*单间*/: 'room',
-	'10030102' /*单间*/: 'wall',
+	'10030102' /*单间*/: 'room',
 	'10030103' /*单间*/: 'room',
 	'10030104' /*单间*/: 'room',
 	'10030105' /*单间*/: 'room',

@@ -86,7 +86,10 @@
 				featuresGeom[2*j] = geom[j][0];
 				featuresGeom[2*j+1] = geom[j][1];
 			}
-			shapeBackgrounds[featuresFloor] = [featuresExtrudedHeight,featuresHeight,featuresGeom,featuresName];
+			if(shapeBackgrounds[featuresFloor] == undefined){
+				shapeBackgrounds[featuresFloor] = [];
+			}
+			shapeBackgrounds[featuresFloor].push([featuresExtrudedHeight,featuresHeight,featuresGeom,featuresName]);
 		}	
 		setEntitiesBackground(shapeBackgrounds[floorid]);
 	}

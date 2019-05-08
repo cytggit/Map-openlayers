@@ -74,6 +74,8 @@
 		for(var i=0;i<features.length;i++){
 			// background所在楼层
 			var featuresFloor = features[i].get('floor_id');
+			// background倾斜信息
+			var featuresHigh = features[i].get('high');
 			// background的name
 			var featuresName = features[i].get('name');
 			// background所在高度
@@ -83,8 +85,13 @@
 			var geom = features[i].getGeometry().getCoordinates()[0];
 			var featuresGeom = [];
 			for (var j=0;j<geom.length;j++){
-				featuresGeom[2*j] = geom[j][0];
-				featuresGeom[2*j+1] = geom[j][1];
+				featuresGeom[3*j] = geom[j][0];
+				featuresGeom[3*j+1] = geom[j][1];
+				if(j == 1 || j == 2){
+					featuresGeom[3*j+2] = featuresHeight + featuresHigh;
+				}else{
+					featuresGeom[3*j+2] = featuresHeight;
+				}
 			}
 			if(shapeBackgrounds[featuresFloor] == undefined){
 				shapeBackgrounds[featuresFloor] = [];

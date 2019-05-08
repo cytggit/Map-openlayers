@@ -41,10 +41,62 @@
     }	
 	/*获取数据*/
 	function getEntitiesData(){
+		getEntitiesModel();
 		getEntitiesBackground();
-		getEntitiesPolygon();
+		// getEntitiesPolygon();
 		getEntitiesPOI();
 	}
+	
+	/*获取model摆放位置*/
+	function getEntitiesModel(){
+		var getEntitiesBackgroundParam = {
+				service: 'WFS',
+				version: '1.1.0',
+				request: 'GetFeature',
+				typeName: DBs + ':polygon_background', 
+				outputFormat: 'application/json',
+				cql_filter: 'place_id=' + placeid
+		};	
+			$.ajax({  
+				url: wfsUrl,
+				data: $.param(getEntitiesBackgroundParam), 
+				type: 'GET',
+				dataType: 'json',
+				success: function(response){
+					var features = new ol.format.GeoJSON().readFeatures(response);
+					var floorLength = features.length;
+					if(floorLength > 0){
+						makeEntitiesModel(features);
+					}
+				}
+			})
+	}
+	function makeEntitiesModel(features){
+		ModelCenters = {};
+		for(var i=0;i<features.length;i++){
+			// background所在楼层
+			var featuresFloor = features[i].get('floor_id');
+			// background的name
+			var featuresName = features[i].get('name');
+			// background所在高度
+			var featuresExtrudedHeight = (featuresFloor-1) * 3;
+			// background所在形状
+			var geom = features[i].getGeometry().getCoordinates()[0];
+			
+			var featuresGeom = [];
+			featuresGeom[0] = geom[2][0];
+			featuresGeom[1] = geom[2][1];
+			featuresGeom[2] = -2;
+			featuresGeom[3] = featuresName;
+			
+			if(ModelCenters[featuresFloor] == undefined){
+				ModelCenters[featuresFloor] = [];
+			}
+			ModelCenters[featuresFloor].push(featuresGeom);
+		}	
+		setEntitiesModel(ModelCenters[floorid]);
+	}
+
 	/*获取background数据*/
 	function getEntitiesBackground(){
 		var getEntitiesBackgroundParam = {
@@ -86,10 +138,7 @@
 				featuresGeom[2*j] = geom[j][0];
 				featuresGeom[2*j+1] = geom[j][1];
 			}
-			if(shapeBackgrounds[featuresFloor] == undefined){
-				shapeBackgrounds[featuresFloor] = [];
-			}
-			shapeBackgrounds[featuresFloor].push([featuresExtrudedHeight,featuresHeight,featuresGeom,featuresName]);
+			shapeBackgrounds[featuresFloor] = [featuresExtrudedHeight,featuresHeight,featuresGeom,featuresName];
 		}	
 		setEntitiesBackground(shapeBackgrounds[floorid]);
 	}
@@ -186,7 +235,7 @@
 			}
 			shapePolygons[featuresFloor][featuresFeatureId].push([featuresExtrudedHeightBase,featuresHeightBase,featuresGeom,featuresName]);
 		}	
-		setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
+		// setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
 	}
 	/*获取POI数据*/
 	function getEntitiesPOI(){
