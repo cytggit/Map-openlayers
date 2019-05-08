@@ -362,7 +362,7 @@ var APStyle = {
 // 定位 style 
 var locationStyle = new ol.style.Style({
 	image: new ol.style.Icon({
-		src: 'http://map.intmote.com/map/icon/location.png',
+		src: 'http://127.0.0.1:8090/map/icon/location.png',
 		scale: 0.3,
 		anchor: [0.5,0.5],
 	}),
@@ -565,6 +565,16 @@ var geojsonstyle = {
 			color: [199,214,225,0.4]
 		}),
 		zIndex: 102
+	}),
+	'10030116'/*铁栅隔离实体*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,0.4],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [199,214,225,0.4]
+		}),
+		zIndex: 104
 	}),
 	'10030501'/*总裁*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({

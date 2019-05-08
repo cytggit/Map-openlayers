@@ -575,6 +575,16 @@ var geojsonstyle = {
 		}),
 		zIndex: 102
 	}),
+	'10030116'/*铁栅隔离实体*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,0.4],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [199,214,225,0.4]
+		}),
+		zIndex: 104
+	}),
 	'10030501'/*总裁*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
