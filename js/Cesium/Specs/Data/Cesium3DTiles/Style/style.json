@@ -1,5 +1,0 @@
-{
-  "color" : "color('red')",
-  "show" : "${id} < 100",
-  "pointSize" : "${id} / 100"
-}
