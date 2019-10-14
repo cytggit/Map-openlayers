@@ -531,6 +531,12 @@ function changeFloor(newFloor){
 // 切换楼层
 function floorUpdate(newfloorId){
 	// 取点击的楼层 赋值给floor_id   第二个字符后两位
+	if(newfloorId != floorid){
+		LocationLayer.setStyle(locationStyleUnshow);
+	}else{
+		LocationLayer.setStyle(locationStyle[1]);
+	}
+	
 	floorid = newfloorId;	
 	$(".floorshow a").text('F' + newfloorId);
 	// 刷新图层（背景，道路，poi 其他清空）
