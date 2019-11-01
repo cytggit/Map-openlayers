@@ -462,11 +462,11 @@ var geojsonstyle = {
 	}),
 	'10010103'/*道路*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
-			color: [127127,127,1],
+			color: [127,127,127,1],
 			width:1
 		}),
 		fill: new ol.style.Fill({
-			color: [127127,127,1]
+			color: [127,127,127,1]
 		}),
 		zIndex:101
 	}),
