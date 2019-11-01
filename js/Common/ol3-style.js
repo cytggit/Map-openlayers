@@ -431,7 +431,7 @@ var geojsonstyle = {
 		}),
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
-			width:1
+			width:2
 		}),
 		zIndex: 100
 	}),
@@ -440,6 +440,36 @@ var geojsonstyle = {
 	*polygon
 	*
 	************/
+	'10010101'/*操场*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [207,227,208,1]
+		}),
+		zIndex:101
+	}),
+	'10010102'/*绿地*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [207,227,208,1]
+		}),
+		zIndex:101
+	}),
+	'10010103'/*道路*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [127127,127,1],
+			width:1
+		}),
+		fill: new ol.style.Fill({
+			color: [127127,127,1]
+		}),
+		zIndex:101
+	}),
 	'10020101'/*监狱*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [255,255,255,1],
