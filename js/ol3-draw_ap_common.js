@@ -916,6 +916,36 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
+	'10030303'/*111*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,204,0.8]
+		}),
+		zIndex: 104
+	}),
+	'10030304'/*111*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,204,0.8]
+		}),
+		zIndex: 104
+	}),
+	'10030305'/*111*/: new ol.style.Style({ 
+		stroke: new ol.style.Stroke({
+			color: [255,255,255,1],
+			width: 0.8
+		}),
+		fill: new ol.style.Fill({
+			color: [204,204,204,0.8]
+		}),
+		zIndex: 104
+	}),
 	'10030501'/*总裁*/: new ol.style.Style({ 
 		stroke: new ol.style.Stroke({
 			color: [128,128,128,0.6],
@@ -1256,7 +1286,66 @@ var geojsonstyle = {
 		}),
 		zIndex: 103
 	}),
-
+	'10050100' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
+	'10050200' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
+	'10050300' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
+	'10050400' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
+	'10050500' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
+	'10050600' /*水系*/: new ol.style.Style({  
+		stroke: new ol.style.Stroke({
+			color: [0,204,255,1],
+			width: 1
+		}),
+		fill: new ol.style.Fill({
+			color: [0,204,255,0.8]
+		}),
+		zIndex: 101
+	}),
 
 	/************
 	*
