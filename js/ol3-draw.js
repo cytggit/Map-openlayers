@@ -7,7 +7,7 @@ function loadTable(){
 			$("#tabel-key").html("");
 		}else if(placeType == 'newplace'){
 			tablecheck.value = 'polygon_background';
-			$("#tabel-key").html(place + feature + floor + Fname);
+			$("#tabel-key").html(place + build + floor + Fname);
 		}else{
 			if(placeid != placeType){
 				placeid = placeType;
@@ -41,21 +41,21 @@ function loadTable(){
 				$("#tabel-key").html("");
 				break;
 			case 'polygon_background':
-				$("#tabel-key").html(place + floor + Fname);
+				$("#tabel-key").html(place + build + floor + Fname);
 				break;
 			case 'point':
-				$("#tabel-key").html(feature + Fname + node + cnodeu + cnoded + angle + lonlat);
+				$("#tabel-key").html(build + feature + Fname + node + cnodeu + cnoded + angle + lonlat);
 				break;
 			case 'polygon':
-				$("#tabel-key").html(feature + Fname +penup);
+				$("#tabel-key").html(build + feature + Fname +penup);
 				break;
 			case 'polyline':
-				$("#tabel-key").html(feature + Fname);
+				$("#tabel-key").html(build + feature + Fname);
 				break;
 			case 'electronic_fence':
 				// 显示电子围栏
 				electronicFence();
-				$("#tabel-key").html(electronic_type + Fname);
+				$("#tabel-key").html(build + electronic_type + Fname);
 				break;
 		}
 		if(tableType == 'polygon' || tableType == 'polygon_background' ){
@@ -367,7 +367,7 @@ function addData(){
 	DrawFeature.setActive(true);
 	
 	// 测算长度
-	if(tableType == 'polyline' || tableType == 'polygon'){
+	if(tableType == 'polyline'){
 		var listener;
 		DrawFeature[tableType].on('drawstart',
 			function(evt) {
@@ -519,12 +519,15 @@ function getcolumn(){
 			case 'polygon_background':
 				if (document.getElementById('place_value').value == ''){
 					alert('请输入place id');
+				}else if (document.getElementById('build_value').value == ''){
+					alert('请输入build');
 				}else if (document.getElementById('floor_value').value == ''){
 					alert('请输入floor');
 				}else if (document.getElementById('name_value').value == ''){
 					alert('请输入feature名称');
 				}else {
 					newFeature.set('place_id', document.getElementById('place_value').value);
+					newFeature.set('building_id', document.getElementById('build_value').value);
 					newFeature.set('floor_id', document.getElementById('floor_value').value);
 					newFeature.set('feature_id', '999999');
 					newFeature.set('name', document.getElementById('name_value').value);
@@ -537,10 +540,13 @@ function getcolumn(){
 			case 'point':
 				if (document.getElementById('feature_value').value == ''){
 					alert('请输入feature_id');
+				}else if (document.getElementById('build_value').value == ''){
+					alert('请输入build');
 				}else if (document.getElementById('name_value').value == ''){
 					alert('请输入feature名称');
 				}else {
 					newFeature.set('place_id', placeid);
+					newFeature.set('building_id', document.getElementById('build_value').value);
 					newFeature.set('floor_id', floorid);
 					newFeature.set('feature_id', document.getElementById('feature_value').value);
 					newFeature.set('name', document.getElementById('name_value').value);
@@ -557,10 +563,13 @@ function getcolumn(){
 			case 'polygon':
 				if (document.getElementById('feature_value').value == ''){
 					alert('请输入feature_id');
+				}else if (document.getElementById('build_value').value == ''){
+					alert('请输入build');
 				}else if (document.getElementById('name_value').value == ''){
 					alert('请输入feature名称');
 				}else {
 					newFeature.set('place_id', placeid);
+					newFeature.set('building_id', document.getElementById('build_value').value);
 					newFeature.set('floor_id', floorid);
 					newFeature.set('feature_id', document.getElementById('feature_value').value);
 					newFeature.set('name', document.getElementById('name_value').value);
@@ -574,10 +583,13 @@ function getcolumn(){
 			case 'polyline':
 				if (document.getElementById('feature_value').value == ''){
 					alert('请输入feature_id');
+				}else if (document.getElementById('build_value').value == ''){
+					alert('请输入build');
 				}else if (document.getElementById('name_value').value == ''){
 					alert('请输入feature名称');
 				}else {
 					newFeature.set('place_id', placeid);
+					newFeature.set('building_id', document.getElementById('build_value').value);
 					newFeature.set('floor_id', floorid);
 					newFeature.set('feature_id', document.getElementById('feature_value').value);
 					newFeature.set('name', document.getElementById('name_value').value);
@@ -590,10 +602,13 @@ function getcolumn(){
 			case 'electronic_fence':
 				if (document.getElementById('electronic_type_value').value == ''){
 					alert('请输入电子围栏的等级');
+				}else if (document.getElementById('build_value').value == ''){
+					alert('请输入build');
 				}else if (document.getElementById('name_value').value == ''){
 					alert('请输入feature名称');
 				}else {
 					newFeature.set('place_id', placeid);
+					newFeature.set('building_id', document.getElementById('build_value').value);
 					newFeature.set('floor_id', floorid);
 					newFeature.set('type_id', document.getElementById('electronic_type_value').value);
 					newFeature.set('name', document.getElementById('name_value').value);
@@ -661,10 +676,12 @@ function setcolumn(selectInfo){
 		switch (tableType){
 			case 'polygon_background':
 				document.getElementById('place_value').value = selectInfo.place_id;
+				document.getElementById('build_value').value = selectInfo.building_id;
 				document.getElementById('floor_value').value = selectInfo.floor_id;
 				document.getElementById('name_value').value = selectInfo.name;
 				break;
 			case 'point':
+				document.getElementById('build_value').value = selectInfo.building_id;
 				document.getElementById('feature_value').value = selectInfo.feature_id;
 				document.getElementById('name_value').value = selectInfo.name;
 				document.getElementById('node_value').value = selectInfo.node;
@@ -673,15 +690,18 @@ function setcolumn(selectInfo){
 				document.getElementById('angle_value').value = selectInfo.angle;
 				break;
 			case 'polygon':
+				document.getElementById('build_value').value = selectInfo.building_id;
 				document.getElementById('feature_value').value = selectInfo.feature_id;
 				document.getElementById('name_value').value = selectInfo.name;
 				document.getElementById('penup_value').value = selectInfo.penup;
 				break;
 			case 'polyline':
+				document.getElementById('build_value').value = selectInfo.building_id;
 				document.getElementById('feature_value').value = selectInfo.feature_id;
 				document.getElementById('name_value').value = selectInfo.name;
 				break;
 			case 'electronic_fence':
+				document.getElementById('build_value').value = selectInfo.building_id;
 				document.getElementById('electronic_type_value').value =selectInfo.type_id;
 				document.getElementById('name_value').value = selectInfo.name;
 				break;				
@@ -805,10 +825,12 @@ function clearAllcolumn(){
 	switch (tableType){
 		case 'polygon_background':
 			document.getElementById('place_value').value = '';
+			document.getElementById('build_value').value = '';
 			document.getElementById('floor_value').value = '';
 			document.getElementById('name_value').value = '';
 			break;
 		case 'point':
+			document.getElementById('build_value').value = '';
 			document.getElementById('feature_value').value = '';
 			document.getElementById('name_value').value = '';
 			document.getElementById('node_value').value = '';
@@ -817,15 +839,18 @@ function clearAllcolumn(){
 			document.getElementById('angle_value').value = '';
 			break;
 		case 'polygon':
+			document.getElementById('build_value').value = '';
 			document.getElementById('feature_value').value = '';
 			document.getElementById('name_value').value = '';
 			document.getElementById('penup_value').value = '';
 			break;
 		case 'polyline':
+			document.getElementById('build_value').value = '';
 			document.getElementById('feature_value').value = '';
 			document.getElementById('name_value').value = '';
 			break;
 		case 'electronic_fence':
+			document.getElementById('build_value').value = '';
 			document.getElementById('electronic_type_value').value = '';
 			document.getElementById('name_value').value = '';
 			break;				
@@ -838,6 +863,9 @@ function clear_column(e){
 	switch (columnName){
 		case 'clear_place':
 			document.getElementById('place_value').value = '';	
+			break;
+		case 'clear_build':
+			document.getElementById('build_value').value = '';	
 			break;
 		case 'clear_feature':
 			document.getElementById('feature_value').value = '';	
