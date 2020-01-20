@@ -9,34 +9,55 @@
 	});
 	
 	// 2D
+	var outdoorSource = new ol.source.Vector();
+	var outdoorLayer  = new ol.layer.Vector({
+		title: 'outdoor map',
+		visible: true,
+		source: outdoorSource,
+		style: geojsonstylefunction,
+		//minResolution: 0.0000015,
+		//maxResolution: 0.00001,
+		zIndex: 10
+	});
+	
+	// 2D
+	var placePoiSource = new ol.source.Vector();
+	var placePoiLayer  = new ol.layer.Vector({
+		title: 'building map',
+		visible: true,
+		source: placePoiSource,
+		style: placePoistylefun,
+		minResolution: 0.0000015,
+		//maxResolution: 0.00001,
+		zIndex: 60
+	});
+	
+	// 2D
+	var backgroundSource = new ol.source.Vector();
 	var backgroundLayer = new ol.layer.Vector({
 		title: 'background map',
 		visible: true,
-		source: new ol.source.Vector({
-			features:  geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]
-		}),
+		source: backgroundSource,
 		style: geojsonstylefunction,
 		maxResolution: 0.00001
 	});
 	
 	// 2D
+	var polygonSource = new ol.source.Vector();
 	var polygonLayer = new ol.layer.Vector({
 		title: 'polygon map',
 		visible: true,
-		source: new ol.source.Vector({
-			features:  geomPolygons[floorid] != null ? geomPolygons[floorid]:[]
-		}),
+		source: polygonSource,
 		style: geojsonstylefunction,
 		maxResolution: 0.00001,
 		zIndex: 10
 	});
 
+	var pointSource = new ol.source.Vector();
 	var pointLayer = new ol.layer.Vector({
 		title: 'point map',
 		visible: true,
-		source: new ol.source.Vector({
-			features:  geomPOIs[floorid] != null ? geomPOIs[floorid]:[]
-		}),
+		source: pointSource,
 		style: geojsonstylefunction,
 		maxResolution: 0.000003,
 		zIndex: 30
@@ -44,9 +65,7 @@
 	var selectSingleClickLayter = new ol.layer.Vector({
 		title: 'point map',
 		visible: true,
-		source: new ol.source.Vector({
-			features:  geomPOIs[floorid] != null ? geomPOIs[floorid]:[]
-		}),
+		source: pointSource,
 		style: selectSingleClickStyle,
 		maxResolution: 0.000003,
 		zIndex: 5
@@ -57,6 +76,7 @@
 	var LocationLayer = new ol.layer.Vector({
 		title: 'center point',
 		visible: true,
+		source: center_wfs,
 		zIndex: 90
 	});	
 	
@@ -65,24 +85,27 @@
 	var selectLayer = new ol.layer.Vector({
 		title: 'select map',
 		visible: true,
+		source: select_wfs,
 		zIndex: 50
 	});
 	
 	// 电子围栏图层 	
+	var electronicSource = new ol.source.Vector();
 	var electronicLayer = new ol.layer.Vector({
 		title: 'electronicFence map',
 		visible: true,
 		style: electronicFenceStyleFun,
-		source: new ol.source.Vector(),
+		source: electronicSource,
 		zIndex: 80
 	});		
 	
 	// 收藏图层 	
+	var collectionSource = new ol.source.Vector();
 	var collectionLayer = new ol.layer.Vector({
 		title: 'collection map',
 		visible: true,
 		style: collectionStyle,
-		source: new ol.source.Vector(),
+		source: collectionSource,
 		zIndex: 40
 	});	
 	

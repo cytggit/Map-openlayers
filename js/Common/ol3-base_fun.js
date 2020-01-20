@@ -33,6 +33,46 @@ function getInitParam(){
 	}
 }
 
+// ****显示全部place****
+function setPlacePoi (){
+	placePoiSource.addFeatures(featuresBuilding);
+	if(featuresPolygonObj[0]){
+		for(var i=0;i<featuresBackground.length;i++){
+			if (featuresBackground[i].get('floor_id') == '01'){
+				outdoorSource.addFeature(featuresBackground[i]);
+			}
+		}	
+		for(var i=0;i<featuresPolygon.length;i++){
+			if (featuresPolygon[i].get('floor_id') == '01'){
+				outdoorSource.addFeature(featuresPolygon[i]);
+			}
+		}	
+	}
+	
+	map.on('moveend',function(){
+		var buildingLength = featuresBuilding.length;
+		var dis = 200,disBuild;
+		for (var Num = 0; Num < buildingLength; Num++) {
+			var buildingCenter = featuresBuilding[Num].getGeometry().getCoordinates();
+			var dist = distanceFromAToB(buildingCenter,view.getCenter());
+			if(dist < dis){
+				dis = dist;
+				disBuild = featuresBuilding[Num].get('building_id');
+			}
+		}
+		if (dis < 20 && disBuild != buildingid) {
+			changeBuilding(disBuild);
+		}
+	});
+}
+// 所属建筑变更后，buildingid变更，并重新加载地图
+function changeBuilding(newBuilding) {
+	buildingid = newBuilding;
+	getFloorList();
+	changeFloor($(".floorS")[0].classList[1])
+	view.setCenter(mapCenter(buildingid));
+}
+
 // 获取定位信息
 function getlocation(){	
 	// 当deviceId为all的时候，显示所有当前楼层的位置
@@ -180,33 +220,39 @@ function startlocation(){
 }
 
 // 加载定位信息
-function loadlocation(){
+function loadlocation(){// TODO
 	if(deviceId == 'all'  && checkFlag){
-		load3dMap();
-		get3DPopup();
 		getGeomData();
 		getFloorList();
+		setPlacePoi();
+		
+		load3dMap();
+		get3DPopup();
+		loadModel();
+		
 		changeFloor(floorid);
-		load3dData();
+		//load3dData();
 		startlocation();
-		LocationLayer.setSource(center_wfs);
-		view.setCenter(mapCenter(placeid));
+		//LocationLayer.setSource(center_wfs);
+		view.setCenter(mapCenter(buildingid));
 	}
 	if (deviceId != 'all' && checkFlag) {
 		// 获取定位信息
 		startlocation();
-		LocationLayer.setSource(center_wfs);
 	}	
 }
 // 加载楼层条
 function getFloorList(){
 	var FloorTag = [];
-	var FloorId = geomBackgrounds != undefined ? Object.keys(geomBackgrounds): [];
+	var FloorId = featuresBackgroundObj[buildingid] != undefined ? Object.keys(featuresBackgroundObj[buildingid]): [];
 	var floorLength = FloorId.length;
 	
 	for (var Floori =0;Floori < floorLength;Floori++){
 		for (var Floorj =Floori+1;Floorj < floorLength;Floorj++){
-			if (FloorId[Floori] >= FloorId[Floorj]){
+			if (FloorId[Floori] == FloorId[Floorj]){
+				FloorId.splice(Floorj,1);
+				Floorj--;
+			}else if (FloorId[Floori] > FloorId[Floorj]){
 				var floorDummy = FloorId[Floori];
 				FloorId[Floori] = FloorId[Floorj];
 				FloorId[Floorj] = floorDummy;
@@ -282,18 +328,18 @@ function electronicFenceWarn(){
 		type: 'GET',
 		dataType: 'json',
 		success: function(response){
-			var WarnFeatures = response.features;
+			var WarnFeatures = new ol.format.GeoJSON().readFeatures(response);
 			var WarnLength = WarnFeatures.length;
 			// 获取预警等级和当前电子围栏的name
 			if (WarnLength != 0){
 				var WarnName,WarnType;
-				WarnName = WarnFeatures[0].properties.name;
-				WarnType = WarnFeatures[0].properties.type_id;
+				WarnName = WarnFeatures[0].get('name');
+				WarnType = WarnFeatures[0].get('type_id');
 				if(WarnLength > 1){
 					for (var i=1;i<WarnLength;i++){
-						if (WarnType < WarnFeatures[i].properties.type_id){
-							WarnType = WarnFeatures[i].properties.type_id;
-							WarnName = WarnFeatures[i].properties.name;
+						if (WarnType < WarnFeatures[i].get('type_id')){
+							WarnType = WarnFeatures[i].get('type_id');
+							WarnName = WarnFeatures[i].get('name');
 						}
 					}
 				}
@@ -371,6 +417,7 @@ function loadselectSingleClick(){
 				}
 				var selectFeature = new ol.Feature();
 				selectFeature.setGeometry(new ol.geom.Point(coordinate));
+				selectFeature.set('building_id',selectInfo.building_id);
 				selectFeature.set('floor_id',selectInfo.floor_id);
 				selectFeature.set('l_id',selectId);
 				selectFeature.set('name',selectName);
@@ -433,8 +480,8 @@ function removeSelectSingleClick(){
 
 // 3d定位点详情
 function get3DPopup(){
-	$(".cesium-selection-wrapper").hide();
-	$(".cesium-infoBox").hide();
+	// $(".cesium-selection-wrapper").hide();
+	// $(".cesium-infoBox").hide();
 	var infoDiv = '<div id="trackPopUp" style="display:none;">'+
 	    '<div id="trackPopUpContent" class="leaflet-popup" style="top:5px;left:0;">'+
 	      '<a id="leaflet-popup-close-button" class="leaflet-popup-close-button" href="#">×</a>'+
@@ -455,15 +502,43 @@ function get3DPopup(){
     handler3D.setInputAction(function(movement) {						
 		var pick = scene.pick(movement.position);
 		if(removeHandler){removeHandler.call();}
-		if(pick && pick.id && pick.id._position && pick.id._properties){
+		if (pick && pick.id && pick.id._properties && pick.id._properties._buildingPoi) {// 选中某模型
+			modelParent.show = false;
+			model.show = false;
+			DetailParent.show = true;
+
+			buildingid = pick.id._properties._building;
+			getFloorList();
+			
+			floorid = '01';
+			load3dData();
+			
+			changeFloor('01');
+			changeCamera([ mapCenter(buildingid)[0], mapCenter(buildingid)[1] - 0.00045 ], 25, 0);
+
+			$('.floor-select').css("display", "block");
+		} else if (pick && pick.mesh && pick.mesh._name) {// 选中某模型
+			var clickBuild = parseInt(pick.mesh._name.split(/\s+/)[1].split("_")[2]);
+			if (clickBuild > 0) {
+				modelParent.show = false;
+				model.show = false;
+				DetailParent.show = true;
+
+				buildingid = clickBuild;
+				getFloorList();
+				
+				floorid = '01';
+				load3dData();
+				
+				changeFloor('01');
+				changeCamera([ mapCenter(buildingid)[0],mapCenter(buildingid)[1] - 0.00045 ],25, 0);
+
+				$('.floor-select').css("display", "block");
+			}
+
+		} else  if(pick && pick.id && pick.id._position && pick.id._properties){
 		    content = '编号：  ' + pick.id._properties._l_id + '<br>';
-					   // '姓名：  ' + pick.id._properties._name + '<br>'
-					// + '编号：  ' + pick.id._properties._l_id + '<br>'
-					// + '心率：  ' + pick.id._properties._heart_rate + '<br>'
-					// + '血压：  ' + pick.id._properties._spb + "/" + pick.id._properties._dpb + '<br>'
-					// + '步数：  ' + pick.id._properties._steps;
-		    //var personImgUrl = getImg(pick.id._properties._l_id);// 取人员照片URL
-		    //var obj = {position:movement.position,content:content,personImgUrl:personImgUrl};
+					 
 		    var obj = {position:movement.position,content:content};
 		    infoWindow(obj);
 		   
@@ -524,7 +599,10 @@ function changeFloor(newFloor){
 		document.getElementsByClassName('floorS')[i].classList.remove('active');
 		// console.log(document.getElementsByClassName('floorS')[i]);
 	}
-	document.getElementsByClassName(newFloor)[0].classList.add('active');
+	if (document.getElementsByClassName(newFloor)[0] != null){
+		document.getElementsByClassName(newFloor)[0].classList.add('active');
+	}
+	
 	// 切换楼层
 	floorUpdate(newFloor);
 }
@@ -582,21 +660,26 @@ function floorUpdate(newfloorId){
 function loadBasemap(){
 	// 默认楼层
 	// WFS
-	backgroundLayer.getSource().clear();
-	backgroundLayer.getSource().addFeatures(geomBackgrounds[floorid] != null ? geomBackgrounds[floorid]:[]);
-	polygonLayer.getSource().clear();
-	polygonLayer.getSource().addFeatures(geomPolygons[floorid] != null ? geomPolygons[floorid]:[]);
-	pointLayer.getSource().clear();
-	pointLayer.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);
-	selectSingleClickLayter.getSource().clear();
-	selectSingleClickLayter.getSource().addFeatures(geomPOIs[floorid] != null ? geomPOIs[floorid]:[]);	
+	backgroundSource.clear();
+	backgroundSource.addFeatures(featuresBackgroundObj[buildingid][floorid]);
+	polygonSource.clear();
+	polygonSource.addFeatures(featuresPolygonObj[buildingid][floorid]);
+	pointSource.clear();
+	pointSource.addFeatures(featuresPointObj[buildingid][floorid]?featuresPointObj[buildingid][floorid]:[] );
 
 	// 3Dmap
-	viewer.entities.removeAll();
-	viewAddBottomMap(); 
-	setEntitiesBackground(shapeBackgrounds[floorid]);
-	setEntitiesPolygon(shapePolygons[floorid],shapePenups[floorid]);
-	setEntitiesPOI(shapePOIs[floorid]);
-
+	for(var i = 0;i<LocatesId.length;i++){
+		viewer.entities.removeById(LocatesId[i]);
+	}
+	LocatesId = [];
+	if(DetailParent.show){
+		$.each(DetailParent._children,function(i,obj){          
+	        viewer.entities.remove(obj);
+		});
+		setEntitiesBackground(shapeBackgrounds[buildingid][floorid]);
+		setEntitiesPolygon(shapePolygons[buildingid][floorid],shapePenups[buildingid][floorid]);
+		setEntitiesPOI(shapePOIs[buildingid][floorid]);	
+		changeCamera([mapCenter(buildingid)[0],mapCenter(buildingid)[1]-0.00035],(floorid-1)*3+20,0);
+	}
 }
 

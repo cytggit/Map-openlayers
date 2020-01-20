@@ -1,12 +1,14 @@
 /*DATA*/
-var shapeBackgrounds ={};
-var shapePolygons ={};
-var shapePenups ={};
-var shapePOIs ={};
-var shapeLocates = {};
+var shapeBackgrounds;
+var shapePolygons;
+var shapePenups;
+var shapePOIs;
+var shapeLocates;
 /*Entities*/
+// building
+var shapeBuilding = [];
 // Background
-var shapeBackground;
+var shapeBackground = [];
 // Polygon
 var shapeWall = [],shapeWallNum = 0; // 
 var shapeDoor = [],shapeDoorNum = 0; 
@@ -17,11 +19,57 @@ var shapeLabel = [],shapeLabelNum = 0;
 var shapeBillboard = [],shapeBillboardNum = 0;
 // Locate
 // var shapeLocate = [];var gltfModel=[];
+/*model*/
+var model;
+
+var modelParent,DetailParent;
+function getModel(){
+    //创建坐标  
+	var modelCenter = Cesium.Cartesian3.fromDegrees(mapCenter(buildingid)[0],mapCenter(buildingid)[1],0.2 );  
+    //创建一个东（X，红色）北（Y，绿色）上（Z，蓝色）的本地坐标系统  
+    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame( modelCenter );  
+    // 改变3D模型的模型矩阵，可以用于移动物体  
+    var buildModel = Cesium.Model.fromGltf( {//异步的加载模型  
+		name : 'build',  
+        // url : './js/Cesium/gltf/p51'+placeid+'.gltf',  
+        url : './js/Cesium/gltf/p51.gltf',  
+        modelMatrix : modelMatrix, //模型矩阵  
+        scale : 0.0000395 //缩放  
+    } );
+    model = scene.primitives.add( buildModel );
+}	
+function getBuildingPOI(){
+	for (var i=0;i<featuresBuilding.length;i++){
+		var buildingCenter = featuresBuilding[i].getGeometry().getCoordinates();
+		var buildingName = featuresBuilding[i].get('name');
+		shapeBuilding[i] = viewer.entities.add( {  
+	        parent : modelParent,
+		    name : buildingName,  
+		    position : Cesium.Cartesian3.fromDegrees(buildingCenter[0],buildingCenter[1],18),   
+		    label : { //文字标签  
+		        text : buildingName,  
+		        font : '18pt sans-serif',  
+		        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
+		        fillColor : Cesium.Color.ANTIQUEWHITE,
+		        outlineColor : Cesium.Color.ANTIQUEWHITE,
+		        outlineWidth : 2,  
+		        showBackground: true,
+		        scale: 0.5,
+		        verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
+		    }, 
+		    properties: {
+		    	'building':featuresBuilding[i].get('building_id'),
+		    	'buildingPoi': 1
+		    },	
+		} ); 
+	}
+}
 
 function setEntitiesBackground(shapeData){
 	if(shapeData != undefined){
 		for (var j=0;j<shapeData.length;j++){
-			shapeBackground = viewer.entities.add({  
+			shapeBackground = viewer.entities.add({ 
+				parent : DetailParent,			
 				name : shapeData[j][3],  
 				polygon : {  
 					hierarchy : Cesium.Cartesian3.fromDegreesArray(shapeData[j][2]),
@@ -46,7 +94,8 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 		// 门-penup
 		for(var j=0;j<shapeDoorData.length;j++){
 			shapeDoor[shapeDoorNum++] = viewer.entities.add({ 
-			        name : shapeDoorData[1],  
+			        parent : DetailParent,
+					name : shapeDoorData[1],  
 			        polylineVolume : {  
 			          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
 			          			shapeDoorData[j][0]),  
@@ -66,7 +115,8 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 				switch (shapeFeature[featureID]){
 				case 'wall':
 				   shapeWall[shapeWallNum++] = viewer.entities.add({ 
-				        name : shapeData[featureID][j][3],  
+				        parent : DetailParent,
+						name : shapeData[featureID][j][3],  
 				        corridor : {
 				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(
 				          			shapeData[featureID][j][2]),
@@ -90,7 +140,8 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 				   break;
 				case 'isolation': 
 				   shapeWall[shapeWallNum++] = viewer.entities.add({ 
-				        name : shapeData[featureID][j][3],  
+				        parent : DetailParent,
+						name : shapeData[featureID][j][3],  
 				        polylineVolume : {  
 				          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(  
 				          			shapeData[featureID][j][2]),  
@@ -105,7 +156,8 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 				   break;
 				case 'room':
 					   shapeWall[shapeWallNum++] = viewer.entities.add({ 
-					        name : shapeData[featureID][j][3],  
+					        parent : DetailParent,
+							name : shapeData[featureID][j][3],  
 					        corridor : {
 					          	positions : Cesium.Cartesian3.fromDegreesArrayHeights(
 					          			shapeData[featureID][j][2]),
@@ -138,6 +190,7 @@ function setEntitiesPolygon(shapeData,shapeDoorData){
 					   break;
 				case 'desk':
 					shapeDesk[shapeDeskNum++] = viewer.entities.add({  
+						parent : DetailParent,
 						name : shapeData[featureID][j][3],  
 						polygon : {  
 							hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(
@@ -171,7 +224,8 @@ function setEntitiesPOI(shapeData){
 				switch (shapeFeature[featureID]){
 				case 'POIall':
 					shapePoiAll[shapePoiAllNum++] = viewer.entities.add( {  
-					    name : shapeData[featureID][j][1],  
+					    parent : DetailParent, 
+						name : shapeData[featureID][j][1],  
 					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
 					    label : { //文字标签  
 					        text : shapeData[featureID][j][1],  
@@ -182,19 +236,19 @@ function setEntitiesPOI(shapeData){
 					        outlineWidth : 1,  
 					        //horizontalOrigin : ,
 					        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
-					        pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
-					        
+					        pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量   
 					    },  
-					    billboard : { //图标  
-					        image : './icon/' + shapeIcon[featureID]+ '.png',  
-					        width : 26,  
-					        height : 26  
-					    },  
+					    // billboard : { //图标  
+					        // image : './icon/' + shapeIcon[featureID]+ '.png',  
+					        // width : 26,  
+					        // height : 26  
+					    // },  
 					} );  
 				   break;
 				case 'label':
 					shapeLabel[shapeLabelNum++] = viewer.entities.add( {  
-					    name : shapeData[featureID][j][1],  
+					    parent : DetailParent, 
+						name : shapeData[featureID][j][1],  
 					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
 					    label : { //文字标签  
 					        text : shapeData[featureID][j][1],  
@@ -212,7 +266,8 @@ function setEntitiesPOI(shapeData){
 					break;
 				case 'billboard':
 					shapeBillboard[shapeBillboardNum++] = viewer.entities.add( {  
-					    name : shapeData[featureID][j][1],  
+					    parent : DetailParent,
+						name : shapeData[featureID][j][1],  
 					    position : Cesium.Cartesian3.fromDegrees(shapeData[featureID][j][0][0],shapeData[featureID][j][0][1],shapeData[featureID][j][0][2]),   
 					    billboard : { //图标  
 					        image : './icon/' + shapeIcon[featureID]+ '.png',  
@@ -312,15 +367,15 @@ function addEntitiesLocate(Obj){
 		position : Cesium.Cartesian3.fromDegrees(Obj[0],Obj[1],Obj[2]),
 		label : { //文字标签  
 	        text : Obj[3],  
-	        font : '9pt sans-serif',  
+	        font : '18pt sans-serif',  
 	        style : Cesium.LabelStyle.FILL_AND_OUTLINE,  
 	        fillColor : Cesium.Color.ANTIQUEWHITE,
-	        outlineColor : Cesium.Color.DARKSLATEGRAY,
-	        outlineWidth : 4,  
-	        //verticalOrigin : Cesium.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置  
-	        //heightReference: 2,
-	        //pixelOffset : new Cesium.Cartesian2( 36, -2 ),   //偏移量  
-	        
+	        outlineColor : Cesium.Color.ANTIQUEWHITE,
+			outlineWidth : 1,  
+			showBackground: true,
+			backgroundColor : Cesium.Color.DARKSLATEGRAY,
+			//scale: 0.5,
+			scaleByDistance: new Cesium.NearFarScalar(Obj[2], 0.5, 150, 0.2)
 	    },   
 	    billboard : { //图标  
 	        image : './icon/3d_locate.png',  
@@ -328,7 +383,8 @@ function addEntitiesLocate(Obj){
 	        //eyeOffset : Cesium.Cartesian3.UNIT_Z,
 	        //alignedAxis: Cesium.Cartesian3.UNIT_X,
 	        width : 40,  
-	        height : 40  
+	        height : 40,
+			scaleByDistance: new Cesium.NearFarScalar(Obj[2], 1, 150, 0.4)
 	    },  
 	    properties: {
 	    	// 'name':Obj[3],

@@ -5,7 +5,7 @@ function checkCollection(){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: DBs + ':poi_collection', // 定位点图层
+		typeName: DBs + ':poi_collection',
 		outputFormat: 'application/json',
 		cql_filter: "user_id=" + userId + " and poi_id='" + CollectionId + "'"
 	};	
@@ -43,6 +43,7 @@ function addCollectionPoi(){
 	newFeature.set('l_id', deviceId);
 	newFeature.set('user_id', userId);
 	newFeature.set('place_id', placeid);
+	newFeature.set('building_id', buildingid);
 	newFeature.set('floor_id', floorid);
 	newFeature.setGeometry(new ol.geom.Point([coordinate[1],coordinate[0]]));
 	updateNewFeature([newFeature],featureType,'insert');
@@ -75,15 +76,15 @@ function rmCollectionPoi(CollectionFid){
 
 // 显示收藏
 function collectionPoi(){
-	collectionLayer.getSource().clear();
+	collectionSource.clear();
 	if (collectionoff) {
 		var CollectionParam = {
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typeName: DBs + ':poi_collection', // 定位点图层
+			typeName: DBs + ':poi_collection',
 			outputFormat: 'application/json',
-			cql_filter: 'user_id=' + userId + ' and place_id=' + placeid + ' and floor_id=' + floorid
+			cql_filter: 'user_id=' + userId + ' and place_id=' + placeid + ' and floor_id=\'' + floorid + '\''
 		};	
 		$.ajax({  
 			url: wfsUrl,
@@ -92,7 +93,7 @@ function collectionPoi(){
 			dataType: 'json',
 			success: function(response){
 				var features = new ol.format.GeoJSON().readFeatures(response);
-				collectionLayer.getSource().addFeatures(features);
+				collectionSource.addFeatures(features);
 			}
 		}); 	
 		collectionoff = false;

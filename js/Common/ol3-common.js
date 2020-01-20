@@ -4,11 +4,11 @@ var deviceId; //手环id   从传入参数获取值  点位点&收藏
 var userId = '1592782'; //用户ID   从传入参数获取值   收藏     
 var ltype; // 定位点类型 暂未用到
 
-var placeid = '1';
+var placeid = '2';
+var buildingid = 1;
 var floorid = '1';// 楼层编号    选择楼层
 var locateFloor;
-var LocationRequestParam; //定位param
-var DBs = 'mote'; //数据源
+var DBs = 'prison'; //数据源
 var lineDBs = 'leador';
 var locateIp = 'https://locate.intmote.com';
 var comIp = 'https://map.intmote.com';
@@ -19,11 +19,9 @@ var locateUrl = locateIp + '/LocateServer/getLocation.action';
 var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
 var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
 
-// 3d 初始化 变量设置
-var geomPlaces;
-var geomBackgrounds = {};
-var geomPolygons = {};
-var geomPOIs = {};
+// 初始化 地图数据获取
+var featuresBuilding = [],featuresBackground = [],featuresPolygon = [],featuresPoint = [];
+var featuresBackgroundObj,featuresPolygonObj,featuresPointObj;
 
 // 定位点纠偏 变量设置
 var setCenterFlag = true,getLocateLocateFlag = true,LocatesForShow = {};
@@ -102,62 +100,93 @@ function openOrientation() {
 	}
 }
 
-//设置视图
-var view = new ol.View({
-	center: [121.4286933,31.1664993],
-	projection: 'EPSG:4326',
-	zoom: 19
-});
-// 室内图数据获取 	
-var geojsonObject = function(filter,Typename){
-	var geojson = {};
+
+/* get 室内图 */
+// getGeomData();
+function getGeomData(){
+	featuresBuilding = getBasemapFeatures('building_point');
+	featuresBackground = getBasemapFeatures('polygon_background');
+	featuresPolygon = getBasemapFeatures('polygon');
+	featuresPoint = getBasemapFeatures('point');
+	
+	featuresBackgroundObj = getFeaturesOBJ(featuresBackground);
+	featuresPolygonObj = getFeaturesOBJ(featuresPolygon);
+	featuresPointObj = getFeaturesOBJ(featuresPoint);
+}
+
+function getBasemapFeatures(typename){
+	var features = [];
 	$.ajax({
-		url: wfsUrl,
-		data: {
-			service: 'WFS',
-			version: '1.1.0',
-			request: 'GetFeature',
-			typename: DBs + Typename,
-			outputFormat: 'application/json',
-			cql_filter: filter
+		url : wfsUrl,
+		data : {
+			service : 'WFS',
+			version : '1.1.0',
+			request : 'GetFeature',
+			typename : DBs + ':' + typename,
+			outputFormat : 'application/json',
+			cql_filter: 'place_id=' + placeid
 		},
-		type: 'GET',
-		dataType: 'json',	
-		async: false,
-		success: function(response){
-			var features = new ol.format.GeoJSON().readFeatures(response);
-			var floorLength = features.length;
-			if(floorLength > 0){
-				for(var i=0;i<features.length;i++){
-					var featuresFloor = features[i].get('floor_id');
-					if(geojson[featuresFloor] == undefined){
-						geojson[featuresFloor] = [];
-					}
-					geojson[featuresFloor].push(features[i]);
-				}	
-			}
+		type : 'GET',
+		dataType : 'json',
+		async : false,
+		success : function(response) {
+			features = new ol.format.GeoJSON().readFeatures(response);	
 		}
 	});
-	// 返回经过条件筛选后的数据
-	return geojson; 
-};
-/* get 室内图 */
-function getGeomData(){
-	geomBackgrounds = geojsonObject('place_id='+placeid,':polygon_background');
-	geomPolygons = geojsonObject('place_id='+placeid,':polygon');
-	geomPOIs = geojsonObject('place_id='+placeid,':point');
+	return features;
+}
+function getFeaturesOBJ (features){
+	var newFeaturesObj = new Object();
+	for(var i=0;i<features.length;i++){
+		var featuresBuild = features[i].get('building_id');
+		var featuresFloor = features[i].get('floor_id');
+		if (!newFeaturesObj[featuresBuild]){newFeaturesObj[featuresBuild] = new Object();}
+		if (!newFeaturesObj[featuresBuild][featuresFloor]){newFeaturesObj[featuresBuild][featuresFloor] = new Array();}
+		newFeaturesObj[featuresBuild][featuresFloor].push(features[i]);
+	}	
+	return newFeaturesObj;
+}
+
+// 获取中心点
+var mapCenter = function(buildingId) {
+	var buildingCenter = [];
+	var buildingLength = featuresBuilding.length;
+	for (var Num = 0; Num < buildingLength; Num++) {
+		if (featuresBuilding[Num].get('building_id') == buildingid) {
+			buildingCenter = featuresBuilding[Num].getGeometry().getCoordinates();
+			break;
+		}
+	}
+	return buildingCenter;
+}
+
+
+//设置视图
+var view = new ol.View({
+	center: mapCenter(buildingid),
+	projection: 'EPSG:4326',
+	zoom: 19,
+	maxZoom : 24,
+	minZoom : 18
+});
+
+
+// 室外poi
+var placePoistylefun = function(feature) {
+	geojsonstyle['30060000'].getText().setText(feature.get('name'));
+	return geojsonstyle['30060000'];
 }
 
 // 室内图样式设置
 var geojsonstylefunction = function(feature){
 	// console.log(feature);
-	// var featureiiiid = feature.I.feature_id;
-	var featureiiiid = feature.values_.feature_id;
+	var featureiiiid = feature.get('feature_id');
+	// var featureangle = feature.get('angle') = null ? 0:feature.get('angle');
 	var featureangle = feature.values_.angle = null ? 0: feature.values_.angle;
 	
 	if (feature.getGeometry().getType() == 'Point'  && (featureiiiid == '30060300' || featureiiiid == '30060000' || featureiiiid == '30040100')){
 		// geojsonstyle[featureiiiid].getText().setText(feature.I.name);
-		geojsonstyle[featureiiiid].getText().setText(feature.values_.name);
+		geojsonstyle[featureiiiid].getText().setText(feature.get('name'));
 	}
 	if (featureiiiid == '30060100' || featureiiiid == '30060200' ){
 		if (map.getView().getZoom() > 19){
@@ -180,44 +209,6 @@ var geojsonstylefunction = function(feature){
 };
 
 
-// 确认网址的Flag 当为true时可以定位，加载定位信息
-
-//获取所有place
-var getGeomPlaces = function(Typename){
-	var geojson = [];
-	$.ajax({
-		url: wfsUrl,
-		data: {
-			service: 'WFS',
-			version: '1.1.0',
-			request: 'GetFeature',
-			typename: DBs + Typename,
-			outputFormat: 'application/json',
-		},
-		type: 'GET',
-		dataType: 'json',	
-		async: false,
-		success: function(response){
-			geojson = new ol.format.GeoJSON().readFeatures(response);
-		}
-	});
-	return geojson; 
-};
-geomPlaces = getGeomPlaces(':polygon_background');
-//获取中心点
-var mapCenter = function(placeId){
-	var placeLength = geomPlaces.length;
-	var places = 0,placeLonSum = 0,placeLatSum = 0;
-	for (var placeNum =0;placeNum < placeLength;placeNum++){
-		if (geomPlaces[placeNum].get('place_id') == placeId){
-			placeLonSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[0];
-			placeLatSum += geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates()[01];
-			places ++;
-		}
-	}
-	return [placeLonSum/places,placeLatSum/places];
-}
-
 // 根据中心点判断最近的place
 function getPlace(center){
 	var centerPlace;
@@ -230,6 +221,7 @@ function getPlace(center){
 			mindistance = dummyDis;
 		}
 	}
+	// TODO
 	if(mindistance < 200 && centerPlace != placeid){
 		placeid = centerPlace;
 		load3dMap();
@@ -380,7 +372,6 @@ function moveAnimation(beforePoints,nowfeaturesLocate){
 			var futurePoint = featuresLocate[i].getGeometry().getCoordinates();
 			intervalX[locate_ID] = (futurePoint[0] - beforePoints[locate_ID][0])/speed;
 			intervalY[locate_ID] = (futurePoint[1] - beforePoints[locate_ID][1])/speed;
-
 		}
 	}
     var timer = requestAnimationFrame(function moveFeature(){
@@ -430,7 +421,7 @@ var polygonWallsFeature = function (){
 var polygonWalls = [];
 var polygonWallsFeatures;
 var WallInFlag = function checkWallIn(Geom){	
-	if(polygonWalls.length == 0){polygonWalls = polygonLayer.getSource().getFeatures();}
+	if(polygonWalls.length == 0){polygonWalls = polygonSource.getFeatures();}
 	polygonWallsFeatures = polygonWallsFeature();
 	for (var i = 0; i< polygonWalls.length; i++){
 		var polygonWallId = polygonWalls[i].get('feature_id');

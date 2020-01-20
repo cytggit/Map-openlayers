@@ -68,10 +68,10 @@ function requestSelect(searchKey){
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typeName: DBs + ':select', // 定位点图层
+			typeName: DBs + ':select',
 			outputFormat: 'application/json',
 			cql_filter: "place_id=" + placeid + " and name like '%"+str2Unicode(searchKey)+"%'",
-			sortby: "floor_id,name"
+			sortby: "building_id,floor_id,name"
 		};		
 		$.ajax({  
 			url: wfsUrl,
@@ -150,7 +150,6 @@ function showSelectDetail(selectFeature){
 	selectLayer.setStyle(selectStyle[30050100]);
 	select_wfs.clear();
 	select_wfs.addFeature(selectFeature);
-	selectLayer.setSource(select_wfs);		
 	//$('#search_result').empty();
 	selectinfo = 'select';
 	
@@ -214,9 +213,9 @@ function getselectLayerSource(featureid){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: DBs + ':select', // 定位点图层
+		typeName: DBs + ':select',
 		outputFormat: 'application/json',
-		cql_filter: "place_id=" + placeid + " and floor_id='" + floorid + "' and feature_id =" + featureid
+		cql_filter: "place_id=" + placeid + "building_id=" + buildingid + " and floor_id='" + floorid + "' and feature_id =" + featureid
 	};		
 	$.ajax({  
 		url: wfsUrl,
@@ -227,8 +226,7 @@ function getselectLayerSource(featureid){
 			var selects = new ol.format.GeoJSON().readFeatures(response);
 			select_wfs.addFeatures(selects);
 		}
-	}); 
-	selectLayer.setSource(select_wfs);		
+	}); 	
 }
 
 
@@ -240,7 +238,7 @@ function removeselect(){
 			$('.control-search img').attr("src","./icon/search.png");
 			$('.search-input').val = '';
 		}
-		selectLayer.getSource().clear();
+		select_wfs.clear();
 		selectinfo = null;
 	}
 }	

@@ -67,7 +67,7 @@ function ADDelectronicFence(){
 				this.Polygon.setActive(true);
 			},
 			Polygon: new ol.interaction.Draw({
-				source: electronicLayer.getSource(),
+				source: electronicSource,
 				type: /** @type {ol.geom.GeometryType} */ ('Polygon'),
 				geometryName: 'geom'
 			}),
@@ -89,10 +89,11 @@ function ADDelectronicFence(){
 					newCoordinates[i] = [oldCoordinates[1],oldCoordinates[0]];
 				}
 				var newFeature = new ol.Feature();
-				newFeature.setId('electronic_fence.'  + deviceId);
+				newFeature.setId('fence_electronic.'  + deviceId);
 				newFeature.setGeometryName('geom');	
 				newFeature.set('geom', null);
 				newFeature.set('place_id', placeid);
+				newFeature.set('building_id', buildingid);
 				newFeature.set('floor_id', floorid);
 				newFeature.set('type_id', '1');
 				newFeature.set('name', 'test');		
@@ -153,6 +154,7 @@ function UpdElectronicFence(){
 				}
 				
 				var modifyPlaceid = modifyInfo.place_id;
+				var modifyBuildingid = modifyInfo.building_id;
 				var modifyFloorid = modifyInfo.floor_id;
 				var modifyTypeid = modifyInfo.type_id;
 				var modifyName = modifyInfo.name;		
@@ -162,6 +164,7 @@ function UpdElectronicFence(){
 				newFeature.setGeometryName('geom');	
 				newFeature.set('geom', null);
 				newFeature.set('place_id', modifyPlaceid);
+				newFeature.set('place_id', modifyBuildingid);
 				newFeature.set('floor_id', modifyFloorid);
 				newFeature.set('type_id', modifyTypeid);
 				newFeature.set('name', modifyName);		
@@ -232,7 +235,7 @@ function RmElectronicFence(){
 						newFeature.set('geom', null);		
 						newFeature.setGeometry(new ol.geom.Polygon([newCoordinates]));							
 						
-						updateNewFeature([newFeature],'electronic_fence','remove');
+						updateNewFeature([newFeature],'fence_electronic','remove');
 						alert('删除电子围栏成功！');	
 						electronicFence();
 					}else{
@@ -248,7 +251,7 @@ function RmElectronicFence(){
 // 保存电子围栏编辑
 function SaveElectronicFence(){
 	// request
-	var featureType = 'electronic_fence';
+	var featureType = 'fence_electronic';
 	switch (drawtype) {  
 		case 'AddElectronicFence': 
 			updateNewFeature(electronicFeatureDummy,featureType,'insert');
@@ -289,15 +292,15 @@ function checkElectronicReady(){
 
 // 显示电子围栏
 function electronicFence(){
-	electronicLayer.getSource().clear();
+	electronicSource.clear();
 	if (electronicLayerOff) {
 		var electronicParam = {
 			service: 'WFS',
 			version: '1.1.0',
 			request: 'GetFeature',
-			typeName: DBs + ':electronic_fence', // 电子围栏图层
+			typeName: DBs + ':fence_electronic', // 电子围栏图层
 			outputFormat: 'application/json',
-			cql_filter: 'place_id=' + placeid + ' and floor_id=' + floorid
+			cql_filter: 'place_id=' + placeid + ' and floor_id=\'' + floorid + '\''
 		};	
 		$.ajax({  
 			url: wfsUrl,
@@ -306,7 +309,7 @@ function electronicFence(){
 			dataType: 'json',
 			success: function(response){
 				var features = new ol.format.GeoJSON().readFeatures(response);
-				electronicLayer.getSource().addFeatures(features);
+				electronicSource.addFeatures(features);
 			}
 		}); 	
 		electronicLayerOff = false;

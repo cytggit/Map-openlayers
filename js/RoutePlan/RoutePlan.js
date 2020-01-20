@@ -154,10 +154,10 @@ function requestSelectLabel(searchKey){
 		service: 'WFS',
 		version: '1.1.0',
 		request: 'GetFeature',
-		typeName: DBs + ':select', // 定位点图层
+		typeName: DBs + ':select',
 		outputFormat: 'application/json',
 		cql_filter: "place_id=" + placeid + " and name like '%"+str2Unicode(searchKey)+"%'",
-		sortby: 'floor_id,name'
+		sortby: 'building_id,floor_id,name'
 	};	
 	$.ajax({  
 		url: wfsUrl,
@@ -254,7 +254,7 @@ function StartPathPlanning(){
 			});		
 			
 			routeFeature = [];
-			if (RouteSourceFloor == RouteTargetFloor){
+			if (RouteSourceFloor == RouteTargetFloor){// TODO BUILDING不一样的情况
 				RouteParam = 'floorid:' + RouteSourceFloor  + ';x1:' + sourceLabelX + ';y1:' + sourceLabelY + ';x2:' + targetLabelX + ';y2:' + targetLabelY;			
 				var RouteRequestParam = {
 					service: 'WFS',
@@ -528,7 +528,7 @@ function setlabelOnMap(){
 				if (RouteDestLayer != null ){overmap.getLayers().remove(RouteDestLayer);RouteDestLayer.getSource().clear();}
 			}
 			var coordinate;
-			var geom = e.selected[0].values_.geometry;
+			var geom = e.selected[0].getGeometry();
 			// var geomtype = geom.getType();
 			// if (geomtype == 'Polygon'){
 				// coordinate = geom.getInteriorPoint().getCoordinates();
@@ -541,21 +541,21 @@ function setlabelOnMap(){
 			LabelX = coordinate[0];
 			LabelY = coordinate[1];
 			if (LabelAction == 'startLabel'){
-				$('#label-start').val(e.selected[0].values_.name);
+				$('#label-start').val(e.selected[0].get('name'));
 				sourceLabelX = LabelX;
 				sourceLabelY = LabelY;
-				myPoint.set('sfloor',e.selected[0].values_.floor_id);
+				myPoint.set('sfloor',e.selected[0].get('floor_id'));
 				RouteStartLayer.getSource().addFeature(myPoint);		
 				overmap.getLayers().extend([RouteStartLayer]);	
-				RouteSourceFloor = e.selected[0].values_.floor_id;
+				RouteSourceFloor = e.selected[0].get('floor_id');
 			}else if (LabelAction == 'endLabel'){
-				$('#label-end').val(e.selected[0].values_.name);
+				$('#label-end').val(e.selected[0].get('name'));
 				targetLabelX = LabelX;
 				targetLabelY = LabelY;
-				myPoint.set('efloor',e.selected[0].values_.floor_id);
+				myPoint.set('efloor',e.selected[0].get('floor_id'));
 				RouteDestLayer.getSource().addFeature(myPoint);	
 				overmap.getLayers().extend([RouteDestLayer]);	
-				RouteTargetFloor = e.selected[0].values_.floor_id;
+				RouteTargetFloor = e.selected[0].get('floor_id');
 			}
 			StartPathPlanning();	
 			LabelX = null;
