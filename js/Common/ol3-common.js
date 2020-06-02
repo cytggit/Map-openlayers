@@ -6,7 +6,7 @@ var ltype; // 定位点类型 暂未用到
 
 var placeid = '2';
 var buildingid = 1;
-var floorid = '1';// 楼层编号    选择楼层
+var floorid = '01';// 楼层编号    选择楼层
 var locateFloor;
 var DBs = 'prison'; //数据源
 var lineDBs = 'leador';
@@ -170,7 +170,6 @@ var view = new ol.View({
 	minZoom : 18
 });
 
-
 // 室外poi
 var placePoistylefun = function(feature) {
 	geojsonstyle['30060000'].getText().setText(feature.get('name'));
@@ -208,32 +207,59 @@ var geojsonstylefunction = function(feature){
 	return geojsonstyle[featureiiiid];
 };
 
-
+//获取所有place
+var getGeomPlaces = function(Typename){
+	var geojson = [];
+	$.ajax({
+		url: wfsUrl,
+		data: {
+			service: 'WFS',
+			version: '1.1.0',
+			request: 'GetFeature',
+			typename: DBs + Typename,
+			outputFormat: 'application/json',
+		},
+		type: 'GET',
+		dataType: 'json',	
+		async: false,
+		success: function(response){
+			geojson = new ol.format.GeoJSON().readFeatures(response);
+		}
+	});
+	return geojson; 
+};
+geomPlaces = getGeomPlaces(':building_point');
 // 根据中心点判断最近的place
 function getPlace(center){
 	var centerPlace;
 	var mindistance = 200;
 	var placeLength = geomPlaces.length;
 	for (var placeNum =0;placeNum < placeLength;placeNum++){
-		var dummyDis = distanceFromAToB(geomPlaces[placeNum].getGeometry().getInteriorPoint().getCoordinates(),center) ;
+		var dummyDis = distanceFromAToB(geomPlaces[placeNum].getGeometry().getCoordinates(),center) ;
 		if(dummyDis < mindistance ){
 			centerPlace = geomPlaces[placeNum].get('place_id');
 			mindistance = dummyDis;
 		}
 	}
+	
+	
 	// TODO
 	if(mindistance < 200 && centerPlace != placeid){
 		placeid = centerPlace;
+		
+		getGeomData();
+		getFloorList();
+		setPlacePoi();
+		
 		load3dMap();
 		get3DPopup();
-		getGeomData();
-		// 加载楼层条
-		getFloorList();
 		load3dData();
+		view.setCenter(center);
 	}else{
 		// 地图随定位点移动（保持定位点在地图中心）
 		backcenter();
 	}		
+	view.setCenter(center);
 }
 
 var checkFlag = false;

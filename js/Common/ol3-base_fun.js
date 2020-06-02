@@ -105,7 +105,7 @@ function getlocation(){
 				
 				var gpsCoordinates = [] ;
 				// var gpsCoordinates = [121.402541820159,31.2284797284321] ;
-				var gpsCoordinates = [121.42308,31.16801] ;
+				var gpsCoordinates = [121.42308,32.16801] ;
 
 				// navigator.geolocation.getCurrentPosition(function(position) {
 					// gpsCoordinates[0] = position.coords.longitude;
@@ -113,6 +113,8 @@ function getlocation(){
 					var newgpsCoordinates = coordtransform.wgs84togcj02(gpsCoordinates[0] ,gpsCoordinates[1] );
 
 					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
+					gpsfeature.set('place_id','2');
+					gpsfeature.set('building_id',0);
 					gpsfeature.set('floor_id','01');
 					gpsfeature.set('l_id',deviceId);
 					features = [gpsfeature];
@@ -124,7 +126,27 @@ function getlocation(){
 				doWithLocate(features);
 			//}	
 
-		}		
+		},
+		error: function(){
+			var gpsfeature = new ol.Feature();
+				var gpsCoordinates = [] ;
+				// var gpsCoordinates = [121.402541820159,31.2284797284321] ;
+				var gpsCoordinates = [121.42308,32.16801] ;
+				// navigator.geolocation.getCurrentPosition(function(position) {
+					// gpsCoordinates[0] = position.coords.longitude;
+					// gpsCoordinates[1]  = position.coords.latitude;
+					var newgpsCoordinates = coordtransform.wgs84togcj02(gpsCoordinates[0] ,gpsCoordinates[1] );
+
+					gpsfeature.setGeometry(newgpsCoordinates ?new ol.geom.Point(newgpsCoordinates) : null);
+					gpsfeature.set('place_id','2');
+					gpsfeature.set('building_id',0);
+					gpsfeature.set('floor_id','01');
+					gpsfeature.set('l_id',deviceId);
+					features = [gpsfeature];
+					
+				// });
+			doWithLocate(features);
+		}
 	});
 }
 
@@ -192,7 +214,7 @@ function doWithLocate(features){
 	}	
 	// 定位点顺滑平移-伪实现
 	moveAnimation(beforeLocatesForShow,LocateInfo);
-	makeEntitiesLocate(LocateInfo);
+	if(viewer){makeEntitiesLocate(LocateInfo);}
 	
 	// 判断是否正在路径规划，做实时规划
 	if(!pathPlanningOFF && RouteLayer != null && RouteLayer.getSource().getFeatures().length > 0){
@@ -286,12 +308,15 @@ function backcenter(){
 		backcenterFlag = false;
 	});
 	// 3d
-	viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
-		backcenterFlag = false;
-     }, Cesium.ScreenSpaceEventType.WHEEL);  
-	 viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
-		backcenterFlag = false;
-     }, Cesium.ScreenSpaceEventType.LEFT_DOWN);  
+	if(viewer){
+		viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
+			backcenterFlag = false;
+		}, Cesium.ScreenSpaceEventType.WHEEL);  
+		viewer.screenSpaceEventHandler.setInputAction(function(movement) {           
+			backcenterFlag = false;
+		}, Cesium.ScreenSpaceEventType.LEFT_DOWN);  
+	}
+	
 	// 平移动画
 	if (backcenterFlag){
 		// 2d
@@ -300,7 +325,9 @@ function backcenter(){
 			center: locate
 		});		
 		// 3d
-		changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +60,2);
+		if(viewer){
+			changeCamera([locate[0] - 0.00016,locate[1] - 0.0002],(floorid-1) * 3 +60,2);
+		}
 		
 		// 当所在楼层不是定位点所在楼层时，切换到定位点的楼层
 		if (locateFloor != floorid){
