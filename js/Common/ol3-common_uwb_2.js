@@ -1,4 +1,4 @@
-// common
+enh // common
 var locate; // 中心点   定位点&返回中心点&路径规划
 var deviceId; //手环id   从传入参数获取值  点位点&收藏
 var userId = '1592782'; //用户ID   从传入参数获取值   收藏     
@@ -10,14 +10,14 @@ var locateFloor;
 var LocationRequestParam; //定位param
 var DBs = 'debo'; //数据源
 var lineDBs = 'leador';
-var locateIp = 'https://locate.intmote.com';
+var locateIp = 'http://47.103.35.78:8086';
 var comIp = 'https://map.intmote.com';
 // var comIp = 'http://116.231.55.50:9088';//备用
 var wfsUrl = comIp + '/geoserver/wfs';
 var wmsUrl = comIp + '/geoserver/' + DBs + '/wms';
-var locateUrl = locateIp + '/LocateServer/getLocation.action';
-var locateCertainUrl = locateIp + '/LocateServer/getCertainLocation.action';
-var locateAllUrl = locateIp + '/LocateServer/getAllLocation.action';
+var locateUrl = locateIp + '/LocateService/getLocation.action';
+var locateCertainUrl = locateIp + '/LocateService/getCertainLocation.action';
+var locateAllUrl = locateIp + '/LocateService/getAllLocation.action';
 
 // 2d 初始化
 var geomPlaces;
